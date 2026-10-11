@@ -1,6 +1,6 @@
 # Richard's Guitar Lessons
 
-A static website MVP for Richard, a remote guitar teacher. Built with plain HTML and Tailwind CSS (loaded via CDN) — no build tools, no npm, no framework.
+A static website for Richard, a UK-based guitar, bass and ukulele teacher. Built with plain HTML and Tailwind CSS (loaded via CDN) — no build tools, no npm, no framework.
 
 ## Pages
 
@@ -27,7 +27,8 @@ npx serve .
 
 ## TODO before going live
 
-- [ ] Replace placeholder email `hello@richardguitarlessons.com` with the real address
-- [ ] Replace canonical/OG URLs (`https://www.richardguitarlessons.com`) with the live domain
+- [ ] Set up the `hello@richardguitarlessons.com` mailbox
 - [ ] Embed the Calendly / Cal.com booking widget on `book-trial-lesson.html`
 - [ ] Add real `og:image` social share images
+
+Canonical/OG URLs already point at the live domain: `https://richardguitarlessons.com`.
