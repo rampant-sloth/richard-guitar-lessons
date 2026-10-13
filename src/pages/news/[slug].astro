@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news');
+  return posts
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .map((post) => ({
+      params: { slug: post.id },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, date, youtubeId } = post.data;
+
+const formattedDate = new Date(date).toLocaleDateString('en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout
+  title={`${title} | Richard's Guitar Lessons`}
+  description={`${title} — news and updates from Richard's Guitar Lessons.`}
+  canonical={`https://richardguitarlessons.com/news/${post.id}/`}
+  active="home"
+>
+  <main class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <article>
+      <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">News</p>
+      <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">{title}</h1>
+      <time class="mt-4 inline-block text-slate-500 dark:text-slate-400" datetime={new Date(date).toISOString()}>{formattedDate}</time>
+      {youtubeId && (
+        <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="aspect-video">
+            <iframe class="h-full w-full" src={`https://www.youtube.com/embed/${youtubeId}`} title={title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      )}
+      <div class="mt-8 space-y-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+        <Content />
+      </div>
+    </article>
+    <p class="mt-10">
+      <a href="/" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">← Back to home</a>
+    </p>
+  </main>
+</Layout>

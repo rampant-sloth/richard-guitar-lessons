@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: rampant-sloth/richard-guitar-lessons
+  base_url: https://api.netlify.com
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "news"
+    label: "News"
+    label_singular: "News post"
+    folder: "src/content/news"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "YouTube Video ID", name: "youtubeId", widget: "string", required: false, hint: "Optional. Just the ID part of a YouTube URL, e.g. yEIYaVfM92A" }

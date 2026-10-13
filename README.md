@@ -1,34 +1,48 @@
 # Richard's Guitar Lessons
 
-A static website for Richard, a UK-based guitar, bass and ukulele teacher. Built with plain HTML and Tailwind CSS (loaded via CDN) — no build tools, no npm, no framework.
+An [Astro](https://astro.build) website for Richard, a UK-based guitar, bass and ukulele teacher. Styled with Tailwind CSS (loaded via CDN — no build-time Tailwind setup), with content managed via [Decap CMS](https://decapcms.org) and deployed on Cloudflare Pages.
 
-## Pages
+## Getting started
 
-| File | Purpose |
+Requires Node.js (18+) and npm.
+
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # static build → dist/
+npm run preview  # preview the production build
+```
+
+## Project structure
+
+| Path | Purpose |
 | --- | --- |
-| `index.html` | Homepage (hero, features, routing cards) |
-| `online-guitar-lessons-kids.html` | Kids & Exam students |
-| `adult-online-guitar-lessons.html` | Adults & Hobbyists |
-| `about-richard.html` | About Richard & technical setup |
-| `book-trial-lesson.html` | Contact / booking (Calendly/Cal.com placeholder) |
+| `src/pages/*.astro` | The main site pages (migrated from the old `.html` files) |
+| `src/layouts/Layout.astro` | Shared page shell (head, nav, footer, scripts) |
+| `src/content/news/` | News posts (managed by Decap CMS) |
+| `src/pages/news/[slug].astro` | Dynamic route that renders each news post |
+| `src/content.config.ts` | Astro content-collections schema for `news` |
+| `public/admin/` | Decap CMS admin UI + config |
 
-## Local preview
+## Content management (Decap CMS)
 
-Open any `.html` file directly in a browser, or serve the folder:
+- Admin UI: `/admin/`
+- Backend: GitHub (`rampant-sloth/richard-guitar-lessons`), auth via `https://api.netlify.com`
+- The "News" collection stores markdown in `src/content/news/` with fields: `title`, `date`, `body`, and an optional `youtubeId`.
 
-```
-npx serve .
-```
+> Note: news posts live in `src/content/news/` rather than `src/pages/news/`. Files in `src/pages/` are auto-routed by Astro and would conflict with the `[slug].astro` dynamic route — content collections are the idiomatic Astro pattern for CMS-managed markdown.
 
 ## Deployment (Cloudflare Pages)
 
-- Build command: _none_ (static files)
-- Publish directory: `/` (project root)
+- Build command: `npm run build`
+- Output directory: `dist`
 
 ## TODO before going live
 
+- [ ] Replace `YOUR_FORM_ID` in `src/pages/book-trial-lesson.astro` with your real Formspree form ID
 - [ ] Set up the `hello@richardguitarlessons.com` mailbox
-- [ ] Embed the Calendly / Cal.com booking widget on `book-trial-lesson.html`
+- [ ] Configure Decap CMS GitHub OAuth so `/admin/` can authenticate
 - [ ] Add real `og:image` social share images
 
-Canonical/OG URLs already point at the live domain: `https://richardguitarlessons.com`.
+Canonical/OG URLs point at the live domain: `https://richardguitarlessons.com`.
+
