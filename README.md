@@ -27,8 +27,24 @@ npm run preview  # preview the production build
 ## Content management (Decap CMS)
 
 - Admin UI: `/admin/`
-- Backend: GitHub (`rampant-sloth/richard-guitar-lessons`), auth via `https://api.netlify.com`
+- Backend: GitHub (`rampant-sloth/richard-guitar-lessons`)
 - The "News" collection stores markdown in `src/content/news/` with fields: `title`, `date`, `body`, and an optional `youtubeId`.
+
+### GitHub OAuth authentication
+
+Decap's GitHub backend needs a server-side OAuth gateway (GitHub won't do the token exchange from the browser). Two Cloudflare Pages Functions implement it:
+
+- `functions/api/auth.js` — redirects to GitHub's authorization page.
+- `functions/api/callback.js` — exchanges the code for a token and posts it back to the admin UI.
+
+**Environment variables** (set in the Cloudflare Pages dashboard):
+
+- `GITHUB_OAUTH_CLIENT_SECRET` — **required** (your GitHub OAuth app client secret; keep private).
+- `GITHUB_OAUTH_CLIENT_ID` — optional; defaults to `Ov23li6duCdaQWAPpend` (already baked into the functions).
+
+**GitHub OAuth app settings:**
+
+- Authorization callback URL: `https://richardguitarlessons.com/api/callback`
 
 > Note: news posts live in `src/content/news/` rather than `src/pages/news/`. Files in `src/pages/` are auto-routed by Astro and would conflict with the `[slug].astro` dynamic route — content collections are the idiomatic Astro pattern for CMS-managed markdown.
 
@@ -39,9 +55,10 @@ npm run preview  # preview the production build
 
 ## TODO before going live
 
+- [ ] Set `GITHUB_OAUTH_CLIENT_SECRET` in Cloudflare Pages (client ID `Ov23li6duCdaQWAPpend` is already baked in)
+- [ ] Confirm the GitHub OAuth app callback URL is `https://richardguitarlessons.com/api/callback`
 - [ ] Replace `YOUR_FORM_ID` in `src/pages/book-trial-lesson.astro` with your real Formspree form ID
 - [ ] Set up the `hello@richardguitarlessons.com` mailbox
-- [ ] Configure Decap CMS GitHub OAuth so `/admin/` can authenticate
 - [ ] Add real `og:image` social share images
 
 Canonical/OG URLs point at the live domain: `https://richardguitarlessons.com`.
