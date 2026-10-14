@@ -57,8 +57,8 @@ npx wrangler deploy                                   # note the printed *.worke
 
 Then wire it up:
 
-- **Cloudflare Pages** → env var `DECAP_OAUTH_BASE_URL` = your Worker URL (e.g. `https://decap-oauth.abc.workers.dev`).
-- **GitHub OAuth App** → Authorization callback URL = `<worker-url>/callback`.
+- **Cloudflare Pages** → env var `DECAP_OAUTH_BASE_URL` (optional — the correct URL is already the default in `scripts/generate-cms-config.mjs`): `https://decap-oauth.rampantsloth-3b0.workers.dev`
+- **GitHub OAuth App** → Authorization callback URL = `https://decap-oauth.rampantsloth-3b0.workers.dev/callback`
 - The public client ID lives in `workers/decap-oauth/wrangler.toml` (safe to commit).
 
 ### Production / develop
@@ -98,9 +98,10 @@ the Formspree booking form on `/book-trial-lesson`.
 
 ## TODO before going live
 
-- [ ] Deploy the OAuth Worker; set `DECAP_OAUTH_BASE_URL` in Cloudflare Pages
-- [ ] Set the Worker secret `GITHUB_OAUTH_CLIENT_SECRET`
-- [ ] Point the GitHub OAuth app callback at `<worker-url>/callback`
+- [x] Deploy the OAuth Worker (`https://decap-oauth.rampantsloth-3b0.workers.dev`)
+- [x] Set the Worker secret `GITHUB_OAUTH_CLIENT_SECRET`
+- [ ] Point the GitHub OAuth app callback at `https://decap-oauth.rampantsloth-3b0.workers.dev/callback`
+- [ ] Set `DECAP_OAUTH_BASE_URL` in Cloudflare Pages (optional; Production + Preview)
 - [ ] Set up cal.com for Richard (own account + distinctive username), then re-enable scheduling
 - [ ] Set up the `hello@richardguitarlessons.com` mailbox
 - [ ] Add real `og:image` social share images

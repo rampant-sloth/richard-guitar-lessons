@@ -2,6 +2,7 @@ name = "decap-oauth"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 workers_dev = true
+preview_urls = false
 
 [vars]
 # The OAuth client ID is public (it appears in the authorize URL), so it is safe to commit.

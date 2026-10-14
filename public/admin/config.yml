@@ -2,7 +2,7 @@ backend:
   name: github
   repo: rampant-sloth/richard-guitar-lessons
   branch: main
-  base_url: https://decap-oauth.<your-account>.workers.dev
+  base_url: https://decap-oauth.rampantsloth-3b0.workers.dev
   auth_endpoint: auth
 
 media_folder: "public/images"
