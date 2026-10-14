@@ -16,7 +16,8 @@ collections:
         label: Home page
         file: src/content/pages/home.yml
         fields:
-          - label: Google / search listing
+          - &seoField
+            label: Google / search listing
             name: seo
             widget: object
             fields:
@@ -24,7 +25,8 @@ collections:
               - { label: Description, name: description, widget: text, hint: "The grey summary under the title in Google results." }
               - { label: Social share title (optional), name: ogTitle, widget: string, required: false }
               - { label: Social share description (optional), name: ogDescription, widget: text, required: false }
-          - label: Top of the page (hero)
+          - &heroField
+            label: Top of the page (hero)
             name: hero
             widget: object
             fields:
@@ -42,7 +44,8 @@ collections:
                   - { label: Button text, name: label, widget: string }
                   - { label: Link, name: href, widget: string, hint: 'e.g. /book-trial-lesson or #lessons' }
                   - { label: Style, name: variant, widget: select, options: [{ label: Solid, value: primary }, { label: Outline, value: secondary }], default: primary }
-          - label: Page sections
+          - &sectionsField
+            label: Page sections
             name: sections
             widget: list
             summary: '{{fields.heading}}'
@@ -69,7 +72,8 @@ collections:
                   - { label: Link text, name: linkLabel, widget: string, required: false, hint: 'e.g. "More on kids\u0027 lessons →"' }
                   - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Only used by the video gallery block, e.g. yEIYaVfM92A" }
                   - { label: Video caption, name: caption, widget: string, required: false }
-          - label: Closing call to action
+          - &ctaField
+            label: Closing call to action
             name: cta
             widget: object
             required: false
@@ -79,6 +83,87 @@ collections:
               - { label: Button text, name: buttonLabel, widget: string, required: false }
               - { label: Button link, name: buttonHref, widget: string, default: /book-trial-lesson }
               - { label: Background image, name: backgroundImage, widget: image, required: false }
+
+      - name: about
+        label: About page
+        file: src/content/pages/about.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: adults
+        label: Adult lessons page
+        file: src/content/pages/adults.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: kids
+        label: Kids lessons page
+        file: src/content/pages/kids.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: booking
+        label: Book a trial lesson page
+        file: src/content/pages/booking.yml
+        fields:
+          - *seoField
+          - *heroField
+          - &formField
+            label: Booking form
+            name: form
+            widget: object
+            required: false
+            hint: "The enquiry form on this page. The form address is already set up — you only need to change the wording."
+            fields:
+              - { label: Form address (leave as is), name: action, widget: string, default: "https://formspree.io/f/xnpjgokn", hint: "Where the form sends its emails. Only change this if the Formspree account moves." }
+              - { label: Email subject line, name: subject, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Intro text, name: intro, widget: text, required: false }
+              - { label: Submit button text, name: submitLabel, widget: string, default: Send }
+              - label: Form fields
+                name: fields
+                widget: list
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Field name (leave as is), name: name, widget: string, hint: "Appears in the email you receive, e.g. name, email, goals." }
+                  - { label: Type, name: type, widget: select, options: [{ label: Text, value: text }, { label: Email, value: email }, { label: Phone, value: tel }, { label: Multi-line text, value: textarea }], default: text }
+                  - { label: Placeholder text, name: placeholder, widget: string, required: false }
+                  - { label: Required?, name: required, widget: boolean, default: false, required: false }
+                  - { label: Width, name: width, widget: select, options: [{ label: Half width, value: half }, { label: Full width, value: full }], default: half }
+                  - label: Dropdown options
+                    name: options
+                    widget: list
+                    required: false
+                    field: { label: Option, name: option, widget: string }
+                    hint: "Leave empty for a normal text box. Add options here to turn the field into a dropdown."
+          - *sectionsField
+          - *ctaField
+
+      - name: news
+        label: News listing page
+        file: src/content/pages/news.yml
+        fields:
+          - *seoField
+          - *heroField
+          - &labelsField
+            label: Link and label text
+            name: labels
+            widget: object
+            required: false
+            fields:
+              - { label: Read more link, name: readMore, widget: string, required: false }
+              - { label: Back to home link, name: backToHome, widget: string, required: false }
+              - { label: "Nothing published yet message", name: empty, widget: string, required: false }
 
   - name: news
     label: News
@@ -132,4 +217,3 @@ collections:
           - { label: Tagline, name: tagline, widget: text }
           - { label: Contact email, name: contactEmail, widget: string }
           - { label: Streaming platforms, name: platforms, widget: string, hint: "Shown in the footer and on the booking page." }
-          - { label: About page photo, name: aboutImage, widget: image, required: false, hint: "Optional — shown beside the intro on the About page." }

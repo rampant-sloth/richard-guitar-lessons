@@ -1,0 +1,19 @@
+seo:
+  title: "News & Updates | Richard's Guitar Lessons"
+  description: "News and updates from Richard's Guitar Lessons — new songs, grade exam tips, and what's happening in the studio."
+  ogTitle: "News & Updates"
+  ogDescription: "News and updates from Richard's Guitar Lessons."
+
+hero:
+  eyebrow: "News"
+  title: "News & updates"
+  intro: "What's happening in the studio — new songs, exam tips, and the odd bit of guitar geekery."
+  image: ""
+  imageAlt: ""
+  backgroundImage: ""
+  buttons: []
+
+labels:
+  readMore: "Read more →"
+  backToHome: "← Back to home"
+  empty: "No news yet — check back soon."

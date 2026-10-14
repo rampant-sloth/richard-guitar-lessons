@@ -1,112 +1,39 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import Hero from '../components/Hero.astro';
+import Sections from '../components/Sections.astro';
+import Cta from '../components/Cta.astro';
+import { getEntry } from 'astro:content';
 
-const lessons = (await getCollection('lessons')).sort((a, b) => a.data.order - b.data.order);
-const formatPrice = (n: number) => (n === 0 ? 'Free' : `£${n}`);
+const page = await getEntry('pages', 'adults');
+if (!page) throw new Error('Missing src/content/pages/adults.yml');
+
+const { seo, hero, sections, cta } = page.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Online guitar lessons for adults and hobbyists',
+  provider: { '@type': 'Person', name: 'Richard', jobTitle: 'Online Guitar Teacher' },
+  areaServed: 'Worldwide',
+  url: 'https://richardguitarlessons.com/adult-online-guitar-lessons',
+};
 ---
 
 <Layout
-  title="Online Guitar Lessons for Adults & Hobbyists | Richard's Guitar Lessons"
-  description="Learn guitar, bass or ukulele online at your own pace — custom tabs for the songs you love, no rigid syllabus, no pressure."
+  title={seo.title}
+  description={seo.description}
   canonical="https://richardguitarlessons.com/adult-online-guitar-lessons"
   ogType="website"
-  ogTitle="Online Guitar Lessons for Adults & Hobbyists"
-  ogDescription="Learn guitar, bass or ukulele online at your own pace — custom tabs for the songs you love."
+  ogTitle={seo.ogTitle ?? seo.title}
+  ogDescription={seo.ogDescription ?? seo.description}
   active="adults"
 >
   <main>
-    <!-- Hero -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Adults &amp; hobbyists — online, over Zoom</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Guitar, bass &amp; ukulele lessons for adults</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">No syllabus, no pressure, no homework you didn't ask for. Just the songs you love, tabbed out for you, at a pace that fits your actual life. Starting fresh or picking it back up after 20 years — I've got you.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="/book-trial-lesson" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-            <a href="/about-richard" class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800">Meet me</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Own pace -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Learn at your own pace</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Whether you're a complete beginner or coming back to an instrument you used to play, we go at your speed — not a timetable's. I'll never rush you, and I'll never make you feel like you're behind.</p>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">No pressure, no judgement. We move as quickly or as gently as suits you, and you'll leave every lesson with something you can actually play.</p>
-        </div>
-        <ul class="space-y-3">
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🎸</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Absolute beginners welcome</strong> — no question is too basic.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">⏰</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Flexible scheduling</strong> — book around work and life.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🎵</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Guitar, bass or ukulele</strong> — whatever you want to play.</span></li>
-        </ul>
-      </div>
-    </section>
-    <!-- Custom tabs -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Your songs, tabbed out for you</h2>
-        <p class="mt-4 max-w-3xl leading-relaxed text-slate-600 dark:text-slate-300">Tell me the songs you've always wanted to play and I'll transcribe them — accurate tab, arranged so it actually fits your hands. Forget squinting at dodgy tabs online; I'll write them out properly and show you the shortcuts.</p>
-      </div>
-    </section>
-
-    <!-- No rigid syllabus -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-6 md:grid-cols-3">
-        <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6"><span class="text-3xl" aria-hidden="true">🎼</span><h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">No rigid syllabus</h3><p class="mt-2 text-slate-600 dark:text-slate-300">A plan shaped around your goals and tastes — not a course book.</p></article>
-        <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6"><span class="text-3xl" aria-hidden="true">🎤</span><h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Build real technique</h3><p class="mt-2 text-slate-600 dark:text-slate-300">Chords, strumming, fingerpicking, lead — whatever you need, step by step.</p></article>
-        <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6"><span class="text-3xl" aria-hidden="true">🎧</span><h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Studio-quality sound</h3><p class="mt-2 text-slate-600 dark:text-slate-300">You'll hear every note properly, every single lesson.</p></article>
-      </div>
-    </section>
-
-    <!-- Lessons & pricing -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div class="max-w-3xl">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Lessons &amp; pricing</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Simple, flexible and no hidden extras. Prices are per lesson, charged pro-rata — pay individually or block-book to save.</p>
-        </div>
-        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {lessons.map((lesson) => (
-            <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-              <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{lesson.data.title}</h3>
-              <p class="mt-3 text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">{formatPrice(lesson.data.price)}</p>
-              <p class="mt-1 text-sm font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{lesson.data.durationMinutes} minutes</p>
-              <p class="mt-3 text-slate-600 dark:text-slate-300">{lesson.data.summary}</p>
-            </article>
-          ))}
-        </div>
-        <ul class="mt-10 grid gap-4 sm:grid-cols-3">
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">💻</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Your platform, your choice</strong> — Zoom (preferred), Teams, Google Meet or WhatsApp.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📄</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Custom tabs every Monday</strong> — bespoke sheets for the songs you're learning.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📅</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Flexible scheduling</strong> — weekly, fortnightly or ad-hoc, with a 24-hour cancellation period.</span></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">
-        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Let's play the songs you love</h2>
-        <p class="mt-3 text-slate-300">Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly.</p>
-        <a href="/book-trial-lesson" class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-      </div>
-    </section>
+    <Hero {...hero} />
+    <Sections sections={sections} />
+    {cta && <Cta {...cta} />}
   </main>
 
-  <script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Online guitar lessons for adults and hobbyists",
-    "provider": { "@type": "Person", "name": "Richard", "jobTitle": "Online Guitar Teacher" },
-    "areaServed": "Worldwide",
-    "url": "https://richardguitarlessons.com/adult-online-guitar-lessons"
-  }
-  </script>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 </Layout>
-

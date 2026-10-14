@@ -31,7 +31,6 @@ const site = defineCollection({
     tagline: z.string(),
     contactEmail: z.string(),
     platforms: z.string(),
-    aboutImage: z.string().optional(),
   }),
 });
 
@@ -105,6 +104,35 @@ const pages = defineCollection({
         buttonLabel: z.string().optional(),
         buttonHref: z.string().default('/book-trial-lesson'),
         backgroundImage: z.string().optional(),
+      })
+      .optional(),
+    labels: z
+      .object({
+        readMore: z.string().optional(),
+        backToHome: z.string().optional(),
+        empty: z.string().optional(),
+      })
+      .optional(),
+    form: z
+      .object({
+        action: z.string().default('https://formspree.io/f/xnpjgokn'),
+        subject: z.string().default('New website enquiry'),
+        heading: z.string(),
+        intro: z.string().optional(),
+        submitLabel: z.string().default('Send'),
+        fields: z
+          .array(
+            z.object({
+              label: z.string(),
+              name: z.string(),
+              type: z.enum(['text', 'email', 'tel', 'textarea']).default('text'),
+              placeholder: z.string().optional(),
+              required: z.boolean().default(false),
+              width: z.enum(['half', 'full']).default('half'),
+              options: z.array(z.string()).default([]),
+            })
+          )
+          .default([]),
       })
       .optional(),
   }),

@@ -1,6 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import Hero from '../../components/Hero.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'news');
+if (!page) throw new Error('Missing src/content/pages/news.yml');
+
+const { seo, hero, labels } = page.data;
 
 const posts = (await getCollection('news')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const formatDate = (d: Date) =>
@@ -8,34 +14,43 @@ const formatDate = (d: Date) =>
 ---
 
 <Layout
-  title="News & Updates | Richard's Guitar Lessons"
-  description="News and updates from Richard's Guitar Lessons — new songs, grade exam tips, and what's happening in the studio."
+  title={seo.title}
+  description={seo.description}
   canonical="https://richardguitarlessons.com/news"
+  ogType="website"
+  ogTitle={seo.ogTitle ?? seo.title}
+  ogDescription={seo.ogDescription ?? seo.description}
   active="news"
 >
-  <main class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-    <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">News</p>
-    <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">News &amp; updates</h1>
-    <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">What's happening in the studio — new songs, exam tips, and the odd bit of guitar geekery.</p>
+  <main>
+    <Hero {...hero} />
 
-    {posts.length === 0 ? (
-      <p class="mt-10 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 text-slate-600 dark:text-slate-300">No news yet — check back soon.</p>
-    ) : (
-      <ul class="mt-10 space-y-6">
-        {posts.map((post) => (
-          <li class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm transition hover:border-emerald-300 dark:hover:border-emerald-500">
-            <a href={`/news/${post.id}`} class="group block">
-              <time class="text-sm text-slate-500 dark:text-slate-400" datetime={new Date(post.data.date).toISOString()}>{formatDate(post.data.date)}</time>
-              <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{post.data.title}</h2>
-              <span class="mt-3 inline-block font-semibold text-emerald-600 dark:text-emerald-400">Read more →</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    )}
+    <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+      {posts.length === 0 ? (
+        <p class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 text-slate-600 dark:text-slate-300">
+          {labels?.empty ?? 'No news yet.'}
+        </p>
+      ) : (
+        <ul class="space-y-6">
+          {posts.map((post) => (
+            <li class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm transition hover:border-emerald-300 dark:hover:border-emerald-500">
+              <a href={`/news/${post.id}`} class="group block">
+                <time class="text-sm text-slate-500 dark:text-slate-400" datetime={new Date(post.data.date).toISOString()}>
+                  {formatDate(post.data.date)}
+                </time>
+                <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                  {post.data.title}
+                </h2>
+                <span class="mt-3 inline-block font-semibold text-emerald-600 dark:text-emerald-400">{labels?.readMore ?? 'Read more →'}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
 
-    <p class="mt-10">
-      <a href="/" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">← Back to home</a>
-    </p>
+      <p class="mt-10">
+        <a href="/" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">{labels?.backToHome ?? '← Back to home'}</a>
+      </p>
+    </section>
   </main>
 </Layout>

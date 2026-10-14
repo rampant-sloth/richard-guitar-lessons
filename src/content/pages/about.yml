@@ -1,0 +1,56 @@
+seo:
+  title: "About Richard — Online Guitar Teacher | Richard's Guitar Lessons"
+  description: "Meet Richard — guitarist, former school teacher, and the bloke on the other end of your Zoom call. Here's how he teaches and the kit behind the lessons."
+  ogTitle: "About Richard — Online Guitar Teacher"
+  ogDescription: "Meet Richard — how he teaches, and the studio setup behind the lessons."
+
+hero:
+  eyebrow: "About Richard"
+  title: "About Richard"
+  intro: "Guitarist, former school teacher, and the bloke on the other end of the Zoom call. Here's a bit about me and how I teach."
+  image: ""
+  imageAlt: "Richard, guitar teacher"
+  backgroundImage: ""
+  buttons: []
+
+sections:
+  - layout: list
+    heading: "How I teach"
+    body: |-
+      I think lessons should be the best part of your week — not a chore you dread. You learn fastest when you're playing music you love, at a pace that feels right, with a teacher who actually listens. So that's what I do.
+
+      Learning an instrument and music theory is difficult — I'll never pretend otherwise. But a good teacher helps you find the shortcuts, and that's my whole job. Not prescriptive, not school-style; just personable, honest and focused on getting you playing.
+    items:
+      - icon: "🤝"
+        title: "Patient & encouraging"
+        text: "no judgement, ever."
+      - icon: "🎯"
+        title: "Goal-driven"
+        text: "clear direction in every lesson."
+      - icon: "📈"
+        title: "Progress you can feel"
+        text: "from the very first lesson."
+
+  - layout: cards
+    background: gray
+    heading: "My setup (so you can actually hear me)"
+    intro: "Online lessons only work if you can actually hear and see what's going on. So I've put proper kit into it:"
+    items:
+      - icon: "🎙️"
+        title: "Studio-quality audio"
+        text: "Professional microphone and interface, so every note rings clear."
+      - icon: "🎥"
+        title: "HD video"
+        text: "Clear camera angles on both hands."
+      - icon: "💡"
+        title: "Pro lighting"
+        text: "A bright, distraction-free view of the fretboard."
+      - icon: "🖥️"
+        title: "Screen sharing"
+        text: "On-screen tab and chord diagrams as we play."
+
+cta:
+  heading: "Come and meet me"
+  body: "Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly."
+  buttonLabel: "Book a Free 30-Minute Trial Lesson"
+  buttonHref: "/book-trial-lesson"

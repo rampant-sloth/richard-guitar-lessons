@@ -1,0 +1,76 @@
+seo:
+  title: "Online Guitar Lessons for Adults & Hobbyists | Richard's Guitar Lessons"
+  description: "Learn guitar, bass or ukulele online at your own pace — custom tabs for the songs you love, no rigid syllabus, no pressure."
+  ogTitle: "Online Guitar Lessons for Adults & Hobbyists"
+  ogDescription: "Learn guitar, bass or ukulele online at your own pace — custom tabs for the songs you love."
+
+hero:
+  eyebrow: "Adults & hobbyists — online, over Zoom"
+  title: "Guitar, bass & ukulele lessons for adults"
+  intro: "No syllabus, no pressure, no homework you didn't ask for. Just the songs you love, tabbed out for you, at a pace that fits your actual life. Starting fresh or picking it back up after 20 years — I've got you."
+  image: ""
+  imageAlt: "Adult guitar lesson over Zoom"
+  backgroundImage: ""
+  buttons:
+    - label: "Book a Free 30-Minute Trial Lesson"
+      href: "/book-trial-lesson"
+      variant: primary
+    - label: "Meet me"
+      href: "/about-richard"
+      variant: secondary
+
+sections:
+  - layout: list
+    heading: "Learn at your own pace"
+    body: |-
+      Whether you're a complete beginner or coming back to an instrument you used to play, we go at your speed — not a timetable's. I'll never rush you, and I'll never make you feel like you're behind.
+
+      No pressure, no judgement. We move as quickly or as gently as suits you, and you'll leave every lesson with something you can actually play.
+    items:
+      - icon: "🎸"
+        title: "Absolute beginners welcome"
+        text: "no question is too basic."
+      - icon: "⏰"
+        title: "Flexible scheduling"
+        text: "book around work and life."
+      - icon: "🎵"
+        title: "Guitar, bass or ukulele"
+        text: "whatever you want to play."
+
+  - layout: markdown
+    background: gray
+    heading: "Your songs, tabbed out for you"
+    body: "Tell me the songs you've always wanted to play and I'll transcribe them — accurate tab, arranged so it actually fits your hands. Forget squinting at dodgy tabs online; I'll write them out properly and show you the shortcuts."
+
+  - layout: cards
+    items:
+      - icon: "🎼"
+        title: "No rigid syllabus"
+        text: "A plan shaped around your goals and tastes — not a course book."
+      - icon: "🎤"
+        title: "Build real technique"
+        text: "Chords, strumming, fingerpicking, lead — whatever you need, step by step."
+      - icon: "🎧"
+        title: "Studio-quality sound"
+        text: "You'll hear every note properly, every single lesson."
+
+  - layout: lessons
+    background: gray
+    heading: "Lessons & pricing"
+    intro: "Simple, flexible and no hidden extras. Prices are per lesson, charged pro-rata — pay individually or block-book to save."
+    items:
+      - icon: "💻"
+        title: "Your platform, your choice"
+        text: "Zoom (preferred), Teams, Google Meet or WhatsApp."
+      - icon: "📄"
+        title: "Custom tabs every Monday"
+        text: "bespoke sheets for the songs you're learning."
+      - icon: "📅"
+        title: "Flexible scheduling"
+        text: "weekly, fortnightly or ad-hoc, with a 24-hour cancellation period."
+
+cta:
+  heading: "Let's play the songs you love"
+  body: "Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly."
+  buttonLabel: "Book a Free 30-Minute Trial Lesson"
+  buttonHref: "/book-trial-lesson"

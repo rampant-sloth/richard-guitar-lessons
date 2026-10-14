@@ -117,7 +117,7 @@ const asParagraphs = (text?: string) =>
             <article class={cardClass(s)}>
               {it.icon && <span class="text-3xl" aria-hidden="true">{it.icon}</span>}
               {it.title && <h3 class={`mt-3 text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
-              {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+              {it.text && <p class={`mt-2 whitespace-pre-line leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
             </article>
           ))}
         </div>
