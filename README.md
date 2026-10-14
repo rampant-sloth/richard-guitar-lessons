@@ -76,6 +76,10 @@ hints explaining what each field does:
 
    Both two-column layouts condense to a single stacked column below 1024px, so they behave on
    tablets and phones with no extra settings.
+
+   The position field is **optional** — it is ignored when there is no image, so it is safe to
+   leave alone. If a position is chosen before an image exists, the CMS preview draws a dashed
+   placeholder showing where the image will land, rather than appearing to do nothing.
 4. **Closing call to action** — heading, body, button and an optional background image.
 
 The `/book-trial-lesson` page additionally has an editable **Booking form** (labels, placeholders,

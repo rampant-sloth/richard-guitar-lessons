@@ -45,6 +45,13 @@ const site = defineCollection({
 
 const optionalColour = z.string().optional();
 
+// Image position is only meaningful when an image is set, so it is never required in the
+// CMS. An untouched field arrives as '' — anything unexpected falls back to 'right'.
+const imagePosition = z.preprocess(
+  (value) => (value === 'left' || value === 'centre' || value === 'right' ? value : 'right'),
+  z.enum(['right', 'left', 'centre'])
+);
+
 const theme = defineCollection({
   loader: glob({ pattern: '**/*.yml', base: './src/content/theme' }),
   schema: z.object({
@@ -101,7 +108,7 @@ const pages = defineCollection({
       intro: z.string().optional(),
       image: z.string().optional(),
       imageAlt: z.string().optional(),
-      imagePosition: z.enum(['right', 'left', 'centre']).default('right'),
+      imagePosition,
       backgroundImage: z.string().optional(),
       buttons: z
         .array(
@@ -125,7 +132,7 @@ const pages = defineCollection({
           backgroundImage: z.string().optional(),
           image: z.string().optional(),
           imageAlt: z.string().optional(),
-          imagePosition: z.enum(['right', 'left', 'centre']).default('right'),
+          imagePosition,
           items: z
             .array(
               z.object({

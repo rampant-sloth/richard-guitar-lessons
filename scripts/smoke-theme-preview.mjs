@@ -170,6 +170,26 @@ const newsText = collectText(
   pagePreview({ entry: entry({ seo: { title: 'News' }, labels: { empty: 'Nothing yet', readMore: 'Keep reading' } }) })
 ).join(' | ');
 
+// A position can be chosen before an image exists — the preview should say where it will go.
+const noImageText = collectText(
+  pagePreview({
+    entry: entry({
+      seo: { title: 'No image', description: 'No image' },
+      hero: { title: 'No image hero', imagePosition: 'left' },
+      sections: [
+        { layout: 'markdown', heading: 'No image block', imagePosition: 'centre', body: 'Body below the gap.' },
+      ],
+    }),
+  })
+).join(' | ');
+const noImageStyles = collectStyleObjects(
+  pagePreview({ entry: entry({ hero: { title: 'H', imagePosition: 'left' } }) })
+);
+
+const defaultText = collectText(
+  pagePreview({ entry: entry({ hero: { title: 'Clean hero' }, sections: [{ layout: 'markdown', heading: 'Clean block' }] }) })
+).join(' | ');
+
 const checks = [
   ['renders a tree without throwing', plainCss.length > 0],
   ['light palette variables are defined', plainCss.includes('.theme-preview{') && plainCss.includes('--tp-bg:#ffffff')],
@@ -201,6 +221,12 @@ const checks = [
   ['left section image puts the media first', pageStyles.some((s) => s.order === 1) && pageStyles.some((s) => s.order === 2)],
   ['booking form renders its labels', bookingText.includes('Form heading') && bookingText.includes('Name') && bookingText.includes('Send it')],
   ['news listing labels render', newsText.includes('Nothing yet') && newsText.includes('Keep reading')],
+  ['no image + a chosen position shows a placement hint', noImageText.includes('No image yet')],
+  ['the hint names the chosen side', noImageText.includes('left of the text')],
+  ['no image + centre still renders the body copy', noImageText.includes('Body below the gap.')],
+  ['no image + centre shows a centred hint', noImageText.includes('centred')],
+  ['the placement hint is dashed and takes a column order', noImageStyles.some((s) => typeof s.border === 'string' && s.border.indexOf('dashed') >= 0) && noImageStyles.some((s) => s.order === 1)],
+  ['the default position with no image shows no hint', !defaultText.includes('No image yet')],
 ];
 
 let failed = 0;

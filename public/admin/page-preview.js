@@ -98,6 +98,38 @@
       return { display: 'block', width: '100%', borderRadius: r, border: '1px solid ' + (colour || L.border) };
     }
 
+    /*
+     * A position can be chosen before an image exists. Rather than silently doing nothing
+     * (which looks like the preview is broken), show where the image will land.
+     */
+    function imagePlaceholder(key, pos, pal, extra) {
+      var where = pos === 'centre' ? 'centred, above the rest of the text' : pos === 'left' ? 'left of the text' : 'right of the text';
+      return h(
+        'div',
+        {
+          key: key,
+          style: Object.assign(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 92,
+              padding: '12px',
+              borderRadius: r,
+              border: '2px dashed ' + pal.border,
+              background: pal.surface,
+              color: pal.muted,
+              fontSize: 12,
+              lineHeight: 1.4,
+              textAlign: 'center',
+            },
+            extra
+          ),
+        },
+        'No image yet — add one and it will sit ' + where + '.'
+      );
+    }
+
     function bodyParas(text, colour) {
       return paragraphs(text).map(function (p, i) {
         return h('p', { key: 'p' + i, style: { margin: '10px 0 0', color: colour || L.muted } }, p);
@@ -120,9 +152,10 @@
     // ---- hero ---------------------------------------------------------------
     var heroImage = str(v(['hero', 'image']));
     var heroPos = positionOf(v(['hero', 'imagePosition']));
-    var heroSplit = Boolean(heroImage) && heroPos !== 'centre';
+    var heroPlaceholder = !heroImage && heroPos !== 'right';
+    var heroSplit = (Boolean(heroImage) || heroPlaceholder) && heroPos !== 'centre';
     var heroFirst = heroPos === 'left';
-    var heroCentred = Boolean(heroImage) && heroPos === 'centre';
+    var heroCentred = (Boolean(heroImage) || heroPlaceholder) && heroPos === 'centre';
     var heroBg = str(v(['hero', 'backgroundImage']));
     var heroButtons = arr(v(['hero', 'buttons'])).map(function (b, i) {
       return h('span', { key: 'b' + i, style: str(b.variant) === 'secondary' ? btnGhost : btnSolid }, str(b.label));
@@ -148,11 +181,15 @@
           heroSplit
             ? h('div', { key: 'row', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 22 } }, [
                 heroText,
-                h('img', { key: 'img', src: heroImage, alt: str(v(['hero', 'imageAlt'])), style: Object.assign({ flex: '1 1 240px', order: heroFirst ? 1 : 3 }, mediaStyle()) }),
+                heroImage
+                  ? h('img', { key: 'img', src: heroImage, alt: str(v(['hero', 'imageAlt'])), style: Object.assign({ flex: '1 1 240px', order: heroFirst ? 1 : 3 }, mediaStyle()) })
+                  : imagePlaceholder('hero-ph', heroPos, L, { flex: '1 1 240px', order: heroFirst ? 1 : 3 }),
               ])
             : heroText,
           heroCentred
-            ? h('img', { key: 'img', src: heroImage, alt: str(v(['hero', 'imageAlt'])), style: Object.assign({ marginTop: 20, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 }, mediaStyle()) })
+            ? heroImage
+              ? h('img', { key: 'img', src: heroImage, alt: str(v(['hero', 'imageAlt'])), style: Object.assign({ marginTop: 20, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 }, mediaStyle()) })
+              : imagePlaceholder('hero-ph', heroPos, L, { marginTop: 20, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 })
             : null,
         ]),
       ]));
@@ -193,9 +230,10 @@
       var layout = str(section.layout) || 'cards';
       var image = str(section.image);
       var pos = positionOf(section.imagePosition);
-      var split = Boolean(image) && pos !== 'centre';
+      var placeholder = !image && pos !== 'right';
+      var split = (Boolean(image) || placeholder) && pos !== 'centre';
       var imageFirst = pos === 'left';
-      var centred = Boolean(image) && pos === 'centre';
+      var centred = (Boolean(image) || placeholder) && pos === 'centre';
       var bgImage = str(section.backgroundImage);
       var items = arr(section.items);
       var extras = [];
@@ -241,12 +279,18 @@
       if (split) {
         inner.push(h('div', { key: 'row', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 22 } }, [
           textColumn,
-          h('img', { key: 'img', src: image, alt: str(section.imageAlt), style: Object.assign({ flex: '1 1 240px', order: imageFirst ? 1 : 3 }, mediaStyle(pal.border)) }),
+          image
+            ? h('img', { key: 'img', src: image, alt: str(section.imageAlt), style: Object.assign({ flex: '1 1 240px', order: imageFirst ? 1 : 3 }, mediaStyle(pal.border)) })
+            : imagePlaceholder('ph', pos, pal, { flex: '1 1 240px', order: imageFirst ? 1 : 3 }),
         ]));
       } else {
         inner.push(textColumn);
         if (centred) {
-          inner.push(h('img', { key: 'img', src: image, alt: str(section.imageAlt), style: Object.assign({ marginTop: 18, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 }, mediaStyle(pal.border)) }));
+          inner.push(
+            image
+              ? h('img', { key: 'img', src: image, alt: str(section.imageAlt), style: Object.assign({ marginTop: 18, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 }, mediaStyle(pal.border)) })
+              : imagePlaceholder('ph', pos, pal, { marginTop: 18, marginLeft: 'auto', marginRight: 'auto', maxWidth: 560 })
+          );
           inner.push(h('div', { key: 'after' }, bodyParas(section.body, pal.muted)));
         }
       }
