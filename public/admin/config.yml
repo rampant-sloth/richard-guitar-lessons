@@ -52,7 +52,7 @@ collections:
             summary: '{{fields.heading}}'
             hint: "Add, reorder or delete the blocks that make up the page. Each block can have its own background colour, background image and foreground image."
             fields:
-              - { label: Block type, name: layout, widget: select, options: [{ label: "Card grid", value: cards }, { label: "Bullet list", value: list }, { label: "Two articles", value: articles }, { label: "Video gallery", value: videos }, { label: "Lessons & pricing (pulled from Lesson types)", value: lessons }, { label: "Plain text", value: markdown }], default: cards }
+              - { label: Block type, name: layout, widget: select, options: [{ label: "Card grid", value: cards }, { label: "Bullet list", value: list }, { label: "Two articles", value: articles }, { label: "Alternating image & text", value: alternate }, { label: "Photo gallery (masonry)", value: gallery }, { label: "Video gallery", value: videos }, { label: "Lessons & pricing (pulled from Lesson types)", value: lessons }, { label: "Plain text", value: markdown }], default: cards }
               - { label: Section anchor (optional), name: key, widget: string, required: false, hint: 'Lets you link straight to this block. "lessons" gives you #lessons' }
               - { label: Heading, name: heading, widget: string, required: false }
               - { label: Intro line, name: intro, widget: text, required: false }
@@ -67,7 +67,9 @@ collections:
                 widget: list
                 summary: '{{fields.title}}'
                 fields:
-                  - { label: Icon (emoji), name: icon, widget: string, required: false, hint: "Paste an emoji, e.g. 🎸" }
+                  - { label: Image, name: image, widget: image, required: false, hint: "A photo makes the block feel far more real than an emoji. Used by card grids, two-article, alternating and gallery blocks." }
+                  - { label: "Image description (alt text)", name: imageAlt, widget: string, required: false, hint: "For screen readers and search engines." }
+                  - { label: "Icon (emoji, fallback only)", name: icon, widget: string, required: false, hint: "Shown when no image is uploaded. Leave this blank once you have a photo." }
                   - { label: Title, name: title, widget: string, required: false }
                   - { label: Text, name: text, widget: text, required: false }
                   - { label: Link to another page (optional), name: href, widget: string, required: false, hint: "Turns the whole card into a link." }

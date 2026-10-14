@@ -1,8 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
+import MediaFeatureBlock from './MediaFeatureBlock.astro';
 
 interface Item {
   icon?: string;
+  image?: string;
+  imageAlt?: string;
   title?: string;
   text?: string;
   href?: string;
@@ -12,7 +15,7 @@ interface Item {
 }
 
 interface Section {
-  layout: 'cards' | 'list' | 'articles' | 'videos' | 'lessons' | 'markdown';
+  layout: 'cards' | 'list' | 'articles' | 'alternate' | 'gallery' | 'videos' | 'lessons' | 'markdown';
   key?: string;
   heading?: string;
   intro?: string;
@@ -109,17 +112,23 @@ const asParagraphs = (text?: string) =>
         <div class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
           {(s.items ?? []).map((it) =>
             it.href ? (
-              <a href={it.href} class={`${cardClass(s)} block transition hover:border-emerald-400 hover:shadow-md`}>
-                {it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
-                {it.title && <h3 class={`mt-4 text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
-                {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
-                {it.linkLabel && <span class="mt-4 inline-block font-semibold text-emerald-600 dark:text-emerald-400">{it.linkLabel}</span>}
+              <a href={it.href} class="group block overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm transition hover:border-emerald-400 hover:shadow-md">
+                {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-44 w-full object-cover" />}
+                <div class="p-6">
+                  {!it.image && it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--theme-accent-pale)] dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
+                  {it.title && <h3 class={`${it.image ? '' : 'mt-4 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                  {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+                  {it.linkLabel && <span class="mt-4 inline-block font-semibold text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{it.linkLabel}</span>}
+                </div>
               </a>
             ) : (
-              <article class={cardClass(s)}>
-                {it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
-                {it.title && <h3 class={`mt-4 text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
-                {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+              <article class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+                {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-44 w-full object-cover" />}
+                <div class="p-6">
+                  {!it.image && it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--theme-accent-pale)] dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
+                  {it.title && <h3 class={`${it.image ? '' : 'mt-4 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                  {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+                </div>
               </article>
             )
           )}
@@ -129,11 +138,44 @@ const asParagraphs = (text?: string) =>
       {s.layout === 'articles' && (
         <div class="mt-10 grid gap-6 lg:grid-cols-2">
           {(s.items ?? []).map((it) => (
-            <article class={cardClass(s)}>
-              {it.icon && <span class="text-3xl" aria-hidden="true">{it.icon}</span>}
-              {it.title && <h3 class={`mt-3 text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
-              {it.text && <p class={`mt-2 whitespace-pre-line leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+            <article class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+              {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-52 w-full object-cover" />}
+              <div class="p-6">
+                {!it.image && it.icon && <span class="text-3xl" aria-hidden="true">{it.icon}</span>}
+                {it.title && <h3 class={`${it.image ? '' : 'mt-3 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                {it.text && <p class={`mt-2 whitespace-pre-line leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+              </div>
             </article>
+          ))}
+        </div>
+      )}
+
+      {s.layout === 'alternate' && (
+        <div class="mt-12 space-y-16">
+          {(s.items ?? []).map((it, i) => (
+            <MediaFeatureBlock
+              image={it.image}
+              imageAlt={it.imageAlt ?? ''}
+              title={it.title}
+              text={it.text}
+              reverse={i % 2 === 1}
+            />
+          ))}
+        </div>
+      )}
+
+      {s.layout === 'gallery' && (
+        <div class="mt-10 columns-2 gap-4 lg:columns-3">
+          {(s.items ?? []).map((it, i) => (
+            <figure class={`mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm ${i % 3 === 1 ? 'lg:mt-8' : i % 3 === 2 ? 'lg:mt-4' : ''}`}>
+              {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="w-full object-cover" />}
+              {(it.title || it.caption || it.text) && (
+                <figcaption class="p-4">
+                  {it.title && <p class={`font-semibold ${headingClass(s)}`}>{it.title}</p>}
+                  {(it.caption || it.text) && <p class={`mt-1 text-sm ${bodyClass(s)}`}>{it.caption ?? it.text}</p>}
+                </figcaption>
+              )}
+            </figure>
           ))}
         </div>
       )}

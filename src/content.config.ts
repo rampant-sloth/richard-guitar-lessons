@@ -123,7 +123,7 @@ const pages = defineCollection({
     sections: z
       .array(
         z.object({
-          layout: z.enum(['cards', 'list', 'articles', 'videos', 'lessons', 'markdown']),
+          layout: z.enum(['cards', 'list', 'articles', 'alternate', 'gallery', 'videos', 'lessons', 'markdown']),
           key: z.string().optional(),
           heading: z.string().optional(),
           intro: z.string().optional(),
@@ -137,6 +137,8 @@ const pages = defineCollection({
             .array(
               z.object({
                 icon: z.string().optional(),
+                image: z.string().optional(),
+                imageAlt: z.string().optional(),
                 title: z.string().optional(),
                 text: z.string().optional(),
                 href: z.string().optional(),

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Sections from '../components/Sections.astro';
 import Cta from '../components/Cta.astro';
+import LatestNews from '../components/LatestNews.astro';
 import { getEntry } from 'astro:content';
 
 const page = await getEntry('pages', 'about');
@@ -33,6 +34,7 @@ const jsonLd = {
   <main>
     <Hero {...hero} />
     <Sections sections={sections} />
+    <LatestNews />
     {cta && <Cta {...cta} />}
   </main>
 

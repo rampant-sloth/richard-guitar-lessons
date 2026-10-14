@@ -1,0 +1,54 @@
+---
+// Pulls the most recent news posts and surfaces them above the booking CTA, so the
+// updates section is discoverable without clicking the header link.
+import { getCollection } from 'astro:content';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = 3 } = Astro.props;
+
+const posts = (await getCollection('news'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, limit);
+
+const formatDate = (d: Date) =>
+  new Date(d).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const excerpt = (md: string, max = 130) => {
+  const text = md
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/[#>*`_\-[\]()!]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
+};
+---
+
+{posts.length > 0 && (
+  <section class="relative overflow-hidden">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Latest</p>
+          <h2 class="mt-2 text-2xl font-bold tracking-tight text-[var(--theme-text)] sm:text-3xl">News &amp; updates</h2>
+        </div>
+        <a href="/news" class="hidden shrink-0 font-semibold text-emerald-600 dark:text-emerald-400 transition hover:text-emerald-700 dark:hover:text-emerald-400 sm:inline-block">View all →</a>
+      </div>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {posts.map((post) => (
+          <a href={`/news/${post.id}`} class="group flex flex-col overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm transition hover:border-emerald-400 hover:shadow-md">
+            <div class="p-6">
+              <time class="text-sm text-[var(--theme-faint)]" datetime={new Date(post.data.date).toISOString()}>{formatDate(post.data.date)}</time>
+              <h3 class="mt-2 text-lg font-semibold leading-snug text-[var(--theme-text)] transition group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{post.data.title}</h3>
+              {post.body && <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--theme-muted)]">{excerpt(post.body)}</p>}
+              <span class="mt-4 inline-block font-semibold text-emerald-600 dark:text-emerald-400">Read more →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <a href="/news" class="mt-6 inline-block font-semibold text-emerald-600 dark:text-emerald-400 sm:hidden">View all →</a>
+    </div>
+  </section>
+)}

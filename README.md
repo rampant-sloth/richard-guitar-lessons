@@ -19,7 +19,7 @@ npm run preview  # preview the production build
 | --- | --- |
 | `src/pages/*.astro` | Tiny page shells — each renders one `src/content/pages/*.yml` file |
 | `src/layouts/Layout.astro` | Shared page shell (head, theme injection, nav, footer, scripts) |
-| `src/components/` | `Hero`, `Sections`, `Cta`, `BookingForm` — the CMS-driven page builder |
+| `src/components/` | `Hero`, `Sections`, `Cta`, `BookingForm`, `MediaFeatureBlock`, `LatestNews` — the page builder and shared blocks |
 | `src/content/pages/` | One YAML file per page — hero, sections, CTA and SEO (Decap CMS) |
 | `src/content/news/` | News posts (Decap CMS) |
 | `src/content/lessons/` | Lesson types — prices, durations, cal.com links (Decap CMS) |
@@ -55,9 +55,13 @@ hints explaining what each field does:
 2. **Top of the page (hero)** — small line above the heading, main heading, intro paragraph,
    an optional image beside the heading, an optional background image, and any number of buttons.
 3. **Page sections** — a reorderable list of blocks. Each block has a **block type**:
-   - *Card grid* — icon/title/text cards. Give a card a link to make the whole card clickable.
+   - *Card grid* — an image (or, until a photo exists, an emoji) + title + text. Give a card a
+     link to make the whole card clickable.
    - *Bullet list* — a row of icon + bold lead-in + text.
    - *Two articles* — two wider cards (line breaks in the text are preserved).
+   - *Alternating image & text* — a left/right split that flips on each row, with an organic
+     offset accent behind each image.
+   - *Photo gallery (masonry)* — a staggered, multi-column grid of images with optional captions.
    - *Video gallery* — one card per YouTube video ID.
    - *Lessons & pricing* — pulls straight from the **Lesson types** collection.
    - *Plain text* — heading and body copy only.
@@ -80,6 +84,10 @@ hints explaining what each field does:
    The position field is **optional** — it is ignored when there is no image, so it is safe to
    leave alone. If a position is chosen before an image exists, the CMS preview draws a dashed
    placeholder showing where the image will land, rather than appearing to do nothing.
+
+   The **`LatestNews` component** is injected on the homepage, About and both lesson pages just
+   above the booking CTA, surfacing the three most recent news posts so the updates section is
+   discoverable without using the header link.
 4. **Closing call to action** — heading, body, button and an optional background image.
 
 The `/book-trial-lesson` page additionally has an editable **Booking form** (labels, placeholders,

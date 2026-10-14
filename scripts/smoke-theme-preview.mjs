@@ -190,6 +190,24 @@ const defaultText = collectText(
   pagePreview({ entry: entry({ hero: { title: 'Clean hero' }, sections: [{ layout: 'markdown', heading: 'Clean block' }] }) })
 ).join(' | ');
 
+// Image cards and the two new layout types.
+const mediaText = collectText(
+  pagePreview({
+    entry: entry({
+      seo: { title: 'M', description: 'M' },
+      hero: { title: 'Media hero' },
+      sections: [
+        { layout: 'cards', heading: 'Image cards', items: [{ image: '/images/a.png', imageAlt: 'Alt A', title: 'Card with image', text: 'Card with image text' }] },
+        { layout: 'alternate', heading: 'Alternating', items: [{ image: '/images/b.png', title: 'Alt one', text: 'Alt one text' }] },
+        { layout: 'gallery', heading: 'Gallery', items: [{ image: '/images/c.png', caption: 'Gallery shot' }] },
+      ],
+    }),
+  })
+).join(' | ');
+const galleryStyles = collectStyleObjects(
+  pagePreview({ entry: entry({ sections: [{ layout: 'gallery', items: [{ image: '/images/c.png' }] }] }) })
+);
+
 const checks = [
   ['renders a tree without throwing', plainCss.length > 0],
   ['light palette variables are defined', plainCss.includes('.theme-preview{') && plainCss.includes('--tp-bg:#ffffff')],
@@ -227,6 +245,10 @@ const checks = [
   ['no image + centre shows a centred hint', noImageText.includes('centred')],
   ['the placement hint is dashed and takes a column order', noImageStyles.some((s) => typeof s.border === 'string' && s.border.indexOf('dashed') >= 0) && noImageStyles.some((s) => s.order === 1)],
   ['the default position with no image shows no hint', !defaultText.includes('No image yet')],
+  ['cards render an uploaded image', mediaText.includes('Card with image') && mediaText.includes('Card with image text')],
+  ['alternate renders an image and text split', mediaText.includes('Alt one') && mediaText.includes('Alt one text')],
+  ['gallery renders a caption', mediaText.includes('Gallery shot')],
+  ['gallery uses CSS columns for masonry', galleryStyles.some((s) => s.columnCount === 3)],
 ];
 
 let failed = 0;

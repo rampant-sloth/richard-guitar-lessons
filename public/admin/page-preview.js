@@ -204,13 +204,18 @@
     }
 
     function itemCard(key, it, pal, wide) {
-      return h('div', { key: key, style: { flex: wide ? '1 1 250px' : '1 1 190px', background: pal.surface, border: '1px solid ' + pal.border, borderRadius: r, padding: wide ? '18px 18px 20px' : '16px 16px 18px' } }, [
-        str(it.icon) ? h('span', { key: 'ic', style: { display: 'block', fontSize: 20 } }, str(it.icon)) : null,
-        str(it.title) ? h('h3', { key: 't', style: Object.assign({}, h3, { color: pal.text, fontSize: wide ? 16 : 15 }) }, str(it.title)) : null,
-        str(it.text) ? h('p', { key: 'p', style: { margin: '8px 0 0', fontSize: 13, color: pal.muted, whiteSpace: wide ? 'pre-line' : 'normal' } }, str(it.text)) : null,
-        str(it.href) && str(it.linkLabel)
-          ? h('span', { key: 'l', style: { display: 'inline-block', marginTop: 10, color: a[600], fontWeight: 600, fontSize: 13 } }, str(it.linkLabel))
-          : null,
+      var img = str(it.image);
+      var pad = wide ? '18px 18px 20px' : '16px 16px 18px';
+      return h('div', { key: key, style: { flex: wide ? '1 1 250px' : '1 1 190px', background: pal.surface, border: '1px solid ' + pal.border, borderRadius: r, overflow: 'hidden', padding: img ? 0 : pad } }, [
+        img ? h('img', { key: 'img', src: img, alt: str(it.imageAlt), style: { display: 'block', width: '100%', height: 150, objectFit: 'cover' } }) : null,
+        h('div', { key: 'body', style: { padding: img ? (wide ? '16px 16px 18px' : '14px 14px 16px') : 0 } }, [
+          !img && str(it.icon) ? h('span', { key: 'ic', style: { display: 'block', fontSize: 20 } }, str(it.icon)) : null,
+          str(it.title) ? h('h3', { key: 't', style: Object.assign({}, h3, { color: pal.text, fontSize: wide ? 16 : 15, margin: img ? '0' : '12px 0 0' }) }, str(it.title)) : null,
+          str(it.text) ? h('p', { key: 'p', style: { margin: '8px 0 0', fontSize: 13, color: pal.muted, whiteSpace: wide ? 'pre-line' : 'normal' } }, str(it.text)) : null,
+          str(it.href) && str(it.linkLabel)
+            ? h('span', { key: 'l', style: { display: 'inline-block', marginTop: 10, color: a[600], fontWeight: 600, fontSize: 13 } }, str(it.linkLabel))
+            : null,
+        ]),
       ]);
     }
 
@@ -265,6 +270,37 @@
       } else if (layout === 'articles') {
         extras.push(h('div', { key: 'grid', style: { display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 } },
           items.map(function (it, i) { return itemCard('a' + i, it, pal, true); })));
+      } else if (layout === 'alternate') {
+        extras.push(h('div', { key: 'alt', style: { marginTop: 20 } },
+          items.map(function (it, i) {
+            var img = str(it.image);
+            var order = i % 2 === 1;
+            return h('div', { key: 'a' + i, style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 22, padding: '18px 0' } }, [
+              h('div', { key: 'img', style: { flex: '1 1 240px', order: order ? 2 : 1 } },
+                img
+                  ? h('img', { src: img, alt: str(it.imageAlt), style: { display: 'block', width: '100%', borderRadius: r, border: '1px solid ' + pal.border } })
+                  : h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 120, borderRadius: r, border: '2px dashed ' + pal.border, color: pal.muted, fontSize: 12, padding: 12, textAlign: 'center' } }, 'No image yet - add one and it will sit here.')),
+              h('div', { key: 'txt', style: { flex: '1 1 260px', order: order ? 1 : 2 } }, [
+                str(it.title) ? h('h3', { key: 't', style: h3 }, str(it.title)) : null,
+                str(it.text) ? h('p', { key: 'p', style: { margin: '8px 0 0', color: pal.muted } }, str(it.text)) : null,
+              ]),
+            ]);
+          })));
+      } else if (layout === 'gallery') {
+        extras.push(h('div', { key: 'gal', style: { marginTop: 20, columnCount: 3, columnGap: 14 } },
+          items.map(function (it, i) {
+            return h('div', { key: 'g' + i, style: { breakInside: 'avoid', marginBottom: 14, border: '1px solid ' + pal.border, borderRadius: r, overflow: 'hidden', background: pal.surface } }, [
+              str(it.image)
+                ? h('img', { src: str(it.image), alt: str(it.imageAlt), style: { display: 'block', width: '100%', height: i % 2 === 0 ? 140 : 190, objectFit: 'cover' } })
+                : h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 90, color: pal.muted, fontSize: 12, padding: 12, textAlign: 'center' } }, 'No image yet'),
+              str(it.title) || str(it.caption) || str(it.text)
+                ? h('div', { key: 'cap', style: { padding: '10px 12px 12px' } }, [
+                    str(it.title) ? h('p', { key: 't', style: { margin: 0, fontWeight: 600, fontSize: 13, color: pal.text } }, str(it.title)) : null,
+                    str(it.caption) || str(it.text) ? h('p', { key: 'c', style: { margin: '4px 0 0', fontSize: 12, color: pal.muted } }, str(it.caption) || str(it.text)) : null,
+                  ])
+                : null,
+            ]);
+          })));
       } else {
         extras.push(h('div', { key: 'grid', style: { display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 } },
           items.map(function (it, i) { return itemCard('c' + i, it, pal, false); })));
