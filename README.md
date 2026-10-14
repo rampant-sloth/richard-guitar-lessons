@@ -17,10 +17,14 @@ npm run preview  # preview the production build
 
 | Path | Purpose |
 | --- | --- |
-| `src/pages/*.astro` | The main site pages |
-| `src/layouts/Layout.astro` | Shared page shell (head, nav, footer, cal.com, scripts) |
+| `src/pages/*.astro` | Tiny page shells — each renders one `src/content/pages/*.yml` file |
+| `src/layouts/Layout.astro` | Shared page shell (head, theme injection, nav, footer, scripts) |
+| `src/components/` | `Hero`, `Sections`, `Cta`, `BookingForm` — the CMS-driven page builder |
+| `src/content/pages/` | One YAML file per page — hero, sections, CTA and SEO (Decap CMS) |
 | `src/content/news/` | News posts (Decap CMS) |
 | `src/content/lessons/` | Lesson types — prices, durations, cal.com links (Decap CMS) |
+| `src/content/site/` | Site-wide settings — title, tagline, contact email (Decap CMS) |
+| `src/content/theme/` | Accent colour scheme + heading/body fonts (Decap CMS) |
 | `src/pages/news/[slug].astro` | Dynamic route that renders each news post |
 | `src/content.config.ts` | Astro content-collections schemas |
 | `public/admin/` | Decap CMS admin UI + generated config |
@@ -33,8 +37,52 @@ npm run preview  # preview the production build
 - Admin UI: `/admin/`
 - Backend: GitHub (`rampant-sloth/richard-guitar-lessons`)
 - **Collections**
-  - **News** — `src/content/news/*.md` (`title`, `date`, `body`, optional `youtubeId`)
-  - **Lesson types** — `src/content/lessons/*.yml` (`title`, `instrument`, `audience`, `durationMinutes`, `price`, `summary`, `calLink`, `order`)
+
+| Collection | Files | What it controls |
+| --- | --- | --- |
+| **Website pages** | `src/content/pages/*.yml` | Every word, image and block on each page |
+| **News** | `src/content/news/*.md` | `title`, `date`, `body`, optional `youtubeId` |
+| **Lesson types** | `src/content/lessons/*.yml` | `title`, `instrument`, `audience`, `durationMinutes`, `price`, `summary`, `calLink`, `order` |
+| **Theme** | `src/content/theme/theme.yml` | Accent colour scheme + heading/body fonts |
+| **Site settings** | `src/content/site/settings.yml` | Site title, tagline, contact email, streaming platforms |
+
+### Editing pages (the page builder)
+
+Each page is a single YAML file made of four parts — all editable in the CMS, with labels and
+hints explaining what each field does:
+
+1. **Google / search listing** — page title, meta description, and optional social-share overrides.
+2. **Top of the page (hero)** — small line above the heading, main heading, intro paragraph,
+   an optional image beside the heading, an optional background image, and any number of buttons.
+3. **Page sections** — a reorderable list of blocks. Each block has a **block type**:
+   - *Card grid* — icon/title/text cards. Give a card a link to make the whole card clickable.
+   - *Bullet list* — a row of icon + bold lead-in + text.
+   - *Two articles* — two wider cards (line breaks in the text are preserved).
+   - *Video gallery* — one card per YouTube video ID.
+   - *Lessons & pricing* — pulls straight from the **Lesson types** collection.
+   - *Plain text* — heading and body copy only.
+
+   Every block can also set a **background colour** (white / light grey / green tint / dark), a
+   **background image** (which overrides the colour), and a **foreground image** shown full width
+   inside the block. Icons are simply emoji typed or pasted into the *Icon (emoji)* field.
+4. **Closing call to action** — heading, body, button and an optional background image.
+
+The `/book-trial-lesson` page additionally has an editable **Booking form** (labels, placeholders,
+required flags, dropdown options and submit text). The Formspree endpoint is pre-filled and only
+needs changing if the Formspree account ever moves.
+
+`src/pages/*.astro` are deliberately tiny: they load their YAML file and render `<Hero>`,
+`<Sections>` and `<Cta>`. Copy belongs in the CMS, not the page templates.
+
+### Colour scheme, fonts and images
+
+- **Theme → Colours & fonts** swaps the accent palette (emerald, teal, blue, indigo, violet,
+  rose, amber, slate) and the heading/body fonts (system, Inter, Poppins, Nunito, Lora,
+  Merriweather). Non-system fonts are loaded from Google Fonts at build time.
+- The chosen palette is injected as Tailwind's `emerald` scale, so every existing
+  `text-emerald-600` / `bg-emerald-50` utility follows the scheme automatically — no page edits.
+- **Images** upload into `public/images` (Decap's media folder) and are referenced by URL.
+  Any page hero and any section can take a background and/or foreground image.
 
 > Content lives in `src/content/` rather than `src/pages/`. Files in `src/pages/` are auto-routed by Astro and would conflict with the `[slug].astro` dynamic route — content collections are the idiomatic Astro pattern.
 
