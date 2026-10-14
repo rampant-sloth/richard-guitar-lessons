@@ -1,13 +1,9 @@
-# Global look & feel — edit these in Decap CMS under "Theme".
-# Every colour box can be left empty to fall back to the preset scheme / built-in default.
-colourScheme: emerald
-
+colourScheme: violet
 accent:
   main: ""
   hover: ""
   light: ""
   pale: ""
-
 light:
   background: ""
   surface: ""
@@ -15,7 +11,6 @@ light:
   text: ""
   muted: ""
   border: ""
-
 dark:
   background: ""
   surface: ""
@@ -23,13 +18,6 @@ dark:
   text: ""
   muted: ""
   border: ""
-
 cornerRadius: rounded
 fontHeading: system
 fontBody: system
-
-appearance:
-  showToggle: true
-  defaultMode: auto
-  toggleLightLabel: "Switch to light mode"
-  toggleDarkLabel: "Switch to dark mode"
