@@ -24,6 +24,50 @@ const {
 const [settingsEntry] = await getCollection('site');
 const settings = settingsEntry?.data;
 
+// ---- Theme (colour scheme + fonts) --------------------------------------
+const PALETTES: Record<string, Record<string, string>> = {
+  emerald: {},
+  teal: { 50: '#f0fdfa', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' },
+  blue: { 50: '#eff6ff', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' },
+  indigo: { 50: '#eef2ff', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' },
+  violet: { 50: '#f5f3ff', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' },
+  rose: { 50: '#fff1f2', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239' },
+  amber: { 50: '#fffbeb', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
+  slate: { 50: '#f8fafc', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b' },
+};
+
+const FONTS: Record<string, { stack: string; google?: string }> = {
+  system: { stack: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" },
+  inter: { stack: "'Inter', ui-sans-serif, system-ui, sans-serif", google: 'Inter:wght@400;500;600;700;800' },
+  poppins: { stack: "'Poppins', ui-sans-serif, system-ui, sans-serif", google: 'Poppins:wght@400;500;600;700;800' },
+  nunito: { stack: "'Nunito', ui-sans-serif, system-ui, sans-serif", google: 'Nunito:wght@400;500;600;700;800' },
+  lora: { stack: "'Lora', ui-serif, Georgia, serif", google: 'Lora:wght@400;500;600;700' },
+  merriweather: { stack: "'Merriweather', ui-serif, Georgia, serif", google: 'Merriweather:wght@400;700;900' },
+};
+
+const [themeEntry] = await getCollection('theme');
+const theme = themeEntry?.data;
+const palette = PALETTES[theme?.colourScheme ?? 'emerald'] ?? {};
+const bodyFont = FONTS[theme?.fontBody ?? 'system'] ?? FONTS.system;
+const headingFont = FONTS[theme?.fontHeading ?? 'system'] ?? FONTS.system;
+const googleFamilies = [...new Set([bodyFont.google, headingFont.google].filter(Boolean))] as string[];
+const googleHref =
+  googleFamilies.length > 0
+    ? `https://fonts.googleapis.com/css2?${googleFamilies.map((f) => `family=${f}`).join('&')}&display=swap`
+    : null;
+const tailwindConfig = JSON.stringify({
+  darkMode: 'class',
+  theme: {
+    fontFamily: {
+      sans: [bodyFont.stack],
+      heading: [headingFont.stack],
+      serif: ['ui-serif', 'Georgia', 'serif'],
+      mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+    },
+    extend: { colors: { emerald: palette } },
+  },
+});
+
 type NavPage = 'home' | 'kids' | 'adults' | 'about' | 'news';
 
 function desktopNavClass(page: NavPage) {
@@ -54,6 +98,8 @@ function mobileNavClass(page: NavPage) {
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={canonical} />
     <link rel="icon" href="/favicon.svg" />
+    {googleHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
+    {googleHref && <link rel="stylesheet" href={googleHref} />}
     <script is:inline>
       // Default to dark mode, but honour an explicit light-mode preference.
       (function () {
@@ -68,7 +114,8 @@ function mobileNavClass(page: NavPage) {
       })();
     </script>
     <script is:inline src="https://cdn.tailwindcss.com"></script>
-    <script is:inline>tailwind.config = { darkMode: 'class' };</script>
+    <script is:inline set:html={`tailwind.config = ${tailwindConfig};`}></script>
+    <style is:inline set:html={`h1, h2, h3, h4 { font-family: ${headingFont.stack}; }`}></style>
     <!-- cal.com embed intentionally removed until the booking account is set up (see README) -->
   </head>
   <body class="bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">

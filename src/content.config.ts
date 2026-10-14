@@ -38,5 +38,14 @@ const site = defineCollection({
   }),
 });
 
-export const collections = { news, lessons, site };
+const theme = defineCollection({
+  loader: glob({ pattern: '**/*.yml', base: './src/content/theme' }),
+  schema: z.object({
+    colourScheme: z.enum(['emerald', 'teal', 'blue', 'indigo', 'violet', 'rose', 'amber', 'slate']),
+    fontHeading: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),
+    fontBody: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),
+  }),
+});
+
+export const collections = { news, lessons, site, theme };
 

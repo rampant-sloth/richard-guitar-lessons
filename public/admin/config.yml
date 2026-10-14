@@ -39,6 +39,17 @@ collections:
       - { label: cal.com event link, name: calLink, widget: string, required: false, hint: "Optional. Leave blank until Richard's own cal.com account exists." }
       - { label: Order, name: order, widget: number, value_type: int, default: 0, required: false }
 
+  - name: theme
+    label: Theme
+    files:
+      - name: theme
+        label: Colours & fonts
+        file: src/content/theme/theme.yml
+        fields:
+          - { label: Colour scheme, name: colourScheme, widget: select, options: [{ label: Emerald (default), value: emerald }, { label: Teal, value: teal }, { label: Blue, value: blue }, { label: Indigo, value: indigo }, { label: Violet, value: violet }, { label: Rose, value: rose }, { label: Amber, value: amber }, { label: Slate (mono), value: slate }], hint: "Changes the accent colour used for buttons, links and highlights across the whole site." }
+          - { label: Heading font, name: fontHeading, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }] }
+          - { label: Body font, name: fontBody, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }] }
+
   - name: settings
     label: Site settings
     files:
