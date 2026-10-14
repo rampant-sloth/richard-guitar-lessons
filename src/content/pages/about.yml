@@ -8,26 +8,34 @@ seo:
 hero:
   eyebrow: About Richard
   title: About Richard
-  intro: >-
-    Guitarist, former school teacher, and the bloke on the other end of the Zoom
-    call. Here's a bit about me and how I teach.
-
-
-    Richard has been playing guitar for over 25 years, and teaching for 20 years. He studied music at ICMP in London, and has experience gigging and touring in various original bands, as well as covers/function bands, plus recording and session work.
-
-
-    Currently, Richard teaches numerous guitar, bass, and ukulele students, privately and for music services/schools, and has taught literally thousands of students, with many going onto session and live work, studying Music at college and University, and playing in bands.
-
-
-    Richard specialises in contemporary electric styles, however is also an experienced bassist and acoustic player, as well as a ukulele player.
-
-
-    Richard has helped hundreds of students through their grade exams, GCSEs, A Levels, and University and college auditions, however if you’d like to just play casually and for fun, that won’t be a problem at all. Richard has transcribed hundreds of pieces for students over the years, and can help you nail that Gilmour solo, or improve your picking techniques, or learn that Thundercat bassline, or help you get comfortable with that Coldplay strumming pattern, and/or whatever you may want to cover.
+  intro: Guitarist, former school teacher, and the bloke on the other end of the
+    Zoom call. Here's a bit about me and how I teach.
   image: /images/richgtr1-1.jpg
   imageAlt: Richard, guitar teacher
   backgroundImage: ""
   buttons: []
 sections:
+  - layout: cards
+    background: white
+    key: Background
+    body: >-
+      Currently, Richard teaches numerous guitar, bass, and ukulele students,
+      privately and for music services/schools, and has taught literally
+      thousands of students, with many going onto session and live work,
+      studying Music at college and University, and playing in bands.
+
+
+
+      Richard specialises in contemporary electric styles, however is also an experienced bassist and acoustic player, as well as a ukulele player.
+
+
+
+      Richard has helped hundreds of students through their grade exams, GCSEs, A Levels, and University and college auditions, however if you’d like to just play casually and for fun, that won’t be a problem at all. Richard has transcribed hundreds of pieces for students over the years, and can help you nail that Gilmour solo, or improve your picking techniques, or learn that Thundercat bassline, or help you get comfortable with that Coldplay strumming pattern, and/or whatever you may want to cover.
+    heading: Background
+    intro: Richard has been playing guitar for over 25 years, and teaching for 20
+      years. He studied music at ICMP in London, and has experience gigging and
+      touring in various original bands, as well as covers/function bands, plus
+      recording and session work.
   - layout: list
     heading: How I teach
     body: >-
