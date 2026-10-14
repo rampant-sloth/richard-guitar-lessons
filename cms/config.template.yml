@@ -34,6 +34,7 @@ collections:
               - { label: Main heading, name: title, widget: string }
               - { label: Intro paragraph, name: intro, widget: text, required: false }
               - { label: Image beside the heading, name: image, widget: image, required: false }
+              - { label: Image position, name: imagePosition, widget: select, options: [{ label: "Right of the text (two columns)", value: right }, { label: "Left of the text (two columns)", value: left }, { label: "Centred - text above, image below", value: centre }], default: right, hint: "Two-column layouts automatically condense to a single column on narrower screens." }
               - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
               - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Sits behind the text with a light overlay." }
               - label: Buttons
@@ -58,7 +59,8 @@ collections:
               - { label: Body text, name: body, widget: text, required: false, hint: "Leave a blank line between paragraphs." }
               - { label: Background colour, name: background, widget: select, options: [{ label: White, value: white }, { label: Light grey, value: gray }, { label: Green tint, value: emerald }, { label: Dark, value: dark }], default: white, hint: "Ignored when a background image is set." }
               - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Overrides the background colour above." }
-              - { label: Foreground image, name: image, widget: image, required: false, hint: "Shown full width inside the block." }
+              - { label: Foreground image, name: image, widget: image, required: false }
+              - { label: Image position, name: imagePosition, widget: select, options: [{ label: "Right of the text (two columns)", value: right }, { label: "Left of the text (two columns)", value: left }, { label: "Centred - text above, image below", value: centre }], default: right, hint: "Two-column layouts automatically condense to a single column on narrower screens." }
               - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
               - label: Items
                 name: items

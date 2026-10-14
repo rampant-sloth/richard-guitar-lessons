@@ -101,6 +101,7 @@ const pages = defineCollection({
       intro: z.string().optional(),
       image: z.string().optional(),
       imageAlt: z.string().optional(),
+      imagePosition: z.enum(['right', 'left', 'centre']).default('right'),
       backgroundImage: z.string().optional(),
       buttons: z
         .array(
@@ -124,6 +125,7 @@ const pages = defineCollection({
           backgroundImage: z.string().optional(),
           image: z.string().optional(),
           imageAlt: z.string().optional(),
+          imagePosition: z.enum(['right', 'left', 'centre']).default('right'),
           items: z
             .array(
               z.object({

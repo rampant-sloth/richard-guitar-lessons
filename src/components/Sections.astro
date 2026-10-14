@@ -21,6 +21,7 @@ interface Section {
   backgroundImage?: string;
   image?: string;
   imageAlt?: string;
+  imagePosition?: 'right' | 'left' | 'centre';
   items?: Item[];
 }
 
@@ -30,6 +31,16 @@ const lessons = (await getCollection('lessons')).sort((a, b) => a.data.order - b
 const formatPrice = (n: number) => (n === 0 ? 'Free' : `£${n}`);
 
 const isDark = (s: Section) => s.background === 'dark';
+
+// Foreground image placement:
+//   right / left  -> two columns from lg up, condensing to one column below that
+//   centre        -> text above the image, remaining text below (never side by side)
+const hasImage = (s: Section) => Boolean(s.image);
+const isSplit = (s: Section) => hasImage(s) && (s.imagePosition ?? 'right') !== 'centre';
+const isImageFirst = (s: Section) => (s.imagePosition ?? 'right') === 'left';
+const isCentred = (s: Section) => hasImage(s) && s.imagePosition === 'centre';
+const mediaClass = 'w-full rounded-2xl border border-[var(--theme-border)] shadow-sm';
+const mediaCentredClass = `mx-auto mt-8 w-full max-w-3xl rounded-2xl border border-[var(--theme-border)] shadow-sm`;
 
 const wrapperClass = (s: Section) => {
   if (s.backgroundImage) return 'relative overflow-hidden';
@@ -70,25 +81,29 @@ const asParagraphs = (text?: string) =>
       </>
     )}
     <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      {(s.heading || s.intro) && (
-        <div class="max-w-3xl">
-          {s.heading && <h2 class={`text-2xl font-bold tracking-tight sm:text-3xl ${headingClass(s)}`}>{s.heading}</h2>}
-          {s.intro && <p class={`mt-4 text-lg leading-relaxed ${bodyClass(s)}`}>{s.intro}</p>}
+      <div class={isSplit(s) ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+        <div class={isImageFirst(s) && isSplit(s) ? 'lg:order-2' : ''}>
+          {(s.heading || s.intro) && (
+            <div class="max-w-3xl">
+              {s.heading && <h2 class={`text-2xl font-bold tracking-tight sm:text-3xl ${headingClass(s)}`}>{s.heading}</h2>}
+              {s.intro && <p class={`mt-4 text-lg leading-relaxed ${bodyClass(s)}`}>{s.intro}</p>}
+            </div>
+          )}
+          {!isCentred(s) &&
+            asParagraphs(s.body).map((p) => <p class={`mt-4 max-w-3xl leading-relaxed ${bodyClass(s)}`}>{p}</p>)}
         </div>
-      )}
-
-      {asParagraphs(s.body).map((p) => (
-        <p class={`mt-4 max-w-3xl leading-relaxed ${bodyClass(s)}`}>{p}</p>
-      ))}
-
-      {s.image && (
-        <img
-          src={s.image}
-          alt={s.imageAlt ?? ''}
-          loading="lazy"
-          class={`mt-8 w-full rounded-2xl border border-[var(--theme-border)] shadow-sm ${s.layout === 'markdown' ? 'mx-auto max-w-3xl' : ''}`}
-        />
-      )}
+        {isSplit(s) && (
+          <img
+            src={s.image}
+            alt={s.imageAlt ?? ''}
+            loading="lazy"
+            class={`${mediaClass} ${isImageFirst(s) ? 'lg:order-1' : ''}`}
+          />
+        )}
+      </div>
+      {isCentred(s) && <img src={s.image} alt={s.imageAlt ?? ''} loading="lazy" class={mediaCentredClass} />}
+      {isCentred(s) &&
+        asParagraphs(s.body).map((p) => <p class={`mt-4 max-w-3xl leading-relaxed ${bodyClass(s)}`}>{p}</p>)}
 
       {s.layout === 'cards' && (
         <div class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
