@@ -21,5 +21,10 @@ writeFileSync('public/admin/config.yml', out);
 
 console.log(`[cms] public/admin/config.yml → branch=${branch}, oauth=${oauthBase}`);
 if (oauthBase.includes('<your-account>')) {
-  console.warn('[cms] ⚠ Set DECAP_OAUTH_BASE_URL to your real Worker URL before deploying.');
+  const msg = 'DECAP_OAUTH_BASE_URL is not set (still the <your-account> placeholder).';
+  if (process.env.CF_PAGES_BRANCH) {
+    console.error(`[cms] ✖ ${msg} Refusing to build a deploy with a broken Decap login.`);
+    process.exit(1);
+  }
+  console.warn(`[cms] ⚠ ${msg} Set it before deploying.`);
 }

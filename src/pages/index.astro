@@ -1,5 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const lessons = (await getCollection('lessons')).sort((a, b) => a.data.order - b.data.order);
+const formatPrice = (n: number) => (n === 0 ? 'Free' : `£${n}`);
 ---
 
 <Layout
@@ -106,35 +110,28 @@ import Layout from '../layouts/Layout.astro';
         </figure>
       </div>
     </section>
-    <!-- Pricing & logistics -->
+    <!-- Lessons & pricing -->
     <section class="bg-gray-50 dark:bg-slate-900">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div class="max-w-3xl">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Pricing &amp; how lessons work</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Simple, flexible and no hidden extras. Here's everything you need to know before your first lesson.</p>
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Lessons &amp; pricing</h2>
+          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Simple, flexible and no hidden extras. Prices are per lesson, charged pro-rata — pay individually or block-book to save.</p>
         </div>
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-            <span class="text-3xl" aria-hidden="true">💰</span>
-            <h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">£30 per hour</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Charged pro-rata — £15 for 30 minutes, £45 for 90. Pay per lesson, or block-book to save.</p>
-          </article>
-          <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-            <span class="text-3xl" aria-hidden="true">💻</span>
-            <h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Your platform, your choice</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Zoom (preferred), Teams, Google Meet or WhatsApp — whatever's easiest for you.</p>
-          </article>
-          <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-            <span class="text-3xl" aria-hidden="true">📄</span>
-            <h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Custom tabs every Monday</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Bespoke sheets and tablature for your songs, sent before each lesson so you're ready to play.</p>
-          </article>
-          <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-            <span class="text-3xl" aria-hidden="true">📅</span>
-            <h3 class="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Flexible scheduling</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Weekly, fortnightly or ad-hoc. 24-hour cancellation, with rescheduling within the week preferred to save you money.</p>
-          </article>
+          {lessons.map((lesson) => (
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{lesson.data.title}</h3>
+              <p class="mt-3 text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">{formatPrice(lesson.data.price)}</p>
+              <p class="mt-1 text-sm font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{lesson.data.durationMinutes} minutes</p>
+              <p class="mt-3 text-slate-600 dark:text-slate-300">{lesson.data.summary}</p>
+            </article>
+          ))}
         </div>
+        <ul class="mt-10 grid gap-4 sm:grid-cols-3">
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">💻</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Your platform, your choice</strong> — Zoom (preferred), Teams, Google Meet or WhatsApp.</span></li>
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📄</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Custom tabs every Monday</strong> — bespoke sheets for the songs you're learning.</span></li>
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📅</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Flexible scheduling</strong> — weekly, fortnightly or ad-hoc, with a 24-hour cancellation period.</span></li>
+        </ul>
       </div>
     </section>
 
