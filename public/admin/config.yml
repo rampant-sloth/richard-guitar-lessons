@@ -1,9 +1,7 @@
 backend:
   name: github
   repo: rampant-sloth/richard-guitar-lessons
-  base_url: https://richardguitarlessons.com
-  auth_endpoint: api/auth
-  branch: main
+  base_url: https://resilient-dasik-32d55d.netlify.app
 
 media_folder: "public/images"
 public_folder: "/images"
