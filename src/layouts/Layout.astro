@@ -89,6 +89,13 @@ const googleHref =
 
 const radius = RADIUS[theme?.cornerRadius ?? 'rounded'] ?? RADIUS.rounded;
 
+// Appearance: the light/dark switch shown in the header on every page.
+const appearance = theme?.appearance ?? {};
+const showThemeToggle = appearance.showToggle !== false;
+const defaultMode = appearance.defaultMode ?? 'auto';
+const themeToggleLightLabel = appearance.toggleLightLabel?.trim() || 'Switch to light mode';
+const themeToggleDarkLabel = appearance.toggleDarkLabel?.trim() || 'Switch to dark mode';
+
 const themeTokens: Record<string, string> = {
   '--theme-accent': palette[600],
   '--theme-accent-pale': palette[50],
@@ -162,7 +169,7 @@ function mobileNavClass(page: NavPage) {
 ---
 
 <!doctype html>
-<html lang="en-GB">
+<html lang="en-GB" data-default-mode={defaultMode} data-theme-toggle={showThemeToggle ? 'on' : 'off'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -170,7 +177,7 @@ function mobileNavClass(page: NavPage) {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#059669" />
+    <meta name="theme-color" content={palette[600]} />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
@@ -179,16 +186,40 @@ function mobileNavClass(page: NavPage) {
     {googleHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
     {googleHref && <link rel="stylesheet" href={googleHref} />}
     <script is:inline>
-      // Default to dark mode, but honour an explicit light-mode preference.
+      /* Runs before first paint so there is never a flash of the wrong theme.
+         Values come from data-* attributes on <html>, set from the CMS.
+         The storage key must match the one used by the switch at the bottom of <body>. */
       (function () {
-        var mq = window.matchMedia('(prefers-color-scheme: light)');
-        function apply() {
-          var dark = !mq.matches;
-          document.documentElement.classList.toggle('dark', dark);
-          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        var root = document.documentElement;
+        var KEY = 'rgl-theme';
+        var ENABLED = root.getAttribute('data-theme-toggle') !== 'off';
+        var DEFAULT_MODE = root.getAttribute('data-default-mode') || 'auto';
+        var mqLight = window.matchMedia('(prefers-color-scheme: light)');
+        function saved() {
+          try { return window.localStorage.getItem(KEY); } catch (e) { return null; }
         }
-        apply();
-        if (mq.addEventListener) { mq.addEventListener('change', apply); }
+        function chosen() {
+          if (!ENABLED) return null;
+          var choice = saved();
+          return choice === 'light' || choice === 'dark' ? choice : null;
+        }
+        function systemMode() { return mqLight.matches ? 'light' : 'dark'; }
+        function resolve() {
+          return chosen() || (DEFAULT_MODE === 'light' || DEFAULT_MODE === 'dark' ? DEFAULT_MODE : systemMode());
+        }
+        function apply(mode) {
+          var dark = mode === 'dark';
+          root.classList.toggle('dark', dark);
+          root.style.colorScheme = dark ? 'dark' : 'light';
+        }
+        apply(resolve());
+        // Keep following the device until the visitor makes an explicit choice.
+        function onChange() {
+          if (chosen()) return;
+          if (DEFAULT_MODE === 'light' || DEFAULT_MODE === 'dark') return;
+          apply(systemMode());
+        }
+        if (mqLight.addEventListener) mqLight.addEventListener('change', onChange);
       })();
     </script>
     <script is:inline src="https://cdn.tailwindcss.com"></script>
@@ -203,18 +234,39 @@ function mobileNavClass(page: NavPage) {
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl" aria-hidden="true">🎸</span>
           <span class="text-sm font-bold leading-tight text-[var(--theme-text)]">Richard's<br />Guitar Lessons</span>
         </a>
-        <nav class="hidden items-center gap-7 text-sm font-medium text-[var(--theme-muted)] md:flex" aria-label="Primary">
-          <a href="/" class={desktopNavClass('home')} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
-          <a href="/online-guitar-lessons-kids" class={desktopNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
-          <a href="/adult-online-guitar-lessons" class={desktopNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
-          <a href="/about-richard" class={desktopNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
-          <a href="/news" class={desktopNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
-          <a href="/book-trial-lesson" class={active === 'book' ? 'rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800' : 'rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700'} aria-current={active === 'book' ? 'page' : undefined}>Book a Trial</a>
-        </nav>
-        <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-lg p-2 text-[var(--theme-text)] hover:bg-[var(--theme-band)] md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-          <svg id="icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          <svg id="icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <nav class="hidden items-center gap-7 text-sm font-medium text-[var(--theme-muted)] md:flex" aria-label="Primary">
+            <a href="/" class={desktopNavClass('home')} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
+            <a href="/online-guitar-lessons-kids" class={desktopNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
+            <a href="/adult-online-guitar-lessons" class={desktopNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
+            <a href="/about-richard" class={desktopNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+            <a href="/news" class={desktopNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
+            <a href="/book-trial-lesson" class={active === 'book' ? 'rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800' : 'rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700'} aria-current={active === 'book' ? 'page' : undefined}>Book a Trial</a>
+          </nav>
+          {showThemeToggle && (
+            <button
+              id="theme-toggle"
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg p-2 text-[var(--theme-text)] transition hover:bg-[var(--theme-band)]"
+              data-label-light={themeToggleLightLabel}
+              data-label-dark={themeToggleDarkLabel}
+              aria-label={themeToggleLightLabel}
+              title={themeToggleLightLabel}
+            >
+              <svg id="theme-icon-moon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+              </svg>
+              <svg id="theme-icon-sun" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            </button>
+          )}
+          <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-lg p-2 text-[var(--theme-text)] hover:bg-[var(--theme-band)] md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <svg id="icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg id="icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
       </div>
       <div id="mobile-menu" class="hidden border-t border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 pb-4 pt-2 md:hidden">
         <nav class="flex flex-col gap-1 text-sm font-medium text-[var(--theme-text)]" aria-label="Mobile">
@@ -273,18 +325,49 @@ function mobileNavClass(page: NavPage) {
     </footer>
 
     <script is:inline>
-      const toggle = document.getElementById('menu-toggle');
+      const menuToggle = document.getElementById('menu-toggle');
       const menu = document.getElementById('mobile-menu');
       const iconOpen = document.getElementById('icon-open');
       const iconClose = document.getElementById('icon-close');
-      toggle.addEventListener('click', function () {
+      menuToggle.addEventListener('click', function () {
         const isOpen = !menu.classList.contains('hidden');
         menu.classList.toggle('hidden');
         iconOpen.classList.toggle('hidden', !isOpen);
         iconClose.classList.toggle('hidden', isOpen);
-        toggle.setAttribute('aria-expanded', String(!isOpen));
+        menuToggle.setAttribute('aria-expanded', String(!isOpen));
       });
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* Light/dark switch. The storage key must match the pre-paint script in <head>. */
+      (function () {
+        const button = document.getElementById('theme-toggle');
+        if (!button) return;
+        const KEY = 'rgl-theme';
+        const root = document.documentElement;
+        const sun = document.getElementById('theme-icon-sun');
+        const moon = document.getElementById('theme-icon-moon');
+
+        function paint() {
+          const dark = root.classList.contains('dark');
+          if (sun) sun.classList.toggle('hidden', !dark);
+          if (moon) moon.classList.toggle('hidden', dark);
+          const label = dark ? button.dataset.labelLight : button.dataset.labelDark;
+          if (label) {
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+          }
+        }
+
+        button.addEventListener('click', function () {
+          const next = root.classList.contains('dark') ? 'light' : 'dark';
+          try { window.localStorage.setItem(KEY, next); } catch (e) {}
+          root.classList.toggle('dark', next === 'dark');
+          root.style.colorScheme = next;
+          paint();
+        });
+
+        paint();
+      })();
     </script>
   </body>
 </html>

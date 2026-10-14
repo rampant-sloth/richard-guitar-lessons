@@ -72,6 +72,14 @@ const theme = defineCollection({
         border: optionalColour,
       })
       .default({}),
+    appearance: z
+      .object({
+        showToggle: z.boolean().default(true),
+        defaultMode: z.enum(['auto', 'light', 'dark']).default('auto'),
+        toggleLightLabel: optionalColour,
+        toggleDarkLabel: optionalColour,
+      })
+      .default({}),
     cornerRadius: z.enum(['sharp', 'subtle', 'rounded', 'pill']).default('rounded'),
     fontHeading: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),
     fontBody: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),

@@ -240,6 +240,21 @@ collections:
               - { label: Headings & strong text, name: text, widget: color, allowInput: true, required: false }
               - { label: Body text, name: muted, widget: color, allowInput: true, required: false }
               - { label: Borders & dividing lines, name: border, widget: color, allowInput: true, required: false }
+          - label: Dark / light mode switch
+            name: appearance
+            widget: object
+            hint: "The sun/moon button in the header, at the top of every page."
+            fields:
+              - { label: Show the switch, name: showToggle, widget: boolean, default: true, required: false, hint: "Turn this off to hide the button and always use the mode below." }
+              - label: What visitors see first
+                name: defaultMode
+                widget: select
+                options: [{ label: "Auto — follow the visitor's device (dark if unsure)", value: auto }, { label: Always start in light mode, value: light }, { label: Always start in dark mode, value: dark }]
+                default: auto
+                hint: "A visitor's own choice always wins and is remembered on their device."
+              - { label: "Tooltip while in dark mode", name: toggleLightLabel, widget: string, required: false, hint: "\"Switch to light mode\"" }
+              - { label: "Tooltip while in light mode", name: toggleDarkLabel, widget: string, required: false, hint: "\"Switch to dark mode\"" }
+
           - label: Corner radius
             name: cornerRadius
             widget: select

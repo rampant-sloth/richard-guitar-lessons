@@ -117,6 +117,8 @@
       fontBody: FONTS[bodyKey] || FONTS.system,
       fontHeadingKey: headingKey,
       fontBodyKey: bodyKey,
+      showToggle: get(entry, ['data', 'appearance', 'showToggle']) !== false,
+      defaultMode: get(entry, ['data', 'appearance', 'defaultMode']) || 'auto',
     };
   }
 
@@ -147,11 +149,50 @@
   function ThemePreview(props) {
     var t = resolve(props.entry);
     var a = t.accent;
-    var L = t.light;
-    var D = t.dark;
+    // Neutrals resolve through CSS variables (the same idea as the real site's
+    // --theme-* tokens) so the swatch can flip palettes without React state.
+    var L = {
+      background: 'var(--tp-bg)',
+      surface: 'var(--tp-surface)',
+      band: 'var(--tp-band)',
+      text: 'var(--tp-text)',
+      muted: 'var(--tp-muted)',
+      border: 'var(--tp-border)',
+    };
+    var D = {
+      background: 'var(--tp-deep-bg)',
+      surface: 'var(--tp-deep-surface)',
+      border: 'var(--tp-deep-border)',
+      text: 'var(--tp-deep-text)',
+      muted: 'var(--tp-deep-muted)',
+    };
     var r = t.radius;
     var rSm = Math.max(4, parseFloat(r) * 0.5) + 'px';
     var rMd = Math.max(6, parseFloat(r) * 0.75) + 'px';
+
+    function varBlock(bg, surface, band, text, muted, border, deepBg, deepSurface, deepBorder, deepText, deepMuted) {
+      return (
+        '--tp-bg:' + bg + ';' +
+        '--tp-surface:' + surface + ';' +
+        '--tp-band:' + band + ';' +
+        '--tp-text:' + text + ';' +
+        '--tp-muted:' + muted + ';' +
+        '--tp-border:' + border + ';' +
+        '--tp-deep-bg:' + deepBg + ';' +
+        '--tp-deep-surface:' + deepSurface + ';' +
+        '--tp-deep-border:' + deepBorder + ';' +
+        '--tp-deep-text:' + deepText + ';' +
+        '--tp-deep-muted:' + deepMuted + ';'
+      );
+    }
+
+    var varCss =
+      '.theme-preview{' +
+      varBlock(t.light.background, t.light.surface, t.light.band, t.light.text, t.light.muted, t.light.border, t.dark.background, t.dark.surface, t.dark.border, t.dark.text, t.dark.muted) +
+      '}.theme-preview.tp-dark{' +
+      varBlock(t.dark.background, t.dark.surface, t.dark.band, t.dark.text, t.dark.muted, t.dark.border, t.dark.band, t.dark.surface, t.dark.border, t.dark.text, t.dark.muted) +
+      '}';
+    var styleTag = h('style', { key: 'vars', dangerouslySetInnerHTML: { __html: varCss } });
 
     var shell = { background: L.background, color: L.text, fontFamily: t.fontBody };
     var wrap = { maxWidth: 760, margin: '0 auto', padding: '0 22px' };
@@ -172,6 +213,42 @@
       return h('div', { key: key, style: card }, [iconTile(glyph), h('h3', { key: 't', style: h3 }, title), h('p', { key: 'p', style: Object.assign({}, p, { fontSize: 13 }) }, body)]);
     }
 
+    // The dark/light switch, exactly as it sits in the header of every page.
+    // Clicking it flips this preview between the light and dark palettes.
+    var themeChip = t.showToggle
+      ? h(
+          'button',
+          {
+            key: 'themetoggle',
+            type: 'button',
+            title: 'Preview the opposite mode',
+            style: {
+              marginLeft: 2,
+              width: 28,
+              height: 28,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: rMd,
+              border: '1px solid ' + L.border,
+              background: 'transparent',
+              color: L.text,
+              cursor: 'pointer',
+              fontSize: 13,
+              lineHeight: 1,
+            },
+            onClick: function (event) {
+              var el = event.currentTarget;
+              var shellEl = el.closest('.theme-preview');
+              if (!shellEl) return;
+              var nowDark = shellEl.classList.toggle('tp-dark');
+              el.textContent = nowDark ? '☀️' : '🌙';
+            },
+          },
+          t.defaultMode === 'dark' ? '☀️' : '🌙'
+        )
+      : null;
+
     var header = h('div', { key: 'header', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, padding: '11px 22px', borderBottom: '1px solid ' + L.border, background: L.surface } }, [
       h('div', { key: 'brand', style: { display: 'flex', alignItems: 'center', gap: 9 } }, [
         h('span', { key: 'logo', style: { width: 32, height: 32, borderRadius: rMd, background: a[600], color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 } }, '🎸'),
@@ -183,6 +260,7 @@
         h('span', { key: 'n3' }, 'Adults'),
         h('span', { key: 'n4' }, 'About'),
         h('span', { key: 'n5', style: { background: a[600], color: '#ffffff', padding: '7px 13px', borderRadius: rSm, fontWeight: 600 } }, 'Book a Trial'),
+        themeChip,
       ]),
     ]);
 
@@ -250,12 +328,18 @@
       { n: 'hover', v: a[700] },
       { n: 'light', v: a[400] },
       { n: 'pale', v: a[50] },
-      { n: 'background', v: L.background },
-      { n: 'surface', v: L.surface },
-      { n: 'band', v: L.band },
-      { n: 'text', v: L.text },
-      { n: 'muted', v: L.muted },
-      { n: 'border', v: L.border },
+      { n: 'bg', v: t.light.background },
+      { n: 'surface', v: t.light.surface },
+      { n: 'band', v: t.light.band },
+      { n: 'text', v: t.light.text },
+      { n: 'muted', v: t.light.muted },
+      { n: 'border', v: t.light.border },
+      { n: 'dark bg', v: t.dark.background },
+      { n: 'dark surface', v: t.dark.surface },
+      { n: 'dark band', v: t.dark.band },
+      { n: 'dark text', v: t.dark.text },
+      { n: 'dark muted', v: t.dark.muted },
+      { n: 'dark border', v: t.dark.border },
     ];
 
     var palette = h(
@@ -272,6 +356,7 @@
     );
 
     return h('div', { className: 'theme-preview', style: shell }, [
+      styleTag,
       fontLink([t.fontHeadingKey, t.fontBodyKey]),
       header,
       hero,

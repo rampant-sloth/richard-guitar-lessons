@@ -51,33 +51,69 @@ function collectStyles(node, out = []) {
   return out;
 }
 
-const plain = collectStyles(registered({ entry: entry({}) }));
+function collectInlineCss(node, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  if (Array.isArray(node)) {
+    for (const child of node) collectInlineCss(child, out);
+    return out;
+  }
+  const injected = node.props && node.props.dangerouslySetInnerHTML;
+  if (injected && typeof injected.__html === 'string') out.push(injected.__html);
+  collectInlineCss(node.children, out);
+  return out;
+}
 
-const custom = collectStyles(
-  registered({
-    entry: entry({
-      colourScheme: 'emerald',
-      accent: { main: '#123456', hover: '#0f2d4a' },
-      light: { background: '#fffbe6', band: '#fff3c4' },
-      dark: { background: '#101820' },
-      cornerRadius: 'pill',
-      fontHeading: 'lora',
-      fontBody: 'inter',
-    }),
-  })
-);
+function collectButtons(node, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  if (Array.isArray(node)) {
+    for (const child of node) collectButtons(child, out);
+    return out;
+  }
+  if (node.type === 'button') out.push({ props: node.props, children: node.children });
+  collectButtons(node.children, out);
+  return out;
+}
+
+const render = (data) => registered({ entry: entry(data) });
+
+const plainTree = render({});
+const plainCss = collectInlineCss(plainTree).join('');
+
+const customTree = render({
+  colourScheme: 'emerald',
+  accent: { main: '#123456', hover: '#0f2d4a' },
+  light: { background: '#fffbe6', band: '#fff3c4' },
+  dark: { background: '#101820' },
+  cornerRadius: 'pill',
+  fontHeading: 'lora',
+  fontBody: 'inter',
+});
+const customStyles = collectStyles(customTree);
+const customCss = collectInlineCss(customTree).join('');
+
+const toggleOn = collectButtons(render({}));
+const toggleOff = collectButtons(render({ appearance: { showToggle: false } }));
+const defaultDark = collectButtons(render({ appearance: { defaultMode: 'dark' } }));
 
 const checks = [
-  ['renders a tree without throwing', plain.length > 0],
-  ['empty theme falls back to the emerald preset accent', plain.some((v) => v === '#059669')],
-  ['custom accent hex is used', custom.some((v) => v === '#123456')],
-  ['custom accent hover hex is used', custom.some((v) => v === '#0f2d4a')],
-  ['custom light background is used', custom.some((v) => v === '#fffbe6')],
-  ['custom light band is used', custom.some((v) => v === '#fff3c4')],
-  ['custom dark background is used', custom.some((v) => v === '#101820')],
-  ['pill corner radius resolves to 28px', custom.some((v) => v === '28px')],
-  ['heading font resolves to Lora', custom.some((v) => v.includes('Lora'))],
-  ['body font resolves to Inter', custom.some((v) => v.includes('Inter'))],
+  ['renders a tree without throwing', plainCss.length > 0],
+  ['light palette variables are defined', plainCss.includes('.theme-preview{') && plainCss.includes('--tp-bg:#ffffff')],
+  ['light defaults match the site (band #f9fafb)', plainCss.includes('--tp-band:#f9fafb')],
+  ['a dark palette block is defined', plainCss.includes('.theme-preview.tp-dark{')],
+  ['dark defaults match the site (bg #020617)', plainCss.includes('--tp-deep-bg:#020617')],
+  ['custom light background is used', customCss.includes('--tp-bg:#fffbe6')],
+  ['custom light band is used', customCss.includes('--tp-band:#fff3c4')],
+  ['custom dark background is used', customCss.includes('--tp-bg:#101820')],
+  ['custom accent hex is used', customStyles.some((v) => v === '#123456')],
+  ['custom accent hover hex is used', customStyles.some((v) => v === '#0f2d4a')],
+  ['pill corner radius resolves to 28px', customStyles.some((v) => v === '28px')],
+  ['heading font resolves to Lora', customStyles.some((v) => v.includes('Lora'))],
+  ['body font resolves to Inter', customStyles.some((v) => v.includes('Inter'))],
+  ['empty theme falls back to the emerald preset accent', collectStyles(plainTree).some((v) => v === '#059669')],
+  ['the dark/light switch renders by default', toggleOn.length === 1],
+  ['the switch is hidden when showToggle is false', toggleOff.length === 0],
+  ['defaultMode dark starts the switch on the sun glyph', defaultDark[0] && defaultDark[0].children[0] === '☀️'],
+  ['the switch toggles the preview palette', typeof toggleOn[0].props.onClick === 'function'],
 ];
 
 let failed = 0;

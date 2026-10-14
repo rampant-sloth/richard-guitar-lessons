@@ -88,6 +88,7 @@ copy) that redraws as each control changes.
 | **Dark appearance** (6 hex) | The same six, for dark mode and the footer |
 | **Corner radius** | Sharp / subtle / rounded / pill |
 | **Heading & body font** | System, Inter, Poppins, Nunito, Lora, Merriweather |
+| **Dark / light switch** | Show or hide the header button, what visitors see first, and the tooltip wording |
 
 Every colour box is optional — leave it blank to fall back to the preset scheme (accents) or the
 built-in default (neutrals). Boxes accept the colour picker *or* a typed hex code like `#059669`.
@@ -108,6 +109,22 @@ preset/default tables as `src/layouts/Layout.astro` — **keep those two in sync
 
 `node scripts/smoke-theme-preview.mjs` stubs Decap's React `h` global and checks the preview renders
 and honours custom hexes. The admin UI itself needs GitHub OAuth, so it can't be driven headlessly.
+
+#### The dark / light switch
+
+A sun/moon button sits in the header of every page (desktop and mobile). Behaviour:
+
+- A visitor's click is saved to `localStorage` under `rgl-theme` and re-applied **before first paint**
+  by an inline script in `<head>`, so there is never a flash of the wrong theme.
+- **Auto** (default) — visitors who have never chosen follow their device's `prefers-color-scheme`,
+  and keep following it if they change it. Falls back to dark when the device is unsure, which is the
+  site's original behaviour.
+- **Always start in light / dark** — that mode is used until the visitor picks otherwise.
+- Turning **Show the switch** off removes the button *and* ignores any previously saved choice, so
+  every visitor gets the mode selected above.
+
+The preview pane shows the same button, and clicking it flips the preview between the light and dark
+palettes — so both sets of colours can be checked without leaving the CMS.
 
 - **Images** upload into `public/images` (Decap's media folder) and are referenced by URL.
   Any page hero and any section can take a background and/or foreground image.

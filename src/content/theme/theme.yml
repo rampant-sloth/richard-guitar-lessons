@@ -27,3 +27,9 @@ dark:
 cornerRadius: rounded
 fontHeading: system
 fontBody: system
+
+appearance:
+  showToggle: true
+  defaultMode: auto
+  toggleLightLabel: "Switch to light mode"
+  toggleDarkLabel: "Switch to dark mode"
