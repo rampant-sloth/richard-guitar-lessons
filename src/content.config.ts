@@ -24,5 +24,17 @@ const lessons = defineCollection({
   }),
 });
 
-export const collections = { news, lessons };
+const site = defineCollection({
+  loader: glob({ pattern: '**/*.yml', base: './src/content/site' }),
+  schema: z.object({
+    siteTitle: z.string(),
+    tagline: z.string(),
+    contactEmail: z.string(),
+    platforms: z.string(),
+    heroTitle: z.string(),
+    heroIntro: z.string(),
+  }),
+});
+
+export const collections = { news, lessons, site };
 

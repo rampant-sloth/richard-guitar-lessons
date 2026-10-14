@@ -1,4 +1,6 @@
 ---
+import { getCollection } from 'astro:content';
+
 interface Props {
   title: string;
   description: string;
@@ -18,6 +20,9 @@ const {
   ogDescription = description,
   active = 'home',
 } = Astro.props;
+
+const [settingsEntry] = await getCollection('site');
+const settings = settingsEntry?.data;
 
 type NavPage = 'home' | 'kids' | 'adults' | 'about';
 
@@ -106,7 +111,7 @@ function mobileNavClass(page: NavPage) {
               <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-lg" aria-hidden="true">🎸</span>
               <span class="text-sm font-bold text-white">Richard's Guitar Lessons</span>
             </div>
-            <p class="mt-4 text-sm leading-relaxed">Friendly, structured online guitar lessons for all ages — from grade exams to playing your favourite songs.</p>
+            <p class="mt-4 text-sm leading-relaxed">{settings?.tagline ?? 'Friendly, structured online guitar lessons for all ages — from grade exams to playing your favourite songs.'}</p>
           </div>
           <div>
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Lessons</h2>
@@ -126,8 +131,8 @@ function mobileNavClass(page: NavPage) {
           <div>
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Contact</h2>
             <ul class="mt-4 space-y-2.5 text-sm">
-              <li><a href="mailto:hello@richardguitarlessons.com" class="hover:text-emerald-400">hello@richardguitarlessons.com</a></li>
-              <li class="text-slate-500 dark:text-slate-400">Lessons via Zoom, Teams, Google Meet or WhatsApp</li>
+              <li><a href={`mailto:${settings?.contactEmail ?? 'hello@richardguitarlessons.com'}`} class="hover:text-emerald-400">{settings?.contactEmail ?? 'hello@richardguitarlessons.com'}</a></li>
+              <li class="text-slate-500 dark:text-slate-400">Lessons via {settings?.platforms ?? 'Zoom (preferred), Teams, Google Meet or WhatsApp'}</li>
             </ul>
           </div>
         </div>
