@@ -13,7 +13,7 @@ hero:
     internationally, and helped plenty of kids land their first proper chord.
     These days I teach guitar, bass and ukulele online from my own home studio -
     every age, every level, and none of that school-style rigidity.
-  image: ""
+  image: /images/guitarreflection.jpg
   imageAlt: Richard playing guitar
   backgroundImage: ""
   buttons:
@@ -23,6 +23,7 @@ hero:
     - label: Who I teach
       href: "#lessons"
       variant: secondary
+  imagePosition: left
 sections:
   - layout: cards
     heading: Why learn with me?
