@@ -44,7 +44,7 @@ npm run preview  # preview the production build
 | **News** | `src/content/news/*.md` | `title`, `date`, `body`, optional `youtubeId` |
 | **Lesson types** | `src/content/lessons/*.yml` | `title`, `instrument`, `audience`, `durationMinutes`, `price`, `summary`, `calLink`, `order` |
 | **Theme** | `src/content/theme/theme.yml` | Accent colour scheme + heading/body fonts |
-| **Site settings** | `src/content/site/settings.yml` | Site title, tagline, contact email, streaming platforms |
+| **Site settings** | `src/content/site/settings.yml` | Site title, tagline, contact email, streaming platforms, social media links |
 
 ### Editing pages (the page builder)
 
@@ -83,6 +83,28 @@ needs changing if the Formspree account ever moves.
   `text-emerald-600` / `bg-emerald-50` utility follows the scheme automatically — no page edits.
 - **Images** upload into `public/images` (Decap's media folder) and are referenced by URL.
   Any page hero and any section can take a background and/or foreground image.
+
+### Social media links (footer)
+
+**Site settings → Social media links** holds one box per platform. Paste a full URL to show that
+icon in the footer; clear the box to hide it. No reordering or new platforms without a code change.
+
+| Platform | Current value |
+| --- | --- |
+| Facebook | `https://facebook.com/richardguitartuition` |
+| Instagram | `https://instagram.com/richtearoo` |
+| TikTok | `https://tiktok.com/@livegarflove` |
+| Twitch | `https://twitch.tv/richtearoo` |
+| WhatsApp | *(blank — hidden, ready to switch on)* |
+
+Icons are the official [Simple Icons](https://simpleicons.org) brand glyphs (CC0), inlined in
+`src/components/SocialLinks.astro` so the footer makes **no** third-party requests. Each one also
+gets its brand colour on hover. WhatsApp is intentionally blank — paste a `https://wa.me/<number>`
+link to reveal it later.
+
+> Adding a *new* platform (e.g. YouTube, Bluesky) is a one-line change in
+> `src/components/SocialLinks.astro`: the SVG path plus a brand hover colour. The schema in
+> `src/content.config.ts` and the CMS field list need the matching new key.
 
 > Content lives in `src/content/` rather than `src/pages/`. Files in `src/pages/` are auto-routed by Astro and would conflict with the `[slug].astro` dynamic route — content collections are the idiomatic Astro pattern.
 

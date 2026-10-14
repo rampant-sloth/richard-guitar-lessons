@@ -217,3 +217,13 @@ collections:
           - { label: Tagline, name: tagline, widget: text }
           - { label: Contact email, name: contactEmail, widget: string }
           - { label: Streaming platforms, name: platforms, widget: string, hint: "Shown in the footer and on the booking page." }
+          - label: Social media links
+            name: social
+            widget: object
+            hint: "Paste a full web address for each one, e.g. https://facebook.com/yourpage — leave a box empty to hide that icon in the footer."
+            fields:
+              - { label: Facebook, name: facebook, widget: string, required: false }
+              - { label: Instagram, name: instagram, widget: string, required: false }
+              - { label: TikTok, name: tiktok, widget: string, required: false }
+              - { label: Twitch, name: twitch, widget: string, required: false }
+              - { label: WhatsApp, name: whatsapp, widget: string, required: false, hint: "Switched off at the moment. Paste a link like https://wa.me/447700900123 to show the WhatsApp icon; clear it again to hide it." }

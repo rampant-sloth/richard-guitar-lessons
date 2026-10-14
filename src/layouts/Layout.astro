@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import SocialLinks from '../components/SocialLinks.astro';
 
 interface Props {
   title: string;
@@ -161,6 +162,7 @@ function mobileNavClass(page: NavPage) {
               <span class="text-sm font-bold text-white">Richard's Guitar Lessons</span>
             </div>
             <p class="mt-4 text-sm leading-relaxed">{settings?.tagline ?? 'Friendly, structured online guitar lessons for all ages — from grade exams to playing your favourite songs.'}</p>
+            <SocialLinks social={settings?.social} heading="Follow" class="mt-6" />
           </div>
           <div>
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Lessons</h2>

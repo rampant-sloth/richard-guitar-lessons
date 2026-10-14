@@ -31,6 +31,15 @@ const site = defineCollection({
     tagline: z.string(),
     contactEmail: z.string(),
     platforms: z.string(),
+    social: z
+      .object({
+        facebook: z.string().optional(),
+        instagram: z.string().optional(),
+        tiktok: z.string().optional(),
+        twitch: z.string().optional(),
+        whatsapp: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 
