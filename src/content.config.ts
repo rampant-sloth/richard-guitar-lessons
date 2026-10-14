@@ -33,6 +33,8 @@ const site = defineCollection({
     platforms: z.string(),
     heroTitle: z.string(),
     heroIntro: z.string(),
+    heroImage: z.string().optional(),
+    aboutImage: z.string().optional(),
   }),
 });
 

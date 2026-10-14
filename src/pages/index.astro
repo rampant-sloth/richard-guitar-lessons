@@ -21,14 +21,19 @@ const formatPrice = (n: number) => (n === 0 ? 'Free' : `£${n}`);
     <!-- Hero -->
     <section class="relative overflow-hidden bg-gray-50 dark:bg-slate-900">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Guitar · Bass · Ukulele — online, over Zoom</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">{settings?.heroTitle ?? 'Guitar, bass & ukulele lessons from someone who genuinely loves this'}</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">{settings?.heroIntro ?? 'Hi, I\'m Richard — I teach guitar, bass and ukulele online, from complete beginners to grade exams.'}</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="/book-trial-lesson" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-            <a href="#lessons" class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800">Who I teach</a>
+        <div class={settings?.heroImage ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+          <div class="max-w-3xl">
+            <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Guitar · Bass · Ukulele — online, over Zoom</p>
+            <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">{settings?.heroTitle ?? 'Guitar, bass & ukulele lessons from someone who genuinely loves this'}</h1>
+            <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">{settings?.heroIntro ?? 'Hi, I\'m Richard — I teach guitar, bass and ukulele online, from complete beginners to grade exams.'}</p>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <a href="/book-trial-lesson" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
+              <a href="#lessons" class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800">Who I teach</a>
+            </div>
           </div>
+          {settings?.heroImage && (
+            <img src={settings.heroImage} alt="Richard playing guitar" width="800" height="600" class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md" />
+          )}
         </div>
       </div>
     </section>

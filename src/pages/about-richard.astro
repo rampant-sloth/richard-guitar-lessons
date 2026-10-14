@@ -1,5 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const [settingsEntry] = await getCollection('site');
+const settings = settingsEntry?.data;
 ---
 
 <Layout
@@ -15,10 +19,15 @@ import Layout from '../layouts/Layout.astro';
     <!-- Hero -->
     <section class="bg-gray-50 dark:bg-slate-900">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">About Richard</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">About Richard</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">Guitarist, former school teacher, and the bloke on the other end of the Zoom call. Here's a bit about me and how I teach.</p>
+        <div class={settings?.aboutImage ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+          <div class="max-w-3xl">
+            <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">About Richard</p>
+            <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">About Richard</h1>
+            <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">Guitarist, former school teacher, and the bloke on the other end of the Zoom call. Here's a bit about me and how I teach.</p>
+          </div>
+          {settings?.aboutImage && (
+            <img src={settings.aboutImage} alt="Richard, guitar teacher" width="800" height="800" loading="lazy" class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md" />
+          )}
         </div>
       </div>
     </section>

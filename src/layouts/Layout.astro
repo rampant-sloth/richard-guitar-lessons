@@ -8,7 +8,7 @@ interface Props {
   ogType?: string;
   ogTitle?: string;
   ogDescription?: string;
-  active?: 'home' | 'kids' | 'adults' | 'about' | 'book';
+  active?: 'home' | 'kids' | 'adults' | 'about' | 'news' | 'book';
 }
 
 const {
@@ -24,7 +24,7 @@ const {
 const [settingsEntry] = await getCollection('site');
 const settings = settingsEntry?.data;
 
-type NavPage = 'home' | 'kids' | 'adults' | 'about';
+type NavPage = 'home' | 'kids' | 'adults' | 'about' | 'news';
 
 function desktopNavClass(page: NavPage) {
   return active === page
@@ -83,6 +83,7 @@ function mobileNavClass(page: NavPage) {
           <a href="/online-guitar-lessons-kids" class={desktopNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
           <a href="/adult-online-guitar-lessons" class={desktopNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
           <a href="/about-richard" class={desktopNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+          <a href="/news" class={desktopNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
           <a href="/book-trial-lesson" class={active === 'book' ? 'rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800' : 'rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700'} aria-current={active === 'book' ? 'page' : undefined}>Book a Trial</a>
         </nav>
         <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -96,6 +97,7 @@ function mobileNavClass(page: NavPage) {
           <a href="/online-guitar-lessons-kids" class={mobileNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
           <a href="/adult-online-guitar-lessons" class={mobileNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
           <a href="/about-richard" class={mobileNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+          <a href="/news" class={mobileNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
           <a href="/book-trial-lesson" class="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 font-semibold text-white hover:bg-emerald-700">Book a Trial</a>
         </nav>
       </div>
@@ -125,6 +127,7 @@ function mobileNavClass(page: NavPage) {
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Company</h2>
             <ul class="mt-4 space-y-2.5 text-sm">
               <li><a href="/about-richard" class="hover:text-emerald-400">About Richard</a></li>
+              <li><a href="/news" class="hover:text-emerald-400">News</a></li>
               <li><a href="/" class="hover:text-emerald-400">Home</a></li>
             </ul>
           </div>

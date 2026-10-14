@@ -52,3 +52,5 @@ collections:
           - { label: Streaming platforms, name: platforms, widget: string }
           - { label: Homepage hero title, name: heroTitle, widget: string }
           - { label: Homepage hero intro, name: heroIntro, widget: text }
+          - { label: Homepage hero image, name: heroImage, widget: image, required: false, hint: "Optional — a photo of you playing, shown beside the intro on the homepage." }
+          - { label: About page photo, name: aboutImage, widget: image, required: false, hint: "Optional — shown beside the intro on the About page." }

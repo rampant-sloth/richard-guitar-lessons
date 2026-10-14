@@ -27,7 +27,7 @@ const formattedDate = new Date(date).toLocaleDateString('en-GB', {
   title={`${title} | Richard's Guitar Lessons`}
   description={`${title} — news and updates from Richard's Guitar Lessons.`}
   canonical={`https://richardguitarlessons.com/news/${post.id}/`}
-  active="home"
+  active="news"
 >
   <main class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <article>
@@ -45,8 +45,9 @@ const formattedDate = new Date(date).toLocaleDateString('en-GB', {
         <Content />
       </div>
     </article>
-    <p class="mt-10">
-      <a href="/" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">← Back to home</a>
+    <p class="mt-10 flex flex-wrap gap-6">
+      <a href="/news" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">← All news</a>
+      <a href="/" class="font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400">Back to home</a>
     </p>
   </main>
 </Layout>
