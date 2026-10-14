@@ -1,0 +1,15 @@
+name = "decap-oauth"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+[vars]
+# The OAuth client ID is public (it appears in the authorize URL), so it is safe to commit.
+GITHUB_OAUTH_CLIENT_ID = "Ov23li6duCdaQWAPpend"
+GITHUB_OAUTH_SCOPE = "repo,user"
+
+# The client secret must NEVER be committed. Set it out-of-band:
+#   wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
+
+# Optional: serve the gateway on a custom subdomain instead of *.workers.dev
+# routes = [{ pattern = "auth.richardguitarlessons.com", custom_domain = true }]

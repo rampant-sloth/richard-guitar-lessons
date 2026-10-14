@@ -20,7 +20,7 @@ import Layout from '../layouts/Layout.astro';
           <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Guitar lessons for kids &amp; exam students</h1>
           <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">Hi, I'm Richard. I've spent years teaching in schools, so I know what actually keeps kids engaged — and what makes their eyes glaze over. These lessons are structured, patient and all about building confidence, with safeguarding and grade exam prep baked in.</p>
           <div class="mt-8 flex flex-wrap gap-4">
-            <a href="/book-trial-lesson" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
+            <button type="button" data-cal-link="richard/30min" data-cal-config='{"layout":"month_view"}' class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</button>
             <a href="/about-richard" class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800">Meet me</a>
           </div>
         </div>
@@ -78,7 +78,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">
         <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Want to see if they enjoy it?</h2>
         <p class="mt-3 text-slate-300">Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly.</p>
-        <a href="/book-trial-lesson" class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
+        <button type="button" data-cal-link="richard/30min" data-cal-config='{"layout":"month_view"}' class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</button>
       </div>
     </section>
   </main>

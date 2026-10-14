@@ -1,21 +1,40 @@
 backend:
   name: github
   repo: rampant-sloth/richard-guitar-lessons
-  base_url: https://api.netlify.com
-  site_domain: resilient-dasik-32d55d.netlify.app
+  branch: main
+  base_url: https://decap-oauth.<your-account>.workers.dev
+  auth_endpoint: auth
 
 media_folder: "public/images"
 public_folder: "/images"
 
 collections:
-  - name: "news"
-    label: "News"
-    label_singular: "News post"
-    folder: "src/content/news"
+  - name: news
+    label: News
+    label_singular: News post
+    folder: src/content/news
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
-      - { label: "Body", name: "body", widget: "markdown" }
-      - { label: "YouTube Video ID", name: "youtubeId", widget: "string", required: false, hint: "Optional. Just the ID part of a YouTube URL, e.g. yEIYaVfM92A" }
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: Body, name: body, widget: markdown }
+      - { label: YouTube Video ID, name: youtubeId, widget: string, required: false, hint: "Optional. Just the ID part of a YouTube URL, e.g. yEIYaVfM92A" }
+
+  - name: lessons
+    label: Lesson types
+    label_singular: Lesson type
+    folder: src/content/lessons
+    create: true
+    extension: yml
+    format: yaml
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Instrument, name: instrument, widget: select, options: [Guitar, Bass, Ukulele] }
+      - { label: Audience, name: audience, widget: select, options: [Kids, Adults, Everyone] }
+      - { label: Duration (minutes), name: durationMinutes, widget: number, value_type: int, min: 15, step: 15, default: 30 }
+      - { label: Price (£), name: price, widget: number, value_type: float, min: 0 }
+      - { label: Summary, name: summary, widget: text }
+      - { label: cal.com event link, name: calLink, widget: string, hint: "The cal.com event slug, e.g. richard/30min" }
+      - { label: Order, name: order, widget: number, value_type: int, default: 0, required: false }

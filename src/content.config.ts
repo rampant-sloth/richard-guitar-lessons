@@ -10,4 +10,19 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { news };
+const lessons = defineCollection({
+  loader: glob({ pattern: '**/*.yml', base: './src/content/lessons' }),
+  schema: z.object({
+    title: z.string(),
+    instrument: z.enum(['Guitar', 'Bass', 'Ukulele']),
+    audience: z.enum(['Kids', 'Adults', 'Everyone']),
+    durationMinutes: z.number(),
+    price: z.number(),
+    summary: z.string(),
+    calLink: z.string(),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { news, lessons };
+
