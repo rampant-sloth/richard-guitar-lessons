@@ -62,9 +62,20 @@ hints explaining what each field does:
    - *Lessons & pricing* — pulls straight from the **Lesson types** collection.
    - *Plain text* — heading and body copy only.
 
-   Every block can also set a **background colour** (white / light grey / green tint / dark), a
-   **background image** (which overrides the colour), and a **foreground image** shown full width
-   inside the block. Icons are simply emoji typed or pasted into the *Icon (emoji)* field.
+   Every block can also set a **background colour** (white / light grey / green tint / dark) and a
+   **background image** (which overrides the colour). Icons are simply emoji typed or pasted into
+   the *Icon (emoji)* field.
+
+   **Foreground images** can be added to the hero and to any block, each with an **Image position**:
+
+   | Position | Result |
+   | --- | --- |
+   | Right of the text | Text and image sit side by side in two columns from 1024px up |
+   | Left of the text | The same, with the image first |
+   | Centred | Never side by side — heading and intro sit **above** the image, body copy **below** it |
+
+   Both two-column layouts condense to a single stacked column below 1024px, so they behave on
+   tablets and phones with no extra settings.
 4. **Closing call to action** — heading, body, button and an optional background image.
 
 The `/book-trial-lesson` page additionally has an editable **Booking form** (labels, placeholders,
@@ -103,9 +114,7 @@ How it is wired:
 - `cornerRadius` overrides Tailwind's `rounded-lg` / `rounded-xl` / `rounded-2xl` scale.
 - Non-system fonts load from Google Fonts at build time (and in the admin preview).
 
-The preview lives in `public/admin/theme-preview.js`, registered with
-`CMS.registerPreviewTemplate('theme', …)`; `public/admin/index.html` loads it. It mirrors the same
-preset/default tables as `src/layouts/Layout.astro` — **keep those two in sync**.
+See **Live previews in the CMS** below for how the panes are wired up.
 
 `node scripts/smoke-theme-preview.mjs` stubs Decap's React `h` global and checks the preview renders
 and honours custom hexes. The admin UI itself needs GitHub OAuth, so it can't be driven headlessly.
@@ -152,6 +161,30 @@ link to reveal it later.
 > `src/content.config.ts` and the CMS field list need the matching new key.
 
 > Content lives in `src/content/` rather than `src/pages/`. Files in `src/pages/` are auto-routed by Astro and would conflict with the `[slug].astro` dynamic route — content collections are the idiomatic Astro pattern.
+
+### Live previews in the CMS
+
+Every editable file has a custom preview pane that renders the way the site does:
+
+| File | Preview |
+| --- | --- |
+| **Theme → Colours & fonts** | Miniature site (header, hero, cards, pricing, CTA, footer) plus a working light/dark switch and a "resolved colours" strip |
+| **Website pages** (all six) | Search-listing strip, hero, every section block in its real layout, the booking form, the news labels and the closing call to action |
+
+How it is wired:
+
+- `public/admin/preview-shared.js` — presets, defaults, radius, fonts and the colour resolver.
+- `public/admin/theme-preview.js` — the theme pane, registered with
+  `CMS.registerPreviewTemplate('theme', …)`.
+- `public/admin/page-preview.js` — the six page panes. These are registered per **file** name
+  (`home`, `about`, `adults`, `kids`, `booking`, `news`) because Decap looks page files up by name.
+- `src/pages/theme.json.ts` — a build-time endpoint exposing the theme settings. Page previews
+  fetch it so they render with the deployed colours; they will therefore lag behind unsaved theme
+  edits until the next deploy. Built-in defaults are used until it resolves.
+- Empty fields fall back to Lorem Ipsum in the preview, so an unfilled block still shows its shape.
+
+`presets` / `defaults` / `radius` / `fonts` also exist in `src/layouts/Layout.astro` — that runs at
+build time and cannot import the admin script, so **keep the two in sync**.
 
 ### GitHub OAuth (Cloudflare Worker)
 

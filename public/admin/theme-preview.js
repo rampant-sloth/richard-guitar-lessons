@@ -23,38 +23,16 @@
     return;
   }
 
-  var PRESETS = {
-    emerald: { 50: '#ecfdf5', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46' },
-    teal: { 50: '#f0fdfa', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' },
-    blue: { 50: '#eff6ff', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' },
-    indigo: { 50: '#eef2ff', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' },
-    violet: { 50: '#f5f3ff', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' },
-    rose: { 50: '#fff1f2', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239' },
-    amber: { 50: '#fffbeb', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
-    slate: { 50: '#f8fafc', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b' },
-  };
+  // Presets, defaults, radius and fonts come from preview-shared.js (loaded first).
+  var P = window.PREVIEW;
+  if (!P) return;
+  var PRESETS = P.PRESETS;
+  var DEFAULT_LIGHT = P.DEFAULT_LIGHT;
+  var DEFAULT_DARK = P.DEFAULT_DARK;
+  var RADIUS = P.RADIUS;
 
-  var DEFAULT_LIGHT = { background: '#ffffff', surface: '#ffffff', band: '#f9fafb', text: '#0f172a', muted: '#475569', border: '#e2e8f0' };
-  var DEFAULT_DARK = { background: '#020617', surface: '#1e293b', band: '#0f172a', text: '#ffffff', muted: '#cbd5e1', border: '#334155' };
-
-  var RADIUS = { sharp: '4px', subtle: '8px', rounded: '16px', pill: '28px' };
-
-  var FONTS = {
-    system: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
-    inter: "'Inter', ui-sans-serif, system-ui, sans-serif",
-    poppins: "'Poppins', ui-sans-serif, system-ui, sans-serif",
-    nunito: "'Nunito', ui-sans-serif, system-ui, sans-serif",
-    lora: "'Lora', ui-serif, Georgia, serif",
-    merriweather: "'Merriweather', ui-serif, Georgia, serif",
-  };
-
-  var FONT_QUERIES = {
-    inter: 'Inter:wght@400;600;700;800',
-    poppins: 'Poppins:wght@400;600;700;800',
-    nunito: 'Nunito:wght@400;600;700;800',
-    lora: 'Lora:wght@400;600;700',
-    merriweather: 'Merriweather:wght@400;700;900',
-  };
+  var FONTS = P.FONTS;
+  var FONT_QUERIES = P.FONT_QUERIES;
 
   var LOREM_SHORT =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';

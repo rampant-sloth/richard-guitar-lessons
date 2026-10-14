@@ -8,23 +8,27 @@
 
 import { readFileSync } from 'node:fs';
 
-let registered = null;
+const templates = {};
 
 const win = {
   CMS: {
     registerPreviewTemplate(name, component) {
-      if (name !== 'theme') throw new Error(`unexpected preview registered: ${name}`);
-      registered = component;
+      templates[name] = component;
     },
     registerPreviewStyle() {},
   },
   h: (type, props, ...children) => ({ type, props: props || {}, children }),
+  fetch: () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
   console,
 };
 
-const source = readFileSync(new URL('../public/admin/theme-preview.js', import.meta.url), 'utf8');
-new Function('window', source)(win);
+const read = (name) => readFileSync(new URL(`../public/admin/${name}`, import.meta.url), 'utf8');
 
+new Function('window', read('preview-shared.js'))(win);
+new Function('window', read('theme-preview.js'))(win);
+new Function('window', read('page-preview.js'))(win);
+
+const registered = templates.theme;
 if (!registered) throw new Error('the theme preview template was not registered');
 
 function entry(data) {
@@ -74,6 +78,32 @@ function collectButtons(node, out = []) {
   return out;
 }
 
+function collectStyleObjects(node, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  if (Array.isArray(node)) {
+    for (const child of node) collectStyleObjects(child, out);
+    return out;
+  }
+  if (node.props && node.props.style) out.push(node.props.style);
+  collectStyleObjects(node.children, out);
+  return out;
+}
+
+function collectText(node, out = []) {
+  if (node === null || node === undefined) return out;
+  if (typeof node === 'string' || typeof node === 'number') {
+    out.push(String(node));
+    return out;
+  }
+  if (Array.isArray(node)) {
+    for (const child of node) collectText(child, out);
+    return out;
+  }
+  if (typeof node !== 'object') return out;
+  collectText(node.children, out);
+  return out;
+}
+
 const render = (data) => registered({ entry: entry(data) });
 
 const plainTree = render({});
@@ -95,6 +125,51 @@ const toggleOn = collectButtons(render({}));
 const toggleOff = collectButtons(render({ appearance: { showToggle: false } }));
 const defaultDark = collectButtons(render({ appearance: { defaultMode: 'dark' } }));
 
+// ---- website-page previews -------------------------------------------------
+const pagePreview = templates.home || (() => null);
+
+const pageTree = pagePreview({
+  entry: entry({
+    seo: { title: 'SEO title here', description: 'SEO description here' },
+    hero: {
+      eyebrow: 'Hero eyebrow',
+      title: 'Hero title',
+      intro: 'Hero intro',
+      image: '/images/hero.png',
+      imagePosition: 'centre',
+      buttons: [{ label: 'Go', href: '/', variant: 'primary' }],
+    },
+    sections: [
+      { layout: 'cards', heading: 'Cards heading', background: 'gray', items: [{ icon: '🎸', title: 'Card one', text: 'Card text' }] },
+      {
+        layout: 'list',
+        heading: 'List heading',
+        image: '/images/side.png',
+        imagePosition: 'left',
+        body: 'Para one.\n\nPara two.',
+        items: [{ icon: '🎯', title: 'Row title', text: 'row text' }],
+      },
+    ],
+    cta: { heading: 'CTA heading', body: 'CTA body', buttonLabel: 'Book now' },
+  }),
+});
+const pageText = collectText(pageTree).join(' | ');
+const pageStyles = collectStyleObjects(pageTree);
+
+const bookingText = collectText(
+  pagePreview({
+    entry: entry({
+      seo: { title: 'Booking', description: 'Booking description' },
+      hero: { title: 'Book a trial' },
+      form: { heading: 'Form heading', submitLabel: 'Send it', fields: [{ label: 'Name', name: 'name', required: true }] },
+    }),
+  })
+).join(' | ');
+
+const newsText = collectText(
+  pagePreview({ entry: entry({ seo: { title: 'News' }, labels: { empty: 'Nothing yet', readMore: 'Keep reading' } }) })
+).join(' | ');
+
 const checks = [
   ['renders a tree without throwing', plainCss.length > 0],
   ['light palette variables are defined', plainCss.includes('.theme-preview{') && plainCss.includes('--tp-bg:#ffffff')],
@@ -114,6 +189,18 @@ const checks = [
   ['the switch is hidden when showToggle is false', toggleOff.length === 0],
   ['defaultMode dark starts the switch on the sun glyph', defaultDark[0] && defaultDark[0].children[0] === '☀️'],
   ['the switch toggles the preview palette', typeof toggleOn[0].props.onClick === 'function'],
+  ['every website page registers a preview', ['home', 'about', 'adults', 'kids', 'booking', 'news'].every((n) => typeof templates[n] === 'function')],
+  ['the theme preview is still separate', typeof templates.theme === 'function'],
+  ['page preview renders the search-listing strip', pageText.includes('SEO title here') && pageText.includes('SEO description here')],
+  ['page preview renders the hero', pageText.includes('Hero title') && pageText.includes('Hero eyebrow') && pageText.includes('Hero intro')],
+  ['page preview renders section headings', pageText.includes('Cards heading') && pageText.includes('List heading')],
+  ['page preview renders cards and link rows', pageText.includes('Card one') && pageText.includes('Row title')],
+  ['page preview renders both body paragraphs', pageText.includes('Para one.') && pageText.includes('Para two.')],
+  ['page preview renders the call to action', pageText.includes('CTA heading') && pageText.includes('Book now')],
+  ['centre hero image is centred, not side by side', pageStyles.some((s) => s.maxWidth === 560 && s.marginLeft === 'auto' && typeof s.order === 'undefined')],
+  ['left section image puts the media first', pageStyles.some((s) => s.order === 1) && pageStyles.some((s) => s.order === 2)],
+  ['booking form renders its labels', bookingText.includes('Form heading') && bookingText.includes('Name') && bookingText.includes('Send it')],
+  ['news listing labels render', newsText.includes('Nothing yet') && newsText.includes('Keep reading')],
 ];
 
 let failed = 0;
