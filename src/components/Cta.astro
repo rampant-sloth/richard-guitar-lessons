@@ -10,11 +10,11 @@ interface Props {
 const { heading, body, buttonLabel, buttonHref = '/book-trial-lesson', backgroundImage } = Astro.props;
 ---
 
-<section class="relative overflow-hidden bg-slate-900">
+<section class="relative overflow-hidden bg-[var(--theme-deep)]">
   {backgroundImage && (
     <>
       <img src={backgroundImage} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover opacity-40" />
-      <div class="absolute inset-0 bg-slate-900/70"></div>
+      <div class="absolute inset-0 bg-[var(--theme-deep)] opacity-[0.7]"></div>
     </>
   )}
   <div class="relative mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">

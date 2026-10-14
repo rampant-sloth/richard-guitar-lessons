@@ -1,4 +1,29 @@
 # Global look & feel — edit these in Decap CMS under "Theme".
+# Every colour box can be left empty to fall back to the preset scheme / built-in default.
 colourScheme: emerald
+
+accent:
+  main: ""
+  hover: ""
+  light: ""
+  pale: ""
+
+light:
+  background: ""
+  surface: ""
+  band: ""
+  text: ""
+  muted: ""
+  border: ""
+
+dark:
+  background: ""
+  surface: ""
+  band: ""
+  text: ""
+  muted: ""
+  border: ""
+
+cornerRadius: rounded
 fontHeading: system
 fontBody: system

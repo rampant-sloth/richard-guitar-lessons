@@ -32,22 +32,22 @@ const formattedDate = new Date(date).toLocaleDateString('en-GB', {
   <main class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <article>
       <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">News</p>
-      <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">{title}</h1>
-      <time class="mt-4 inline-block text-slate-500 dark:text-slate-400" datetime={new Date(date).toISOString()}>{formattedDate}</time>
+      <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-[var(--theme-text)] sm:text-5xl">{title}</h1>
+      <time class="mt-4 inline-block text-[var(--theme-faint)]" datetime={new Date(date).toISOString()}>{formattedDate}</time>
       {youtubeId && (
-        <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="mt-8 overflow-hidden rounded-2xl border border-[var(--theme-border)] shadow-sm">
           <div class="aspect-video">
             <iframe class="h-full w-full" src={`https://www.youtube.com/embed/${youtubeId}`} title={title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
         </div>
       )}
-      <div class="cms-prose mt-8 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+      <div class="cms-prose mt-8 text-lg leading-relaxed text-[var(--theme-muted)]">
         <Content />
       </div>
     </article>
     <p class="mt-10 flex flex-wrap gap-6">
       <a href="/news" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400">← All news</a>
-      <a href="/" class="font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400">Back to home</a>
+      <a href="/" class="font-semibold text-[var(--theme-faint)] hover:text-emerald-600 dark:hover:text-emerald-400">Back to home</a>
     </p>
   </main>
 </Layout>

@@ -43,7 +43,7 @@ npm run preview  # preview the production build
 | **Website pages** | `src/content/pages/*.yml` | Every word, image and block on each page |
 | **News** | `src/content/news/*.md` | `title`, `date`, `body`, optional `youtubeId` |
 | **Lesson types** | `src/content/lessons/*.yml` | `title`, `instrument`, `audience`, `durationMinutes`, `price`, `summary`, `calLink`, `order` |
-| **Theme** | `src/content/theme/theme.yml` | Accent colour scheme + heading/body fonts |
+| **Theme** | `src/content/theme/theme.yml` | Preset or custom accent, background/text/border colours, corner radius, fonts |
 | **Site settings** | `src/content/site/settings.yml` | Site title, tagline, contact email, streaming platforms, social media links |
 
 ### Editing pages (the page builder)
@@ -74,13 +74,41 @@ needs changing if the Formspree account ever moves.
 `src/pages/*.astro` are deliberately tiny: they load their YAML file and render `<Hero>`,
 `<Sections>` and `<Cta>`. Copy belongs in the CMS, not the page templates.
 
-### Colour scheme, fonts and images
+### Theme: colours, fonts, corners — with a live preview
 
-- **Theme → Colours & fonts** swaps the accent palette (emerald, teal, blue, indigo, violet,
-  rose, amber, slate) and the heading/body fonts (system, Inter, Poppins, Nunito, Lora,
-  Merriweather). Non-system fonts are loaded from Google Fonts at build time.
-- The chosen palette is injected as Tailwind's `emerald` scale, so every existing
-  `text-emerald-600` / `bg-emerald-50` utility follows the scheme automatically — no page edits.
+**Theme → Colours & fonts** controls the whole look and feel. The preview pane beside it renders a
+miniature of the real pages (header, hero, cards, pricing, CTA and footer, with Lorem Ipsum filler
+copy) that redraws as each control changes.
+
+| Control | What it does |
+| --- | --- |
+| **Preset colour scheme** | A ready-made accent palette: emerald, teal, blue, indigo, violet, rose, amber, slate |
+| **Accent colours** (4 hex) | Override the preset: main, hover/darker, light, pale |
+| **Light appearance** (6 hex) | Page background, cards/panels, section bands, headings, body text, borders |
+| **Dark appearance** (6 hex) | The same six, for dark mode and the footer |
+| **Corner radius** | Sharp / subtle / rounded / pill |
+| **Heading & body font** | System, Inter, Poppins, Nunito, Lora, Merriweather |
+
+Every colour box is optional — leave it blank to fall back to the preset scheme (accents) or the
+built-in default (neutrals). Boxes accept the colour picker *or* a typed hex code like `#059669`.
+
+How it is wired:
+
+- The accent (preset **or** custom hex) is injected as Tailwind's `emerald` palette, so every
+  existing `text-emerald-600` / `bg-emerald-50` utility follows it with no page edits.
+- The neutrals become CSS custom properties (`--theme-bg`, `--theme-surface`, `--theme-band`,
+  `--theme-text`, `--theme-muted`, `--theme-border`, `--theme-deep`) that switch automatically
+  under `.dark`; components reference them as `bg-[var(--theme-surface)]` etc.
+- `cornerRadius` overrides Tailwind's `rounded-lg` / `rounded-xl` / `rounded-2xl` scale.
+- Non-system fonts load from Google Fonts at build time (and in the admin preview).
+
+The preview lives in `public/admin/theme-preview.js`, registered with
+`CMS.registerPreviewTemplate('theme', …)`; `public/admin/index.html` loads it. It mirrors the same
+preset/default tables as `src/layouts/Layout.astro` — **keep those two in sync**.
+
+`node scripts/smoke-theme-preview.mjs` stubs Decap's React `h` global and checks the preview renders
+and honours custom hexes. The admin UI itself needs GitHub OAuth, so it can't be driven headlessly.
+
 - **Images** upload into `public/images` (Decap's media folder) and are referenced by URL.
   Any page hero and any section can take a background and/or foreground image.
 

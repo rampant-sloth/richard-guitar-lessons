@@ -43,10 +43,36 @@ const site = defineCollection({
   }),
 });
 
+const optionalColour = z.string().optional();
+
 const theme = defineCollection({
   loader: glob({ pattern: '**/*.yml', base: './src/content/theme' }),
   schema: z.object({
     colourScheme: z.enum(['emerald', 'teal', 'blue', 'indigo', 'violet', 'rose', 'amber', 'slate']),
+    accent: z
+      .object({ main: optionalColour, hover: optionalColour, light: optionalColour, pale: optionalColour })
+      .default({}),
+    light: z
+      .object({
+        background: optionalColour,
+        surface: optionalColour,
+        band: optionalColour,
+        text: optionalColour,
+        muted: optionalColour,
+        border: optionalColour,
+      })
+      .default({}),
+    dark: z
+      .object({
+        background: optionalColour,
+        surface: optionalColour,
+        band: optionalColour,
+        text: optionalColour,
+        muted: optionalColour,
+        border: optionalColour,
+      })
+      .default({}),
+    cornerRadius: z.enum(['sharp', 'subtle', 'rounded', 'pill']).default('rounded'),
     fontHeading: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),
     fontBody: z.enum(['system', 'inter', 'poppins', 'nunito', 'lora', 'merriweather']),
   }),

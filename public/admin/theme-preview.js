@@ -1,0 +1,287 @@
+/*
+ * Live preview for the "Theme" file in Decap CMS.
+ *
+ * Renders a miniature of the real site (header, hero, cards, CTA, footer) using the
+ * colours, fonts and corner radius currently selected — so the preview pane shows what
+ * the site will actually look like. Filler copy is deliberately Lorem Ipsum.
+ *
+ * NOTE: PRESETS / DEFAULT_LIGHT / DEFAULT_DARK / RADIUS / FONTS are mirrored from
+ * src/layouts/Layout.astro. If you change them there, change them here too.
+ */
+(function () {
+  'use strict';
+
+  var CMS = window.CMS;
+  if (!CMS || typeof CMS.registerPreviewTemplate !== 'function') return;
+
+  // Decap exposes React's createElement as the global `h`.
+  var h = window.h || (window.React && window.React.createElement);
+  if (typeof h !== 'function') {
+    if (window.console && window.console.error) {
+      window.console.error('[theme-preview] Decap did not expose React createElement (window.h). Theme preview disabled.');
+    }
+    return;
+  }
+
+  var PRESETS = {
+    emerald: { 50: '#ecfdf5', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46' },
+    teal: { 50: '#f0fdfa', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' },
+    blue: { 50: '#eff6ff', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' },
+    indigo: { 50: '#eef2ff', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' },
+    violet: { 50: '#f5f3ff', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' },
+    rose: { 50: '#fff1f2', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239' },
+    amber: { 50: '#fffbeb', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
+    slate: { 50: '#f8fafc', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b' },
+  };
+
+  var DEFAULT_LIGHT = { background: '#ffffff', surface: '#ffffff', band: '#f9fafb', text: '#0f172a', muted: '#475569', border: '#e2e8f0' };
+  var DEFAULT_DARK = { background: '#020617', surface: '#1e293b', band: '#0f172a', text: '#ffffff', muted: '#cbd5e1', border: '#334155' };
+
+  var RADIUS = { sharp: '4px', subtle: '8px', rounded: '16px', pill: '28px' };
+
+  var FONTS = {
+    system: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+    inter: "'Inter', ui-sans-serif, system-ui, sans-serif",
+    poppins: "'Poppins', ui-sans-serif, system-ui, sans-serif",
+    nunito: "'Nunito', ui-sans-serif, system-ui, sans-serif",
+    lora: "'Lora', ui-serif, Georgia, serif",
+    merriweather: "'Merriweather', ui-serif, Georgia, serif",
+  };
+
+  var FONT_QUERIES = {
+    inter: 'Inter:wght@400;600;700;800',
+    poppins: 'Poppins:wght@400;600;700;800',
+    nunito: 'Nunito:wght@400;600;700;800',
+    lora: 'Lora:wght@400;600;700',
+    merriweather: 'Merriweather:wght@400;700;900',
+  };
+
+  var LOREM_SHORT =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+  var LOREM_MED =
+    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
+  var LOREM_CARD =
+    'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+  function pick(value, fallback) {
+    return typeof value === 'string' && value.trim().length > 0 ? value.trim() : fallback;
+  }
+
+  function get(entry, path) {
+    try {
+      return entry.getIn(path);
+    } catch (err) {
+      return undefined;
+    }
+  }
+
+  function resolve(entry) {
+    var scheme = get(entry, ['data', 'colourScheme']) || 'emerald';
+    var preset = PRESETS[scheme] || PRESETS.emerald;
+
+    var accent = {
+      50: pick(get(entry, ['data', 'accent', 'pale']), preset[50]),
+      300: pick(get(entry, ['data', 'accent', 'light']), preset[300]),
+      400: pick(get(entry, ['data', 'accent', 'light']), preset[400]),
+      500: pick(get(entry, ['data', 'accent', 'main']), preset[500]),
+      600: pick(get(entry, ['data', 'accent', 'main']), preset[600]),
+      700: pick(get(entry, ['data', 'accent', 'hover']), preset[700]),
+      800: pick(get(entry, ['data', 'accent', 'hover']), preset[800]),
+    };
+
+    var radiusKey = get(entry, ['data', 'cornerRadius']) || 'rounded';
+    var headingKey = get(entry, ['data', 'fontHeading']) || 'system';
+    var bodyKey = get(entry, ['data', 'fontBody']) || 'system';
+
+    return {
+      scheme: scheme,
+      accent: accent,
+      light: {
+        background: pick(get(entry, ['data', 'light', 'background']), DEFAULT_LIGHT.background),
+        surface: pick(get(entry, ['data', 'light', 'surface']), DEFAULT_LIGHT.surface),
+        band: pick(get(entry, ['data', 'light', 'band']), DEFAULT_LIGHT.band),
+        text: pick(get(entry, ['data', 'light', 'text']), DEFAULT_LIGHT.text),
+        muted: pick(get(entry, ['data', 'light', 'muted']), DEFAULT_LIGHT.muted),
+        border: pick(get(entry, ['data', 'light', 'border']), DEFAULT_LIGHT.border),
+      },
+      dark: {
+        background: pick(get(entry, ['data', 'dark', 'background']), DEFAULT_DARK.background),
+        surface: pick(get(entry, ['data', 'dark', 'surface']), DEFAULT_DARK.surface),
+        band: pick(get(entry, ['data', 'dark', 'band']), DEFAULT_DARK.band),
+        text: pick(get(entry, ['data', 'dark', 'text']), DEFAULT_DARK.text),
+        muted: pick(get(entry, ['data', 'dark', 'muted']), DEFAULT_DARK.muted),
+        border: pick(get(entry, ['data', 'dark', 'border']), DEFAULT_DARK.border),
+      },
+      radius: RADIUS[radiusKey] || RADIUS.rounded,
+      fontHeading: FONTS[headingKey] || FONTS.system,
+      fontBody: FONTS[bodyKey] || FONTS.system,
+      fontHeadingKey: headingKey,
+      fontBodyKey: bodyKey,
+    };
+  }
+
+  CMS.registerPreviewStyle(
+    'html, body { margin: 0; padding: 0; } body { font-size: 14px; line-height: 1.55; } .theme-preview * { box-sizing: border-box; }',
+    { raw: true }
+  );
+
+  var LINKED_FONTS = {};
+
+  function fontLink(keys) {
+    var needed = [];
+    for (var i = 0; i < keys.length; i++) {
+      var q = FONT_QUERIES[keys[i]];
+      if (q && !LINKED_FONTS[q]) {
+        LINKED_FONTS[q] = true;
+        needed.push('family=' + q);
+      }
+    }
+    if (needed.length === 0) return null;
+    return h('link', {
+      key: 'fontlink',
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?' + needed.join('&') + '&display=swap',
+    });
+  }
+
+  function ThemePreview(props) {
+    var t = resolve(props.entry);
+    var a = t.accent;
+    var L = t.light;
+    var D = t.dark;
+    var r = t.radius;
+    var rSm = Math.max(4, parseFloat(r) * 0.5) + 'px';
+    var rMd = Math.max(6, parseFloat(r) * 0.75) + 'px';
+
+    var shell = { background: L.background, color: L.text, fontFamily: t.fontBody };
+    var wrap = { maxWidth: 760, margin: '0 auto', padding: '0 22px' };
+    var h1 = { fontFamily: t.fontHeading, fontWeight: 800, letterSpacing: '-0.02em', fontSize: 30, lineHeight: 1.15, margin: '10px 0 0' };
+    var h2 = { fontFamily: t.fontHeading, fontWeight: 800, letterSpacing: '-0.02em', fontSize: 21, margin: 0 };
+    var h3 = { fontFamily: t.fontHeading, fontWeight: 700, fontSize: 15, margin: '12px 0 0' };
+    var p = { margin: '10px 0 0', color: L.muted };
+    var eyebrow = { margin: 0, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: a[600] };
+    var btnPrimary = { display: 'inline-block', background: a[600], color: '#ffffff', padding: '11px 20px', borderRadius: rSm, fontWeight: 600, fontSize: 13.5, textDecoration: 'none' };
+    var btnGhost = { display: 'inline-block', background: L.surface, color: L.text, border: '1px solid ' + L.border, padding: '11px 20px', borderRadius: rSm, fontWeight: 600, fontSize: 13.5, textDecoration: 'none' };
+    var card = { flex: '1 1 180px', background: L.surface, border: '1px solid ' + L.border, borderRadius: r, padding: '18px 18px 20px' };
+
+    function iconTile(glyph) {
+      return h('div', { style: { width: 42, height: 42, borderRadius: rMd, background: a[50], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 } }, glyph);
+    }
+
+    function cardItem(key, glyph, title, body) {
+      return h('div', { key: key, style: card }, [iconTile(glyph), h('h3', { key: 't', style: h3 }, title), h('p', { key: 'p', style: Object.assign({}, p, { fontSize: 13 }) }, body)]);
+    }
+
+    var header = h('div', { key: 'header', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, padding: '11px 22px', borderBottom: '1px solid ' + L.border, background: L.surface } }, [
+      h('div', { key: 'brand', style: { display: 'flex', alignItems: 'center', gap: 9 } }, [
+        h('span', { key: 'logo', style: { width: 32, height: 32, borderRadius: rMd, background: a[600], color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 } }, '🎸'),
+        h('strong', { key: 'name', style: { fontSize: 12.5, lineHeight: 1.15 } }, "Richard's Guitar Lessons"),
+      ]),
+      h('div', { key: 'nav', style: { display: 'flex', alignItems: 'center', gap: 13, fontSize: 12, color: L.muted } }, [
+        h('span', { key: 'n1', style: { color: a[600], fontWeight: 600 } }, 'Home'),
+        h('span', { key: 'n2' }, 'Kids & Exams'),
+        h('span', { key: 'n3' }, 'Adults'),
+        h('span', { key: 'n4' }, 'About'),
+        h('span', { key: 'n5', style: { background: a[600], color: '#ffffff', padding: '7px 13px', borderRadius: rSm, fontWeight: 600 } }, 'Book a Trial'),
+      ]),
+    ]);
+
+    var hero = h('div', { key: 'hero', style: { background: L.band, padding: '34px 0' } }, [
+      h('div', { key: 'w', style: wrap }, [
+        h('p', { key: 'e', style: eyebrow }, 'Guitar · Bass · Ukulele — online, over Zoom'),
+        h('h1', { key: 'h', style: h1 }, 'Guitar, bass & ukulele lessons from someone who genuinely loves this'),
+        h('p', { key: 'p1', style: p }, LOREM_MED),
+        h('p', { key: 'p2', style: p }, LOREM_SHORT),
+        h('div', { key: 'btns', style: { display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 18 } }, [
+          h('span', { key: 'b1', style: btnPrimary }, 'Book a Free 30-Minute Trial Lesson'),
+          h('span', { key: 'b2', style: btnGhost }, 'Who I teach'),
+        ]),
+      ]),
+    ]);
+
+    var cards = h('div', { key: 'cards', style: { background: L.background, padding: '32px 0' } }, [
+      h('div', { key: 'w', style: wrap }, [
+        h('h2', { key: 'h', style: h2 }, 'Why learn with me?'),
+        h('p', { key: 'p', style: p }, LOREM_MED),
+        h('div', { key: 'grid', style: { display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 18 } }, [
+          cardItem('c1', '🎼', 'Your songs, tabbed out properly', LOREM_CARD),
+          cardItem('c2', '📝', 'Grade exams, minus the fear', LOREM_CARD),
+          cardItem('c3', '🎙️', "You'll hear every note properly", LOREM_CARD),
+        ]),
+      ]),
+    ]);
+
+    var pricing = h('div', { key: 'pricing', style: { background: L.band, padding: '32px 0' } }, [
+      h('div', { key: 'w', style: wrap }, [
+        h('h2', { key: 'h', style: h2 }, 'Lessons & pricing'),
+        h('p', { key: 'p', style: p }, LOREM_SHORT),
+        h('ul', { key: 'ul', style: { margin: '16px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: 12 } }, [
+          { g: '💻', t: 'Your platform, your choice' },
+          { g: '📄', t: 'Custom tabs every Monday' },
+          { g: '📅', t: 'Flexible scheduling' },
+        ].map(function (row, i) {
+          return h('li', { key: 'li' + i, style: { flex: '1 1 190px', display: 'flex', gap: 8, background: L.surface, border: '1px solid ' + L.border, borderRadius: r, padding: '12px 14px', fontSize: 12.5 } }, [
+            h('span', { key: 'g' }, row.g),
+            h('span', { key: 't', style: { color: L.muted } }, row.t),
+          ]);
+        })),
+      ]),
+    ]);
+
+    var cta = h('div', { key: 'cta', style: { background: D.background, padding: '30px 0', textAlign: 'center' } }, [
+      h('div', { key: 'w', style: wrap }, [
+        h('h2', { key: 'h', style: Object.assign({}, h2, { color: D.text }) }, 'Fancy a trial lesson?'),
+        h('p', { key: 'p', style: { margin: '10px auto 0', maxWidth: 460, color: D.muted } }, LOREM_SHORT),
+        h('div', { key: 'b', style: { marginTop: 16 } }, h('span', { style: btnPrimary }, 'Book a Free 30-Minute Trial Lesson')),
+      ]),
+    ]);
+
+    var footer = h('div', { key: 'footer', style: { background: D.background, borderTop: '1px solid ' + D.border, padding: '20px 0' } }, [
+      h('div', { key: 'w', style: Object.assign({}, wrap, { display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 14, fontSize: 12, color: D.muted }) }, [
+        h('span', { key: 'c' }, "© Richard's Guitar Lessons"),
+        h('div', { key: 's', style: { display: 'flex', gap: 7 } }, ['f', 'ig', 'tt', 'tw'].map(function (k) {
+          return h('span', { key: k, style: { width: 26, height: 26, borderRadius: rMd, background: D.surface, border: '1px solid ' + D.border } });
+        })),
+      ]),
+    ]);
+
+    var swatches = [
+      { n: 'accent', v: a[600] },
+      { n: 'hover', v: a[700] },
+      { n: 'light', v: a[400] },
+      { n: 'pale', v: a[50] },
+      { n: 'background', v: L.background },
+      { n: 'surface', v: L.surface },
+      { n: 'band', v: L.band },
+      { n: 'text', v: L.text },
+      { n: 'muted', v: L.muted },
+      { n: 'border', v: L.border },
+    ];
+
+    var palette = h(
+      'div',
+      { key: 'palette', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, padding: '14px 22px', borderTop: '1px solid ' + L.border, fontSize: 10.5, color: L.muted } },
+      [h('strong', { key: 'lbl' }, 'Resolved colours:')].concat(
+        swatches.map(function (sw) {
+          return h('span', { key: sw.n, style: { display: 'inline-flex', alignItems: 'center', gap: 4 } }, [
+            h('span', { key: 'd', style: { width: 11, height: 11, borderRadius: 3, background: sw.v, border: '1px solid ' + L.border, display: 'inline-block' } }),
+            h('span', { key: 't' }, sw.n + ' ' + sw.v),
+          ]);
+        })
+      )
+    );
+
+    return h('div', { className: 'theme-preview', style: shell }, [
+      fontLink([t.fontHeadingKey, t.fontBodyKey]),
+      header,
+      hero,
+      cards,
+      pricing,
+      cta,
+      footer,
+      palette,
+    ]);
+  }
+
+  CMS.registerPreviewTemplate('theme', ThemePreview);
+})();

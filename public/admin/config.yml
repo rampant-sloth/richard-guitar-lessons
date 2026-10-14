@@ -201,9 +201,51 @@ collections:
       - name: theme
         label: Colours & fonts
         file: src/content/theme/theme.yml
+        editor:
+          preview: true
         fields:
-          - { label: Colour scheme, name: colourScheme, widget: select, options: [{ label: Emerald (default), value: emerald }, { label: Teal, value: teal }, { label: Blue, value: blue }, { label: Indigo, value: indigo }, { label: Violet, value: violet }, { label: Rose, value: rose }, { label: Amber, value: amber }, { label: Slate (mono), value: slate }], hint: "Changes the accent colour used for buttons, links and highlights across the whole site." }
-          - { label: Heading font, name: fontHeading, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }] }
+          - label: Preset colour scheme
+            name: colourScheme
+            widget: select
+            options: [{ label: Emerald (default), value: emerald }, { label: Teal, value: teal }, { label: Blue, value: blue }, { label: Indigo, value: indigo }, { label: Violet, value: violet }, { label: Rose, value: rose }, { label: Amber, value: amber }, { label: Slate (mono), value: slate }]
+            hint: "A ready-made accent palette. Any colour box you leave empty below is taken from this preset."
+          - label: Accent colours (optional)
+            name: accent
+            widget: object
+            hint: "Leave a box empty to use the preset scheme. Pick a colour or type a hex code such as #059669."
+            fields:
+              - { label: "Accent — buttons & links", name: main, widget: color, allowInput: true, required: false, hint: "The main brand colour." }
+              - { label: "Accent — hover / darker", name: hover, widget: color, allowInput: true, required: false, hint: "Used when hovering a button, and on the header badge." }
+              - { label: "Accent — light", name: light, widget: color, allowInput: true, required: false, hint: "Used for accent text on dark backgrounds. Should be a brighter version of the accent." }
+              - { label: "Accent — pale", name: pale, widget: color, allowInput: true, required: false, hint: "The faint tint behind icon tiles. Should be a very light version of the accent." }
+          - label: Light appearance
+            name: light
+            widget: object
+            hint: "Used when the visitor's device is in light mode. Leave empty for the built-in defaults."
+            fields:
+              - { label: Page background, name: background, widget: color, allowInput: true, required: false }
+              - { label: "Cards, panels & form fields", name: surface, widget: color, allowInput: true, required: false }
+              - { label: Alternating section bands, name: band, widget: color, allowInput: true, required: false, hint: "The slightly different background behind every other section." }
+              - { label: Headings & strong text, name: text, widget: color, allowInput: true, required: false }
+              - { label: Body text, name: muted, widget: color, allowInput: true, required: false }
+              - { label: Borders & dividing lines, name: border, widget: color, allowInput: true, required: false }
+          - label: Dark appearance
+            name: dark
+            widget: object
+            hint: "Used when the visitor's device is in dark mode, and for the footer. Leave empty for the built-in defaults."
+            fields:
+              - { label: Page background, name: background, widget: color, allowInput: true, required: false }
+              - { label: "Cards, panels & form fields", name: surface, widget: color, allowInput: true, required: false }
+              - { label: Alternating section bands, name: band, widget: color, allowInput: true, required: false }
+              - { label: Headings & strong text, name: text, widget: color, allowInput: true, required: false }
+              - { label: Body text, name: muted, widget: color, allowInput: true, required: false }
+              - { label: Borders & dividing lines, name: border, widget: color, allowInput: true, required: false }
+          - label: Corner radius
+            name: cornerRadius
+            widget: select
+            options: [{ label: Sharp, value: sharp }, { label: "Subtle (slightly rounded)", value: subtle }, { label: "Rounded (default)", value: rounded }, { label: "Extra round / pill", value: pill }]
+            hint: "How rounded buttons, cards and images are."
+          - { label: Heading font, name: fontHeading, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }], hint: "Applied to every heading. The preview shows the real typeface." }
           - { label: Body font, name: fontBody, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }] }
 
   - name: settings
