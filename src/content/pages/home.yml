@@ -1,0 +1,86 @@
+seo:
+  title: "Guitar, Bass & Ukulele Lessons Online | Richard's Guitar Lessons"
+  description: "Learn guitar, bass or ukulele online with Richard — a patient, experienced teacher in the UK. From grade exams to your favourite songs, taught live over Zoom."
+  ogTitle: "Guitar, Bass & Ukulele Lessons Online | Richard's Guitar Lessons"
+  ogDescription: "Learn guitar, bass or ukulele online — from grade exams to your favourite songs, taught live over Zoom."
+
+hero:
+  eyebrow: "Guitar · Bass · Ukulele — online, over Zoom"
+  title: "Guitar, bass & ukulele lessons from someone who genuinely loves this"
+  intro: "Hi, I'm Richard. I've taught in schools, coached musicians who now tour internationally, and helped plenty of kids land their first proper chord. These days I teach guitar, bass and ukulele online from my own home studio — every age, every level, and none of that school-style rigidity."
+  image: ""
+  imageAlt: "Richard playing guitar"
+  backgroundImage: ""
+  buttons:
+    - label: "Book a Free 30-Minute Trial Lesson"
+      href: "/book-trial-lesson"
+      variant: primary
+    - label: "Who I teach"
+      href: "#lessons"
+      variant: secondary
+
+sections:
+  - layout: cards
+    heading: "Why learn with me?"
+    intro: "I'll be straight with you: learning an instrument — and the music theory that goes with it — is difficult. I'm not going to dress that up. But a good teacher helps you find the shortcuts, and that's exactly what I do. I don't do prescriptive, school-style lessons; I'm personable, I listen, and I show you the quickest route to playing the songs you actually want to play."
+    items:
+      - icon: "🎼"
+        title: "Your songs, tabbed out properly"
+        text: "Got a tune you're obsessed with? I'll transcribe it for you — accurate tab, in a key and arrangement that fits your hands. I've tabbed out some properly obscure requests over the years, and I love it."
+      - icon: "📝"
+        title: "Grade exams, minus the fear"
+        text: "I've sat on the other side of the exam room, so I know exactly what ABRSM, Rockschool and Trinity examiners are listening for. I'll get you genuinely ready — confident, not crammed."
+      - icon: "🎙️"
+        title: "You'll hear every note properly"
+        text: "Good mic, good interface, clean picture — I built my setup so online lessons actually sound like we're in the same room. Hard to fix your picking if you can't hear it clearly."
+
+  - layout: cards
+    key: "lessons"
+    background: gray
+    heading: "So — who's learning?"
+    items:
+      - icon: "🧒"
+        title: "Kids & exams"
+        text: "If you're a parent, I get it — you want someone patient, safe and genuinely good with kids. I taught in schools for years and I'm DBS-checked, and I'll get them through their grade exams with their confidence and love of music intact."
+        href: "/online-guitar-lessons-kids"
+        linkLabel: "More on kids' lessons →"
+      - icon: "🎸"
+        title: "Adults & hobbyists"
+        text: "Learn at whatever pace suits your life — no syllabus, no pressure. I'll skip the bits you don't need and show you the shortcuts to the songs you actually want to play, tabbed out for you. On guitar, bass or ukulele."
+        href: "/adult-online-guitar-lessons"
+        linkLabel: "More on adult lessons →"
+
+  - layout: videos
+    heading: "Watch me play"
+    intro: "A few recent videos from my channel — so you can hear how I sound before we even book a lesson."
+    items:
+      - youtubeId: "yEIYaVfM92A"
+        title: "Trinity Grade 5"
+        caption: "A grade exam piece, played properly."
+      - youtubeId: "MUhbeG3-vXw"
+        title: "AC/DC cover"
+        caption: "A classic riff, done properly."
+      - youtubeId: "AjlwSx2J9-Y"
+        title: "Gary Moore cover"
+        caption: "Bluesy lead playing from the heart."
+
+  - layout: lessons
+    background: gray
+    heading: "Lessons & pricing"
+    intro: "Simple, flexible and no hidden extras. Prices are per lesson, charged pro-rata — pay individually or block-book to save."
+    items:
+      - icon: "💻"
+        title: "Your platform, your choice"
+        text: "Zoom (preferred), Teams, Google Meet or WhatsApp."
+      - icon: "📄"
+        title: "Custom tabs every Monday"
+        text: "bespoke sheets for the songs you're learning."
+      - icon: "📅"
+        title: "Flexible scheduling"
+        text: "weekly, fortnightly or ad-hoc, with a 24-hour cancellation period."
+
+cta:
+  heading: "Fancy a trial lesson?"
+  body: "A free 30-minute session to test your technical setup and make sure everything runs smoothly — no pressure and no hard sell. If it's not for you, that's genuinely fine."
+  buttonLabel: "Book a Free 30-Minute Trial Lesson"
+  buttonHref: "/book-trial-lesson"

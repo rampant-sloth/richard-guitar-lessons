@@ -9,6 +9,77 @@ media_folder: "public/images"
 public_folder: "/images"
 
 collections:
+  - name: pages
+    label: Website pages
+    files:
+      - name: home
+        label: Home page
+        file: src/content/pages/home.yml
+        fields:
+          - label: Google / search listing
+            name: seo
+            widget: object
+            fields:
+              - { label: Page title, name: title, widget: string, hint: "Shown in the browser tab and in Google results." }
+              - { label: Description, name: description, widget: text, hint: "The grey summary under the title in Google results." }
+              - { label: Social share title (optional), name: ogTitle, widget: string, required: false }
+              - { label: Social share description (optional), name: ogDescription, widget: text, required: false }
+          - label: Top of the page (hero)
+            name: hero
+            widget: object
+            fields:
+              - { label: Small line above the heading, name: eyebrow, widget: string, required: false }
+              - { label: Main heading, name: title, widget: string }
+              - { label: Intro paragraph, name: intro, widget: text, required: false }
+              - { label: Image beside the heading, name: image, widget: image, required: false }
+              - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
+              - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Sits behind the text with a light overlay." }
+              - label: Buttons
+                name: buttons
+                widget: list
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Button text, name: label, widget: string }
+                  - { label: Link, name: href, widget: string, hint: 'e.g. /book-trial-lesson or #lessons' }
+                  - { label: Style, name: variant, widget: select, options: [{ label: Solid, value: primary }, { label: Outline, value: secondary }], default: primary }
+          - label: Page sections
+            name: sections
+            widget: list
+            summary: '{{fields.heading}}'
+            hint: "Add, reorder or delete the blocks that make up the page. Each block can have its own background colour, background image and foreground image."
+            fields:
+              - { label: Block type, name: layout, widget: select, options: [{ label: "Card grid", value: cards }, { label: "Bullet list", value: list }, { label: "Two articles", value: articles }, { label: "Video gallery", value: videos }, { label: "Lessons & pricing (pulled from Lesson types)", value: lessons }, { label: "Plain text", value: markdown }], default: cards }
+              - { label: Section anchor (optional), name: key, widget: string, required: false, hint: 'Lets you link straight to this block. "lessons" gives you #lessons' }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Intro line, name: intro, widget: text, required: false }
+              - { label: Body text, name: body, widget: text, required: false, hint: "Leave a blank line between paragraphs." }
+              - { label: Background colour, name: background, widget: select, options: [{ label: White, value: white }, { label: Light grey, value: gray }, { label: Green tint, value: emerald }, { label: Dark, value: dark }], default: white, hint: "Ignored when a background image is set." }
+              - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Overrides the background colour above." }
+              - { label: Foreground image, name: image, widget: image, required: false, hint: "Shown full width inside the block." }
+              - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
+              - label: Items
+                name: items
+                widget: list
+                summary: '{{fields.title}}'
+                fields:
+                  - { label: Icon (emoji), name: icon, widget: string, required: false, hint: "Paste an emoji, e.g. 🎸" }
+                  - { label: Title, name: title, widget: string, required: false }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Link to another page (optional), name: href, widget: string, required: false, hint: "Turns the whole card into a link." }
+                  - { label: Link text, name: linkLabel, widget: string, required: false, hint: 'e.g. "More on kids\u0027 lessons →"' }
+                  - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Only used by the video gallery block, e.g. yEIYaVfM92A" }
+                  - { label: Video caption, name: caption, widget: string, required: false }
+          - label: Closing call to action
+            name: cta
+            widget: object
+            required: false
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body text, name: body, widget: text, required: false }
+              - { label: Button text, name: buttonLabel, widget: string, required: false }
+              - { label: Button link, name: buttonHref, widget: string, default: /book-trial-lesson }
+              - { label: Background image, name: backgroundImage, widget: image, required: false }
+
   - name: news
     label: News
     label_singular: News post
@@ -60,8 +131,5 @@ collections:
           - { label: Site title, name: siteTitle, widget: string }
           - { label: Tagline, name: tagline, widget: text }
           - { label: Contact email, name: contactEmail, widget: string }
-          - { label: Streaming platforms, name: platforms, widget: string }
-          - { label: Homepage hero title, name: heroTitle, widget: string }
-          - { label: Homepage hero intro, name: heroIntro, widget: text }
-          - { label: Homepage hero image, name: heroImage, widget: image, required: false, hint: "Optional — a photo of you playing, shown beside the intro on the homepage." }
+          - { label: Streaming platforms, name: platforms, widget: string, hint: "Shown in the footer and on the booking page." }
           - { label: About page photo, name: aboutImage, widget: image, required: false, hint: "Optional — shown beside the intro on the About page." }

@@ -1,0 +1,46 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  image?: string;
+  imageAlt?: string;
+  backgroundImage?: string;
+  buttons?: { label: string; href: string; variant?: string }[];
+}
+
+const { eyebrow, title, intro, image, imageAlt = '', backgroundImage, buttons = [] } = Astro.props;
+---
+
+<section class={`relative overflow-hidden ${backgroundImage ? '' : 'bg-gray-50 dark:bg-slate-900'}`}>
+  {backgroundImage && (
+    <>
+      <img src={backgroundImage} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-white/85 dark:bg-slate-950/85"></div>
+    </>
+  )}
+  <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <div class={image ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+      <div class="max-w-3xl">
+        {eyebrow && <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{eyebrow}</p>}
+        <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">{title}</h1>
+        {intro && <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">{intro}</p>}
+        {buttons.length > 0 && (
+          <div class="mt-8 flex flex-wrap gap-4">
+            {buttons.map((b) => (
+              <a
+                href={b.href}
+                class={b.variant === 'secondary'
+                  ? 'rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800'
+                  : 'rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700'}
+              >
+                {b.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      {image && <img src={image} alt={imageAlt} width="800" height="600" class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md" />}
+    </div>
+  </div>
+</section>
