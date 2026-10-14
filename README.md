@@ -70,15 +70,24 @@ Then wire it up:
 
 This means the CMS always commits to the branch being edited. Source of truth: `cms/config.template.yml`.
 
-## Scheduling (cal.com)
+## Scheduling (cal.com) — currently disabled
 
-Live availability and bookings are handled by **cal.com** (not Git):
+cal.com is **not wired up yet**: Richard (the tutor) doesn't have a cal.com account, so the site
+renders **no** scheduling links or third-party scripts. Every "Book a free trial" button links to
+the Formspree booking form on `/book-trial-lesson`.
 
-- The embed is initialised once in `src/layouts/Layout.astro`.
-- Primary CTAs use `data-cal-link="richard/30min"` to open the booking popup.
-- The booking page (`src/pages/book-trial-lesson.astro`) renders an inline calendar (`#cal-inline`) with the Formspree form as a fallback.
+> ⚠️ Do **not** hardcode a cal.com username. `richard` belongs to a real, unrelated cal.com user —
+> pointing at it would send students to a stranger's diary.
 
-Replace `richard` with the real cal.com username in the Layout and page buttons.
+### Recommended approach at handover
+
+1. Richard registers **his own** cal.com account with a distinctive username
+   (e.g. `richardmemczac`, or a brand handle like `richardsguitarlessons`) — never a generic name.
+2. Store that username in **one** place — a Cloudflare Pages env var (`PUBLIC_CAL_USERNAME`) or a
+   Decap settings field — rather than hardcoding it in components.
+3. Re-enable the embed in `src/layouts/Layout.astro` and switch the CTAs to `data-cal-link` **only
+   when a username is configured**; otherwise keep the Formspree fallback.
+4. The `lessons` collection has an optional `calLink` field for per-lesson event links.
 
 ## Deployment (Cloudflare Pages)
 
@@ -92,7 +101,7 @@ Replace `richard` with the real cal.com username in the Layout and page buttons.
 - [ ] Deploy the OAuth Worker; set `DECAP_OAUTH_BASE_URL` in Cloudflare Pages
 - [ ] Set the Worker secret `GITHUB_OAUTH_CLIENT_SECRET`
 - [ ] Point the GitHub OAuth app callback at `<worker-url>/callback`
-- [ ] Replace the cal.com username `richard` (Layout + buttons) with the real one
+- [ ] Set up cal.com for Richard (own account + distinctive username), then re-enable scheduling
 - [ ] Set up the `hello@richardguitarlessons.com` mailbox
 - [ ] Add real `og:image` social share images
 

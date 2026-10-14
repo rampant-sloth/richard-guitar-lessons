@@ -19,7 +19,7 @@ const lessons = defineCollection({
     durationMinutes: z.number(),
     price: z.number(),
     summary: z.string(),
-    calLink: z.string(),
+    calLink: z.string().optional(),
     order: z.number().default(0),
   }),
 });

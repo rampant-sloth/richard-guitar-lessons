@@ -36,5 +36,5 @@ collections:
       - { label: Duration (minutes), name: durationMinutes, widget: number, value_type: int, min: 15, step: 15, default: 30 }
       - { label: Price (£), name: price, widget: number, value_type: float, min: 0 }
       - { label: Summary, name: summary, widget: text }
-      - { label: cal.com event link, name: calLink, widget: string, hint: "The cal.com event slug, e.g. richard/30min" }
+      - { label: cal.com event link, name: calLink, widget: string, required: false, hint: "Optional. Leave blank until Richard's own cal.com account exists." }
       - { label: Order, name: order, widget: number, value_type: int, default: 0, required: false }
