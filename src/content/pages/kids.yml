@@ -1,65 +1,77 @@
 seo:
-  title: "Online Guitar Lessons for Kids & Exam Students | Richard's Guitar Lessons"
-  description: "Patient, structured guitar lessons for kids from a former school teacher — with safeguarding, grade exam prep (ABRSM, Rockschool, Trinity) and plenty of fun."
-  ogTitle: "Online Guitar Lessons for Kids & Exam Students"
-  ogDescription: "Patient, structured guitar lessons for kids — safeguarding and grade exam prep built in."
-
+  title: Online Guitar Lessons for Kids & Exam Students | Richard's Guitar Lessons
+  description: Patient, structured guitar lessons for kids from a former school
+    teacher with safeguarding, grade exam prep (ABRSM, Rockschool, Trinity) and
+    plenty of fun.
+  ogTitle: Online Guitar Lessons for Kids & Exam Students
+  ogDescription: Patient, structured guitar lessons for kids, safeguarding and
+    grade exam prep built in.
 hero:
-  eyebrow: "Kids & grade exams — online, over Zoom"
-  title: "Guitar lessons for kids & exam students"
-  intro: "Hi, I'm Richard. I've spent years teaching in schools, so I know what actually keeps kids engaged — and what makes their eyes glaze over. These lessons are structured, patient and all about building confidence, with safeguarding and grade exam prep baked in."
+  eyebrow: Kids & grade exams — online, over Zoom
+  title: Guitar lessons for kids & exam students
+  intro: Hi, I'm Richard. I've spent years teaching in schools, so I know what
+    actually keeps kids engaged — and what makes their eyes glaze over. These
+    lessons are structured, patient and all about building confidence, with
+    safeguarding and grade exam prep baked in.
   image: ""
-  imageAlt: "Child learning guitar online"
+  imageAlt: Child learning guitar online
   backgroundImage: ""
   buttons:
-    - label: "Book a Free 30-Minute Trial Lesson"
-      href: "/book-trial-lesson"
+    - label: Book a Free 30-Minute Trial Lesson
+      href: /book-trial-lesson
       variant: primary
-    - label: "Meet me"
-      href: "/about-richard"
+    - label: Meet me
+      href: /about-richard
       variant: secondary
-
 sections:
   - layout: list
-    heading: "Structured, but never boring"
-    body: |-
-      Kids learn best with a clear path — but that doesn't mean dry or rigid. Every lesson follows a steady, age-appropriate route, from first chords and reading tab through to scales, technique and actually enjoying performing.
+    heading: Structured, but never boring
+    body: >-
+      Kids learn best with a clear path — but that doesn't mean dry or rigid.
+      Every lesson follows a steady, age-appropriate route, from first chords
+      and reading tab through to scales, technique and actually enjoying
+      performing.
+
 
       Short, focused tasks keep younger players engaged, with a small, satisfying target to nail each week. Progress they can actually see and feel.
     items:
-      - icon: "🎯"
-        title: "Clear weekly goals"
-        text: "one small, satisfying thing to nail each week."
-      - icon: "📚"
-        title: "Age-appropriate songs"
-        text: "stuff they'll actually want to play."
-      - icon: "🏆"
-        title: "Real grade paths"
-        text: "ABRSM, Rockschool and Trinity support."
-
+      - icon: 🎯
+        title: Clear weekly goals
+        text: one small, satisfying thing to nail each week.
+      - icon: 📚
+        title: Age-appropriate songs
+        text: stuff they'll actually want to play.
+      - icon: 🏆
+        title: Real grade paths
+        text: ABRSM, Rockschool and Trinity support.
+    background: emerald
   - layout: cards
     background: emerald
-    heading: "Safeguarding you can trust"
-    intro: "I taught in schools for years, so child safety isn't a box I tick — it's just how I work. Lessons run with clear online-safety practices, and you're always welcome to sit in."
+    heading: Safeguarding you can trust
+    intro: I taught in schools for years, so child safety isn't a box I tick — it's
+      just how I work. Lessons run with clear online-safety practices, and
+      you're always welcome to sit in.
     items:
-      - title: "Enhanced DBS check"
-        text: "Proper background clearance for working with children."
-      - title: "Parents always welcome"
-        text: "Sit in on any lesson, at any time."
-      - title: "Safe, simple platforms"
-        text: "Trusted, family-friendly video tools."
-
+      - title: Enhanced DBS check
+        text: Proper background clearance for working with children.
+      - title: Parents always welcome
+        text: Sit in on any lesson, at any time.
+      - title: Safe, simple platforms
+        text: Trusted, family-friendly video tools.
   - layout: articles
     items:
-      - icon: "🏫"
-        title: "Real school-teaching experience"
-        text: "I've stood in front of a classroom enough to know what keeps kids engaged and what sends them to sleep. I bring that every single lesson."
-      - icon: "🎓"
-        title: "Grade exam preparation"
-        text: "I know exactly what examiners are listening for, and I'll get your child ready without the stress — sight-reading, aural, performance, the lot."
-
+      - icon: 🏫
+        title: Real school-teaching experience
+        text: I've stood in front of a classroom enough to know what keeps kids engaged
+          and what sends them to sleep. I bring that every single lesson.
+      - icon: 🎓
+        title: Grade exam preparation
+        text: I know exactly what examiners are listening for, and I'll get your child
+          ready without the stress — sight-reading, aural, performance, the lot.
+    background: emerald
 cta:
-  heading: "Want to see if they enjoy it?"
-  body: "Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly."
-  buttonLabel: "Book a Free 30-Minute Trial Lesson"
-  buttonHref: "/book-trial-lesson"
+  heading: Want to see if they enjoy it?
+  body: Book a free 30-minute trial to test the technical setup and make sure
+    everything runs smoothly.
+  buttonLabel: Book a Free 30-Minute Trial Lesson
+  buttonHref: /book-trial-lesson
