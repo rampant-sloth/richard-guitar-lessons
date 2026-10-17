@@ -290,6 +290,7 @@ collections:
               - { label: TikTok, name: tiktok, widget: string, required: false }
               - { label: Twitch, name: twitch, widget: string, required: false }
               - { label: WhatsApp, name: whatsapp, widget: string, required: false, hint: "Switched off at the moment. Paste a link like https://wa.me/447700900123 to show the WhatsApp icon; clear it again to hide it." }
+              - { label: YouTube, name: youtube, widget: string, required: false }
 
   - name: tabs
     label: Tablature Library

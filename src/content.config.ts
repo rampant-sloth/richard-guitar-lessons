@@ -39,6 +39,7 @@ const site = defineCollection({
         tiktok: z.string().optional(),
         twitch: z.string().optional(),
         whatsapp: z.string().optional(),
+        youtube: z.string().optional(),
       })
       .optional(),
   }),
