@@ -66,28 +66,16 @@ const jsonLd = {
             <input type="email" id="email" name="email" required placeholder="you@example.com" class={inputClass} />
           </div>
 
-          {/* Original Lesson Date */}
+          {/* Original Lesson Date & Time */}
           <div>
-            <label for="originalDate" class="block text-sm font-semibold text-[var(--theme-text)]">Original lesson date</label>
-            <input type="date" id="originalDate" name="originalDate" required class={inputClass} />
+            <label for="originalDateTime" class="block text-sm font-semibold text-[var(--theme-text)]">When was your planned lesson?</label>
+            <input type="datetime-local" id="originalDateTime" name="originalDateTime" required class={inputClass} />
           </div>
 
-          {/* Original Lesson Time */}
+          {/* Proposed Reschedule Date & Time */}
           <div>
-            <label for="originalTime" class="block text-sm font-semibold text-[var(--theme-text)]">Original lesson time</label>
-            <input type="time" id="originalTime" name="originalTime" required class={inputClass} />
-          </div>
-
-          {/* Proposed Reschedule Date */}
-          <div>
-            <label for="proposedDate" class="block text-sm font-semibold text-[var(--theme-text)]">Preferred new date</label>
-            <input type="date" id="proposedDate" name="proposedDate" required class={inputClass} />
-          </div>
-
-          {/* Proposed Reschedule Time */}
-          <div>
-            <label for="proposedTime" class="block text-sm font-semibold text-[var(--theme-text)]">Preferred new time</label>
-            <input type="time" id="proposedTime" name="proposedTime" required class={inputClass} />
+            <label for="proposedDateTime" class="block text-sm font-semibold text-[var(--theme-text)]">When would you like to reschedule to?</label>
+            <input type="datetime-local" id="proposedDateTime" name="proposedDateTime" required class={inputClass} />
           </div>
 
           {/* Optional notes */}
