@@ -31,6 +31,7 @@ const site = defineCollection({
     tagline: z.string(),
     contactEmail: z.string(),
     platforms: z.string(),
+    ebayUrl: z.string().optional(),
     social: z
       .object({
         facebook: z.string().optional(),
@@ -144,6 +145,7 @@ const pages = defineCollection({
                 href: z.string().optional(),
                 linkLabel: z.string().optional(),
                 youtubeId: z.string().optional(),
+                format: z.enum(['standard', 'short']).default('standard').optional(),
                 caption: z.string().optional(),
               })
             )
@@ -192,5 +194,20 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { news, lessons, site, theme, pages };
+const tabs = defineCollection({
+  loader: glob({ pattern: '**/*.yml', base: './src/content/tabs' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    instrument: z.enum(['Guitar', 'Bass', 'Ukulele']),
+    difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']),
+    image: z.string().optional(),
+    file: z.string().optional(),
+    youtubeId: z.string().optional(),
+    date: z.coerce.date(),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { news, lessons, site, theme, pages, tabs };
 

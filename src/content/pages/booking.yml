@@ -32,6 +32,15 @@ form:
       placeholder: "you@example.com"
       required: true
       width: half
+    - label: "What instrument do you want to learn?"
+      name: "instrument"
+      required: true
+      width: half
+      options:
+        - "Guitar"
+        - "Bass"
+        - "Ukulele"
+        - "Other"
     - label: "Age / experience level"
       name: "experience"
       type: text

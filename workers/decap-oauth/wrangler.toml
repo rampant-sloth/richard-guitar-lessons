@@ -4,6 +4,9 @@ compatibility_date = "2025-01-01"
 workers_dev = true
 preview_urls = false
 
+[previews]
+enabled = true
+
 [vars]
 # The OAuth client ID is public (it appears in the authorize URL), so it is safe to commit.
 GITHUB_OAUTH_CLIENT_ID = "Ov23li6duCdaQWAPpend"

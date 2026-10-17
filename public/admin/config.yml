@@ -75,6 +75,7 @@ collections:
                   - { label: Link to another page (optional), name: href, widget: string, required: false, hint: "Turns the whole card into a link." }
                   - { label: Link text, name: linkLabel, widget: string, required: false, hint: 'e.g. "More on kids\u0027 lessons →"' }
                   - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Only used by the video gallery block, e.g. yEIYaVfM92A" }
+                  - { label: Video format, name: format, widget: select, options: [{ label: "Standard Video (16:9)", value: standard }, { label: "YouTube Short (9:16)", value: short }], default: standard, required: false, hint: "Choose 'Short' for vertical videos — they render in a portrait frame for better engagement." }
                   - { label: Video caption, name: caption, widget: string, required: false }
           - &ctaField
             label: Closing call to action
@@ -278,6 +279,7 @@ collections:
           - { label: Tagline, name: tagline, widget: text }
           - { label: Contact email, name: contactEmail, widget: string }
           - { label: Streaming platforms, name: platforms, widget: string, hint: "Shown in the footer and on the booking page." }
+          - { label: eBay store URL, name: ebayUrl, widget: string, required: false, hint: "Link to your eBay store — shown in the header and footer. Leave blank to hide." }
           - label: Social media links
             name: social
             widget: object
@@ -288,3 +290,25 @@ collections:
               - { label: TikTok, name: tiktok, widget: string, required: false }
               - { label: Twitch, name: twitch, widget: string, required: false }
               - { label: WhatsApp, name: whatsapp, widget: string, required: false, hint: "Switched off at the moment. Paste a link like https://wa.me/447700900123 to show the WhatsApp icon; clear it again to hide it." }
+
+  - name: tabs
+    label: Tablature Library
+    folder: src/content/tabs
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text, required: false }
+      - label: Instrument
+        name: instrument
+        widget: select
+        options: [{ label: Guitar, value: Guitar }, { label: Bass, value: Bass }, { label: Ukulele, value: Ukulele }]
+      - label: Difficulty
+        name: difficulty
+        widget: select
+        options: [{ label: Beginner, value: Beginner }, { label: Intermediate, value: Intermediate }, { label: Advanced, value: Advanced }]
+      - { label: Cover image, name: image, widget: image, required: false, hint: "A photo or scan of the tab sheet." }
+      - { label: Tab file (PDF or image)", name: file, widget: file, required: false, hint: "Upload the full tablature file for download." }
+      - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Optional — links the tab to a video demonstration." }
+      - { label: Date added, name: date, widget: datetime, date_format: YYYY-MM-DD, default: now }
+      - { label: Order (lower = first), name: order, widget: number, default: 0, required: false }

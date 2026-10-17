@@ -11,6 +11,7 @@ interface Item {
   href?: string;
   linkLabel?: string;
   youtubeId?: string;
+  format?: 'standard' | 'short';
   caption?: string;
 }
 
@@ -196,27 +197,30 @@ const asParagraphs = (text?: string) =>
       )}
       {s.layout === 'videos' && (
         <div class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
-          {(s.items ?? []).map((it) => (
-            <figure class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
-              {it.youtubeId && (
-                <div class="aspect-video w-full">
-                  <iframe
-                    class="h-full w-full"
-                    src={`https://www.youtube-nocookie.com/embed/${it.youtubeId}`}
-                    title={it.title ?? 'Lesson video'}
-                    loading="lazy"
-                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
-                </div>
-              )}
-              {(it.title || it.caption) && (
-                <figcaption class="p-4">
-                  {it.title && <p class={`font-semibold ${headingClass(s)}`}>{it.title}</p>}
-                  {it.caption && <p class={`mt-1 text-sm ${bodyClass(s)}`}>{it.caption}</p>}
-                </figcaption>
-              )}
-            </figure>
-          ))}
+          {(s.items ?? []).map((it) => {
+            const isShort = it.format === 'short';
+            return (
+              <figure class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+                {it.youtubeId && (
+                  <div class={isShort ? 'aspect-[9/16] w-full max-w-[280px] mx-auto' : 'aspect-video w-full'}>
+                    <iframe
+                      class="h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${it.youtubeId}`}
+                      title={it.title ?? 'Lesson video'}
+                      loading="lazy"
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                  </div>
+                )}
+                {(it.title || it.caption) && (
+                  <figcaption class="p-4">
+                    {it.title && <p class={`font-semibold ${headingClass(s)}`}>{it.title}</p>}
+                    {it.caption && <p class={`mt-1 text-sm ${bodyClass(s)}`}>{it.caption}</p>}
+                  </figcaption>
+                )}
+              </figure>
+            );
+          })}
         </div>
       )}
 
