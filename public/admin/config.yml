@@ -2,13 +2,174 @@ backend:
   name: github
   repo: rampant-sloth/richard-guitar-lessons
   branch: main
-  base_url: https://decap-oauth.<your-account>.workers.dev
+  base_url: https://decap-oauth.rampantsloth-3b0.workers.dev
   auth_endpoint: auth
 
 media_folder: "public/images"
 public_folder: "/images"
 
 collections:
+  - name: pages
+    label: Website pages
+    files:
+      - name: home
+        label: Home page
+        file: src/content/pages/home.yml
+        fields:
+          - &seoField
+            label: Google / search listing
+            name: seo
+            widget: object
+            fields:
+              - { label: Page title, name: title, widget: string, hint: "Shown in the browser tab and in Google results." }
+              - { label: Description, name: description, widget: text, hint: "The grey summary under the title in Google results." }
+              - { label: Social share title (optional), name: ogTitle, widget: string, required: false }
+              - { label: Social share description (optional), name: ogDescription, widget: text, required: false }
+          - &heroField
+            label: Top of the page (hero)
+            name: hero
+            widget: object
+            fields:
+              - { label: Small line above the heading, name: eyebrow, widget: string, required: false }
+              - { label: Main heading, name: title, widget: string }
+              - { label: Intro paragraph, name: intro, widget: text, required: false }
+              - { label: Image beside the heading, name: image, widget: image, required: false }
+              - { label: "Image position (only used when an image is set)", name: imagePosition, widget: select, options: [{ label: "Right of the text (two columns)", value: right }, { label: "Left of the text (two columns)", value: left }, { label: "Centred - text above, image below", value: centre }], default: right, required: false, hint: "Optional - ignored when there is no image above. Two-column layouts automatically condense to a single column on narrower screens." }
+              - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
+              - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Sits behind the text with a light overlay." }
+              - label: Buttons
+                name: buttons
+                widget: list
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Button text, name: label, widget: string }
+                  - { label: Link, name: href, widget: string, hint: 'e.g. /book-trial-lesson or #lessons' }
+                  - { label: Style, name: variant, widget: select, options: [{ label: Solid, value: primary }, { label: Outline, value: secondary }], default: primary }
+          - &sectionsField
+            label: Page sections
+            name: sections
+            widget: list
+            summary: '{{fields.heading}}'
+            hint: "Add, reorder or delete the blocks that make up the page. Each block can have its own background colour, background image and foreground image."
+            fields:
+              - { label: Block type, name: layout, widget: select, options: [{ label: "Card grid", value: cards }, { label: "Bullet list", value: list }, { label: "Two articles", value: articles }, { label: "Alternating image & text", value: alternate }, { label: "Photo gallery (masonry)", value: gallery }, { label: "Video gallery", value: videos }, { label: "Lessons & pricing (pulled from Lesson types)", value: lessons }, { label: "Plain text", value: markdown }], default: cards }
+              - { label: Section anchor (optional), name: key, widget: string, required: false, hint: 'Lets you link straight to this block. "lessons" gives you #lessons' }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Intro line, name: intro, widget: text, required: false }
+              - { label: Body text, name: body, widget: text, required: false, hint: "Leave a blank line between paragraphs." }
+              - { label: Background colour, name: background, widget: select, options: [{ label: White, value: white }, { label: Light grey, value: gray }, { label: Green tint, value: emerald }, { label: Dark, value: dark }], default: white, hint: "Ignored when a background image is set." }
+              - { label: Background image, name: backgroundImage, widget: image, required: false, hint: "Overrides the background colour above." }
+              - { label: Foreground image, name: image, widget: image, required: false }
+              - { label: "Image position (only used when a foreground image is set)", name: imagePosition, widget: select, options: [{ label: "Right of the text (two columns)", value: right }, { label: "Left of the text (two columns)", value: left }, { label: "Centred - text above, image below", value: centre }], default: right, required: false, hint: "Optional - ignored when there is no foreground image. Two-column layouts automatically condense to a single column on narrower screens." }
+              - { label: Image description (alt text), name: imageAlt, widget: string, required: false }
+              - label: Items
+                name: items
+                widget: list
+                summary: '{{fields.title}}'
+                fields:
+                  - { label: Image, name: image, widget: image, required: false, hint: "A photo makes the block feel far more real than an emoji. Used by card grids, two-article, alternating and gallery blocks." }
+                  - { label: "Image description (alt text)", name: imageAlt, widget: string, required: false, hint: "For screen readers and search engines." }
+                  - { label: "Icon (emoji, fallback only)", name: icon, widget: string, required: false, hint: "Shown when no image is uploaded. Leave this blank once you have a photo." }
+                  - { label: Title, name: title, widget: string, required: false }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Link to another page (optional), name: href, widget: string, required: false, hint: "Turns the whole card into a link." }
+                  - { label: Link text, name: linkLabel, widget: string, required: false, hint: 'e.g. "More on kids\u0027 lessons →"' }
+                  - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Only used by the video gallery block, e.g. yEIYaVfM92A" }
+                  - { label: Video format, name: format, widget: select, options: [{ label: "Standard Video (16:9)", value: standard }, { label: "YouTube Short (9:16)", value: short }], default: standard, required: false, hint: "Choose 'Short' for vertical videos — they render in a portrait frame for better engagement." }
+                  - { label: Video caption, name: caption, widget: string, required: false }
+          - &ctaField
+            label: Closing call to action
+            name: cta
+            widget: object
+            required: false
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body text, name: body, widget: text, required: false }
+              - { label: Button text, name: buttonLabel, widget: string, required: false }
+              - { label: Button link, name: buttonHref, widget: string, default: /book-trial-lesson }
+              - { label: Background image, name: backgroundImage, widget: image, required: false }
+
+      - name: about
+        label: About page
+        file: src/content/pages/about.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: adults
+        label: Adult lessons page
+        file: src/content/pages/adults.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: kids
+        label: Kids lessons page
+        file: src/content/pages/kids.yml
+        fields:
+          - *seoField
+          - *heroField
+          - *sectionsField
+          - *ctaField
+
+      - name: booking
+        label: Book a trial lesson page
+        file: src/content/pages/booking.yml
+        fields:
+          - *seoField
+          - *heroField
+          - &formField
+            label: Booking form
+            name: form
+            widget: object
+            required: false
+            hint: "The enquiry form on this page. The form address is already set up — you only need to change the wording."
+            fields:
+              - { label: Form address (leave as is), name: action, widget: string, default: "https://formspree.io/f/xnpjgokn", hint: "Where the form sends its emails. Only change this if the Formspree account moves." }
+              - { label: Email subject line, name: subject, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Intro text, name: intro, widget: text, required: false }
+              - { label: Submit button text, name: submitLabel, widget: string, default: Send }
+              - label: Form fields
+                name: fields
+                widget: list
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Field name (leave as is), name: name, widget: string, hint: "Appears in the email you receive, e.g. name, email, goals." }
+                  - { label: Type, name: type, widget: select, options: [{ label: Text, value: text }, { label: Email, value: email }, { label: Phone, value: tel }, { label: Multi-line text, value: textarea }], default: text }
+                  - { label: Placeholder text, name: placeholder, widget: string, required: false }
+                  - { label: Required?, name: required, widget: boolean, default: false, required: false }
+                  - { label: Width, name: width, widget: select, options: [{ label: Half width, value: half }, { label: Full width, value: full }], default: half }
+                  - label: Dropdown options
+                    name: options
+                    widget: list
+                    required: false
+                    field: { label: Option, name: option, widget: string }
+                    hint: "Leave empty for a normal text box. Add options here to turn the field into a dropdown."
+          - *sectionsField
+          - *ctaField
+
+      - name: news
+        label: News listing page
+        file: src/content/pages/news.yml
+        fields:
+          - *seoField
+          - *heroField
+          - &labelsField
+            label: Link and label text
+            name: labels
+            widget: object
+            required: false
+            fields:
+              - { label: Read more link, name: readMore, widget: string, required: false }
+              - { label: Back to home link, name: backToHome, widget: string, required: false }
+              - { label: "Nothing published yet message", name: empty, widget: string, required: false }
+
   - name: news
     label: News
     label_singular: News post
@@ -39,6 +200,74 @@ collections:
       - { label: cal.com event link, name: calLink, widget: string, required: false, hint: "Optional. Leave blank until Richard's own cal.com account exists." }
       - { label: Order, name: order, widget: number, value_type: int, default: 0, required: false }
 
+  - name: theme
+    label: Theme
+    files:
+      - name: theme
+        label: Colours & fonts
+        file: src/content/theme/theme.yml
+        editor:
+          preview: true
+        fields:
+          - label: Preset colour scheme
+            name: colourScheme
+            widget: select
+            options: [{ label: Emerald (default), value: emerald }, { label: Teal, value: teal }, { label: Blue, value: blue }, { label: Indigo, value: indigo }, { label: Violet, value: violet }, { label: Rose, value: rose }, { label: Amber, value: amber }, { label: Slate (mono), value: slate }]
+            hint: "A ready-made accent palette. Any colour box you leave empty below is taken from this preset."
+          - label: Accent colours (optional)
+            name: accent
+            widget: object
+            hint: "Leave a box empty to use the preset scheme. Pick a colour or type a hex code such as #059669."
+            fields:
+              - { label: "Accent — buttons & links", name: main, widget: color, allowInput: true, required: false, hint: "The main brand colour." }
+              - { label: "Accent — hover / darker", name: hover, widget: color, allowInput: true, required: false, hint: "Used when hovering a button, and on the header badge." }
+              - { label: "Accent — light", name: light, widget: color, allowInput: true, required: false, hint: "Used for accent text on dark backgrounds. Should be a brighter version of the accent." }
+              - { label: "Accent — pale", name: pale, widget: color, allowInput: true, required: false, hint: "The faint tint behind icon tiles. Should be a very light version of the accent." }
+          - label: Light appearance
+            name: light
+            widget: object
+            hint: "Used when the visitor's device is in light mode. Leave empty for the built-in defaults."
+            fields:
+              - { label: Page background, name: background, widget: color, allowInput: true, required: false }
+              - { label: "Cards, panels & form fields", name: surface, widget: color, allowInput: true, required: false }
+              - { label: Alternating section bands, name: band, widget: color, allowInput: true, required: false, hint: "The slightly different background behind every other section." }
+              - { label: Headings & strong text, name: text, widget: color, allowInput: true, required: false }
+              - { label: Body text, name: muted, widget: color, allowInput: true, required: false }
+              - { label: Borders & dividing lines, name: border, widget: color, allowInput: true, required: false }
+          - label: Dark appearance
+            name: dark
+            widget: object
+            hint: "Used when the visitor's device is in dark mode, and for the footer. Leave empty for the built-in defaults."
+            fields:
+              - { label: Page background, name: background, widget: color, allowInput: true, required: false }
+              - { label: "Cards, panels & form fields", name: surface, widget: color, allowInput: true, required: false }
+              - { label: Alternating section bands, name: band, widget: color, allowInput: true, required: false }
+              - { label: Headings & strong text, name: text, widget: color, allowInput: true, required: false }
+              - { label: Body text, name: muted, widget: color, allowInput: true, required: false }
+              - { label: Borders & dividing lines, name: border, widget: color, allowInput: true, required: false }
+          - label: Dark / light mode switch
+            name: appearance
+            widget: object
+            hint: "The sun/moon button in the header, at the top of every page."
+            fields:
+              - { label: Show the switch, name: showToggle, widget: boolean, default: true, required: false, hint: "Turn this off to hide the button and always use the mode below." }
+              - label: What visitors see first
+                name: defaultMode
+                widget: select
+                options: [{ label: "Auto — follow the visitor's device (dark if unsure)", value: auto }, { label: Always start in light mode, value: light }, { label: Always start in dark mode, value: dark }]
+                default: auto
+                hint: "A visitor's own choice always wins and is remembered on their device."
+              - { label: "Tooltip while in dark mode", name: toggleLightLabel, widget: string, required: false, hint: "\"Switch to light mode\"" }
+              - { label: "Tooltip while in light mode", name: toggleDarkLabel, widget: string, required: false, hint: "\"Switch to dark mode\"" }
+
+          - label: Corner radius
+            name: cornerRadius
+            widget: select
+            options: [{ label: Sharp, value: sharp }, { label: "Subtle (slightly rounded)", value: subtle }, { label: "Rounded (default)", value: rounded }, { label: "Extra round / pill", value: pill }]
+            hint: "How rounded buttons, cards and images are."
+          - { label: Heading font, name: fontHeading, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }], hint: "Applied to every heading. The preview shows the real typeface." }
+          - { label: Body font, name: fontBody, widget: select, options: [{ label: System default, value: system }, { label: Inter, value: inter }, { label: Poppins, value: poppins }, { label: Nunito, value: nunito }, { label: Lora (serif), value: lora }, { label: Merriweather (serif), value: merriweather }] }
+
   - name: settings
     label: Site settings
     files:
@@ -49,6 +278,37 @@ collections:
           - { label: Site title, name: siteTitle, widget: string }
           - { label: Tagline, name: tagline, widget: text }
           - { label: Contact email, name: contactEmail, widget: string }
-          - { label: Streaming platforms, name: platforms, widget: string }
-          - { label: Homepage hero title, name: heroTitle, widget: string }
-          - { label: Homepage hero intro, name: heroIntro, widget: text }
+          - { label: Streaming platforms, name: platforms, widget: string, hint: "Shown in the footer and on the booking page." }
+          - { label: eBay store URL, name: ebayUrl, widget: string, required: false, hint: "Link to your eBay store — shown in the header and footer. Leave blank to hide." }
+          - label: Social media links
+            name: social
+            widget: object
+            hint: "Paste a full web address for each one, e.g. https://facebook.com/yourpage — leave a box empty to hide that icon in the footer."
+            fields:
+              - { label: Facebook, name: facebook, widget: string, required: false }
+              - { label: Instagram, name: instagram, widget: string, required: false }
+              - { label: TikTok, name: tiktok, widget: string, required: false }
+              - { label: Twitch, name: twitch, widget: string, required: false }
+              - { label: WhatsApp, name: whatsapp, widget: string, required: false, hint: "Switched off at the moment. Paste a link like https://wa.me/447700900123 to show the WhatsApp icon; clear it again to hide it." }
+
+  - name: tabs
+    label: Tablature Library
+    folder: src/content/tabs
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text, required: false }
+      - label: Instrument
+        name: instrument
+        widget: select
+        options: [{ label: Guitar, value: Guitar }, { label: Bass, value: Bass }, { label: Ukulele, value: Ukulele }]
+      - label: Difficulty
+        name: difficulty
+        widget: select
+        options: [{ label: Beginner, value: Beginner }, { label: Intermediate, value: Intermediate }, { label: Advanced, value: Advanced }]
+      - { label: Cover image, name: image, widget: image, required: false, hint: "A photo or scan of the tab sheet." }
+      - { label: Tab file (PDF or image)", name: file, widget: file, required: false, hint: "Upload the full tablature file for download." }
+      - { label: YouTube video ID, name: youtubeId, widget: string, required: false, hint: "Optional — links the tab to a video demonstration." }
+      - { label: Date added, name: date, widget: datetime, date_format: YYYY-MM-DD, default: now }
+      - { label: Order (lower = first), name: order, widget: number, default: 0, required: false }

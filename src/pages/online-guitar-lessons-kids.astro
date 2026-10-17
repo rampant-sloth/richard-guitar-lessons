@@ -1,97 +1,41 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Sections from '../components/Sections.astro';
+import Cta from '../components/Cta.astro';
+import LatestNews from '../components/LatestNews.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'kids');
+if (!page) throw new Error('Missing src/content/pages/kids.yml');
+
+const { seo, hero, sections, cta } = page.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Online guitar lessons for kids and exam students',
+  provider: { '@type': 'Person', name: 'Richard', jobTitle: 'Online Guitar Teacher' },
+  areaServed: 'Worldwide',
+  url: 'https://richardguitarlessons.com/online-guitar-lessons-kids',
+};
 ---
 
 <Layout
-  title="Online Guitar Lessons for Kids & Exam Students | Richard's Guitar Lessons"
-  description="Patient, structured guitar lessons for kids from a former school teacher — with safeguarding, grade exam prep (ABRSM, Rockschool, Trinity) and plenty of fun."
+  title={seo.title}
+  description={seo.description}
   canonical="https://richardguitarlessons.com/online-guitar-lessons-kids"
   ogType="website"
-  ogTitle="Online Guitar Lessons for Kids & Exam Students"
-  ogDescription="Patient, structured guitar lessons for kids — safeguarding and grade exam prep built in."
+  ogTitle={seo.ogTitle ?? seo.title}
+  ogDescription={seo.ogDescription ?? seo.description}
   active="kids"
 >
   <main>
-    <!-- Hero -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Kids &amp; grade exams — online, over Zoom</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Guitar lessons for kids &amp; exam students</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">Hi, I'm Richard. I've spent years teaching in schools, so I know what actually keeps kids engaged — and what makes their eyes glaze over. These lessons are structured, patient and all about building confidence, with safeguarding and grade exam prep baked in.</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="/book-trial-lesson" class="rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-            <a href="/about-richard" class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-6 py-3 text-base font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-gray-50 dark:hover:bg-slate-800">Meet me</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Structured learning -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Structured, but never boring</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Kids learn best with a clear path — but that doesn't mean dry or rigid. Every lesson follows a steady, age-appropriate route, from first chords and reading tab through to scales, technique and actually enjoying performing.</p>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">Short, focused tasks keep younger players engaged, with a small, satisfying target to nail each week. Progress they can actually see and feel.</p>
-        </div>
-        <ul class="space-y-3">
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🎯</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Clear weekly goals</strong> — one small, satisfying thing to nail each week.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📚</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Age-appropriate songs</strong> — stuff they'll actually want to play.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🏆</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Real grade paths</strong> — ABRSM, Rockschool and Trinity support.</span></li>
-        </ul>
-      </div>
-    </section>
-    <!-- Safeguarding -->
-    <section class="bg-emerald-50 dark:bg-emerald-500/10">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div class="max-w-3xl">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Safeguarding you can trust</h2>
-          <p class="mt-4 leading-relaxed text-slate-700 dark:text-slate-200">I taught in schools for years, so child safety isn't a box I tick — it's just how I work. Lessons run with clear online-safety practices, and you're always welcome to sit in.</p>
-        </div>
-        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><h3 class="font-semibold text-slate-900 dark:text-white">Enhanced DBS check</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Proper background clearance for working with children.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><h3 class="font-semibold text-slate-900 dark:text-white">Parents always welcome</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Sit in on any lesson, at any time.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><h3 class="font-semibold text-slate-900 dark:text-white">Safe, simple platforms</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Trusted, family-friendly video tools.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- School experience & exams -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-6 md:grid-cols-2">
-        <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8">
-          <span class="text-3xl" aria-hidden="true">🏫</span>
-          <h2 class="mt-4 text-xl font-bold tracking-tight text-slate-900 dark:text-white">Real school-teaching experience</h2>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">I've stood in front of a classroom enough to know what keeps kids engaged and what sends them to sleep. I bring that every single lesson.</p>
-        </article>
-        <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8">
-          <span class="text-3xl" aria-hidden="true">🎓</span>
-          <h2 class="mt-4 text-xl font-bold tracking-tight text-slate-900 dark:text-white">Grade exam preparation</h2>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">I know exactly what examiners are listening for, and I'll get your child ready without the stress — sight-reading, aural, performance, the lot.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">
-        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Want to see if they enjoy it?</h2>
-        <p class="mt-3 text-slate-300">Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly.</p>
-        <a href="/book-trial-lesson" class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-      </div>
-    </section>
+    <Hero {...hero} />
+    <Sections sections={sections} />
+    <LatestNews />
+    {cta && <Cta {...cta} />}
   </main>
 
-  <script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "Online guitar lessons for kids and exam students",
-    "provider": { "@type": "Person", "name": "Richard", "jobTitle": "Online Guitar Teacher" },
-    "areaServed": "Worldwide",
-    "url": "https://richardguitarlessons.com/online-guitar-lessons-kids"
-  }
-  </script>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 </Layout>
-

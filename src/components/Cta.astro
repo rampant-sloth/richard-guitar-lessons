@@ -1,0 +1,27 @@
+---
+interface Props {
+  heading: string;
+  body?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+  backgroundImage?: string;
+}
+
+const { heading, body, buttonLabel, buttonHref = '/book-trial-lesson', backgroundImage } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-[var(--theme-deep)]">
+  {backgroundImage && (
+    <>
+      <img src={backgroundImage} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover opacity-40" />
+      <div class="absolute inset-0 bg-[var(--theme-deep)] opacity-[0.7]"></div>
+    </>
+  )}
+  <div class="relative mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">
+    <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">{heading}</h2>
+    {body && <p class="mt-3 text-slate-300">{body}</p>}
+    {buttonLabel && (
+      <a href={buttonHref} class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">{buttonLabel}</a>
+    )}
+  </div>
+</section>

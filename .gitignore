@@ -22,3 +22,8 @@ pnpm-debug.log*
 .env
 .env.production
 
+# agent tooling (Cloudflare skills via `npx skills add`)
+.agents/
+skills-lock.json
+
+

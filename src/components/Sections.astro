@@ -1,0 +1,257 @@
+---
+import { getCollection } from 'astro:content';
+import MediaFeatureBlock from './MediaFeatureBlock.astro';
+
+interface Item {
+  icon?: string;
+  image?: string;
+  imageAlt?: string;
+  title?: string;
+  text?: string;
+  href?: string;
+  linkLabel?: string;
+  youtubeId?: string;
+  format?: 'standard' | 'short';
+  caption?: string;
+}
+
+interface Section {
+  layout: 'cards' | 'list' | 'articles' | 'alternate' | 'gallery' | 'videos' | 'lessons' | 'markdown';
+  key?: string;
+  heading?: string;
+  intro?: string;
+  body?: string;
+  background?: 'white' | 'gray' | 'emerald' | 'dark';
+  backgroundImage?: string;
+  image?: string;
+  imageAlt?: string;
+  imagePosition?: 'right' | 'left' | 'centre';
+  items?: Item[];
+}
+
+const { sections = [] } = Astro.props as { sections: Section[] };
+
+const lessons = (await getCollection('lessons')).sort((a, b) => a.data.order - b.data.order);
+const formatPrice = (n: number) => (n === 0 ? 'Free' : `£${n}`);
+
+const isDark = (s: Section) => s.background === 'dark';
+
+// Foreground image placement:
+//   right / left  -> two columns from lg up, condensing to one column below that
+//   centre        -> text above the image, remaining text below (never side by side)
+const hasImage = (s: Section) => Boolean(s.image);
+const isSplit = (s: Section) => hasImage(s) && (s.imagePosition ?? 'right') !== 'centre';
+const isImageFirst = (s: Section) => (s.imagePosition ?? 'right') === 'left';
+const isCentred = (s: Section) => hasImage(s) && s.imagePosition === 'centre';
+const mediaClass = 'w-full rounded-2xl border border-[var(--theme-border)] shadow-sm';
+const mediaCentredClass = `mx-auto mt-8 w-full max-w-3xl rounded-2xl border border-[var(--theme-border)] shadow-sm`;
+
+const wrapperClass = (s: Section) => {
+  if (s.backgroundImage) return 'relative overflow-hidden';
+  if (s.background === 'gray') return 'relative overflow-hidden bg-[var(--theme-band)]';
+  if (s.background === 'emerald') return 'relative overflow-hidden bg-[var(--theme-accent-pale)] dark:bg-[var(--theme-band)]';
+  if (isDark(s)) return 'relative overflow-hidden bg-[var(--theme-deep)]';
+  return 'relative overflow-hidden';
+};
+
+const overlayClass = (s: Section) => (isDark(s) ? 'bg-[var(--theme-deep)] opacity-[0.8]' : 'bg-[var(--theme-bg)] opacity-[0.85]');
+const headingClass = (s: Section) => (isDark(s) ? 'text-white' : 'text-[var(--theme-text)]');
+const bodyClass = (s: Section) => (isDark(s) ? 'text-slate-300' : 'text-[var(--theme-muted)]');
+const cardClass = (s: Section) =>
+  isDark(s)
+    ? 'rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] p-6 shadow-sm'
+    : 'rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] p-6 shadow-sm';
+
+const gridCols = (count: number, fallback = 3) => {
+  const c = count > 0 ? count : fallback;
+  if (c >= 4) return 'gap-6 sm:grid-cols-2 lg:grid-cols-4';
+  if (c === 3) return 'gap-6 sm:grid-cols-2 lg:grid-cols-3';
+  return 'gap-6 sm:grid-cols-2';
+};
+
+const asParagraphs = (text?: string) =>
+  (text ?? '')
+    .split(/\r?\n\s*\r?\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+---
+
+{sections.map((s) => (
+  <section id={s.key || undefined} class={wrapperClass(s)}>
+    {s.backgroundImage && (
+      <>
+        <img src={s.backgroundImage} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+        <div class={`absolute inset-0 ${overlayClass(s)}`} />
+      </>
+    )}
+    <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <div class={isSplit(s) ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+        <div class={isImageFirst(s) && isSplit(s) ? 'lg:order-2' : ''}>
+          {(s.heading || s.intro) && (
+            <div class="max-w-3xl">
+              {s.heading && <h2 class={`text-2xl font-bold tracking-tight sm:text-3xl ${headingClass(s)}`}>{s.heading}</h2>}
+              {s.intro && <p class={`mt-4 text-lg leading-relaxed ${bodyClass(s)}`}>{s.intro}</p>}
+            </div>
+          )}
+          {!isCentred(s) &&
+            asParagraphs(s.body).map((p) => <p class={`mt-4 max-w-3xl leading-relaxed ${bodyClass(s)}`}>{p}</p>)}
+        </div>
+        {isSplit(s) && (
+          <img
+            src={s.image}
+            alt={s.imageAlt ?? ''}
+            loading="lazy"
+            class={`${mediaClass} ${isImageFirst(s) ? 'lg:order-1' : ''}`}
+          />
+        )}
+      </div>
+      {isCentred(s) && <img src={s.image} alt={s.imageAlt ?? ''} loading="lazy" class={mediaCentredClass} />}
+      {isCentred(s) &&
+        asParagraphs(s.body).map((p) => <p class={`mt-4 max-w-3xl leading-relaxed ${bodyClass(s)}`}>{p}</p>)}
+
+      {s.layout === 'cards' && (
+        <div class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
+          {(s.items ?? []).map((it) =>
+            it.href ? (
+              <a href={it.href} class="group block overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm transition hover:border-emerald-400 hover:shadow-md">
+                {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-44 w-full object-cover" />}
+                <div class="p-6">
+                  {!it.image && it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--theme-accent-pale)] dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
+                  {it.title && <h3 class={`${it.image ? '' : 'mt-4 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                  {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+                  {it.linkLabel && <span class="mt-4 inline-block font-semibold text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{it.linkLabel}</span>}
+                </div>
+              </a>
+            ) : (
+              <article class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+                {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-44 w-full object-cover" />}
+                <div class="p-6">
+                  {!it.image && it.icon && <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--theme-accent-pale)] dark:bg-emerald-500/10 text-2xl" aria-hidden="true">{it.icon}</span>}
+                  {it.title && <h3 class={`${it.image ? '' : 'mt-4 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                  {it.text && <p class={`mt-2 leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+                </div>
+              </article>
+            )
+          )}
+        </div>
+      )}
+
+      {s.layout === 'articles' && (
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          {(s.items ?? []).map((it) => (
+            <article class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+              {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="h-52 w-full object-cover" />}
+              <div class="p-6">
+                {!it.image && it.icon && <span class="text-3xl" aria-hidden="true">{it.icon}</span>}
+                {it.title && <h3 class={`${it.image ? '' : 'mt-3 '}text-lg font-semibold ${headingClass(s)}`}>{it.title}</h3>}
+                {it.text && <p class={`mt-2 whitespace-pre-line leading-relaxed ${bodyClass(s)}`}>{it.text}</p>}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {s.layout === 'alternate' && (
+        <div class="mt-12 space-y-16">
+          {(s.items ?? []).map((it, i) => (
+            <MediaFeatureBlock
+              image={it.image}
+              imageAlt={it.imageAlt ?? ''}
+              title={it.title}
+              text={it.text}
+              reverse={i % 2 === 1}
+            />
+          ))}
+        </div>
+      )}
+
+      {s.layout === 'gallery' && (
+        <div class="mt-10 columns-2 gap-4 lg:columns-3">
+          {(s.items ?? []).map((it, i) => (
+            <figure class={`mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm ${i % 3 === 1 ? 'lg:mt-8' : i % 3 === 2 ? 'lg:mt-4' : ''}`}>
+              {it.image && <img src={it.image} alt={it.imageAlt ?? ''} loading="lazy" class="w-full object-cover" />}
+              {(it.title || it.caption || it.text) && (
+                <figcaption class="p-4">
+                  {it.title && <p class={`font-semibold ${headingClass(s)}`}>{it.title}</p>}
+                  {(it.caption || it.text) && <p class={`mt-1 text-sm ${bodyClass(s)}`}>{it.caption ?? it.text}</p>}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      )}
+
+      {s.layout === 'list' && (
+        <ul class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
+          {(s.items ?? []).map((it) => (
+            <li class="flex items-start gap-3">
+              {it.icon && <span class="text-xl" aria-hidden="true">{it.icon}</span>}
+              <span class={bodyClass(s)}>
+                {it.title && <strong class={headingClass(s)}>{it.title}</strong>}
+                {it.title && it.text ? ' — ' : ''}
+                {it.text}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {s.layout === 'videos' && (
+        <div class={`mt-10 grid ${gridCols((s.items ?? []).length, 3)}`}>
+          {(s.items ?? []).map((it) => {
+            const isShort = it.format === 'short';
+            return (
+              <figure class="overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm">
+                {it.youtubeId && (
+                  <div class={isShort ? 'aspect-[9/16] w-full max-w-[280px] mx-auto' : 'aspect-video w-full'}>
+                    <iframe
+                      class="h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${it.youtubeId}`}
+                      title={it.title ?? 'Lesson video'}
+                      loading="lazy"
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                  </div>
+                )}
+                {(it.title || it.caption) && (
+                  <figcaption class="p-4">
+                    {it.title && <p class={`font-semibold ${headingClass(s)}`}>{it.title}</p>}
+                    {it.caption && <p class={`mt-1 text-sm ${bodyClass(s)}`}>{it.caption}</p>}
+                  </figcaption>
+                )}
+              </figure>
+            );
+          })}
+        </div>
+      )}
+
+      {s.layout === 'lessons' && (
+        <>
+          <div class={`mt-10 grid ${gridCols(lessons.length, 4)}`}>
+            {lessons.map((lesson) => (
+              <article class={cardClass(s)}>
+                <h3 class={`text-lg font-semibold ${headingClass(s)}`}>{lesson.data.title}</h3>
+                <p class="mt-3 text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">{formatPrice(lesson.data.price)}</p>
+                <p class="mt-1 text-sm font-medium uppercase tracking-wider text-[var(--theme-faint)]">{lesson.data.durationMinutes} minutes</p>
+                <p class={`mt-3 ${bodyClass(s)}`}>{lesson.data.summary}</p>
+              </article>
+            ))}
+          </div>
+          {(s.items ?? []).length > 0 && (
+            <ul class="mt-10 grid gap-4 sm:grid-cols-3">
+              {(s.items ?? []).map((it) => (
+                <li class="flex items-start gap-3 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] p-4">
+                  {it.icon && <span class="text-xl" aria-hidden="true">{it.icon}</span>}
+                  <span class={bodyClass(s)}>
+                    {it.title && <strong class={headingClass(s)}>{it.title}</strong>}
+                    {it.title && it.text ? ' — ' : ''}
+                    {it.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+    </div>
+  </section>
+))}

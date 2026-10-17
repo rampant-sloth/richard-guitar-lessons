@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allTabs = await getCollection('tabs');
+const sorted = allTabs.sort((a, b) => (a.data.order - b.data.order) || (b.data.date.getTime() - a.data.date.getTime()));
+const instruments = [...new Set(sorted.map((t) => t.data.instrument))];
+const difficulties = [...new Set(sorted.map((t) => t.data.difficulty))];
+
+const difficultyColor: Record<string, string> = {
+  Beginner: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+  Intermediate: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+  Advanced: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
+};
+---
+
+<Layout title="Tablature Library | Richard's Guitar Lessons" description="Browse hand-drawn tablature for guitar, bass and ukulele." canonical="https://richardguitarlessons.com/tabs" active="tabs">
+  <main>
+    <section class="relative overflow-hidden bg-[var(--theme-band)]">
+      <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+        <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📝 Tablature Library</p>
+        <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-[var(--theme-text)] sm:text-5xl">Hand-drawn tabs for your favourite songs</h1>
+        <p class="mt-6 text-lg leading-relaxed text-[var(--theme-muted)]">Browse the collection below — filter by instrument or difficulty.</p>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-sm font-semibold text-[var(--theme-text)]">Filter:</span>
+        <button data-filter="all" class="tab-filter rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-1.5 text-sm font-medium transition hover:border-emerald-500">All</button>
+        {instruments.map((inst) => (<button data-filter={inst} class="tab-filter rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-1.5 text-sm font-medium transition hover:border-emerald-500">{inst}</button>))}
+        {difficulties.map((diff) => (<button data-filter={diff} class={`tab-filter rounded-full border px-4 py-1.5 text-sm font-medium transition ${difficultyColor[diff]}`}>{diff}</button>))}
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      {sorted.length === 0 ? (
+        <div class="rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] p-12 text-center">
+          <p class="text-lg text-[var(--theme-muted)]">No tabs yet — check back soon!</p>
+        </div>
+      ) : (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {sorted.map((tab) => (
+            <article class="tab-card group overflow-hidden rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-sm transition hover:shadow-md" data-instrument={tab.data.instrument} data-difficulty={tab.data.difficulty}>
+              <div class="relative aspect-[4/3] overflow-hidden bg-[var(--theme-band)]">
+                {tab.data.image ? (<img src={tab.data.image} alt={tab.data.title} class="h-full w-full object-cover transition group-hover:scale-105" loading="lazy" />) : (<div class="flex h-full w-full items-center justify-center text-5xl">{tab.data.instrument === 'Ukulele' ? '🎵' : '🎸'}</div>)}
+                <span class={`absolute right-3 top-3 rounded-full px-2.5 py-0.5 text-xs font-semibold ${difficultyColor[tab.data.difficulty]}`}>{tab.data.difficulty}</span>
+              </div>
+              <div class="p-5">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{tab.data.instrument}</span>
+                <h2 class="mt-2 text-lg font-bold text-[var(--theme-text)]">{tab.data.title}</h2>
+                {tab.data.description && <p class="mt-2 text-sm text-[var(--theme-muted)]">{tab.data.description}</p>}
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {tab.data.file && (<a href={tab.data.file} download class="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700">Download</a>)}
+                  {tab.data.youtubeId && (<a href={`https://www.youtube.com/watch?v=${tab.data.youtubeId}`} target="_blank" rel="noopener" class="rounded-lg border border-[var(--theme-border)] px-3 py-1.5 text-xs font-semibold hover:border-red-400 hover:text-red-600">Watch</a>)}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  </main>
+
+  <script is:inline>
+    (function(){const b=document.querySelectorAll('.tab-filter'),c=document.querySelectorAll('.tab-card');b.forEach(function(t){t.addEventListener('click',function(){const f=t.getAttribute('data-filter');b.forEach(function(x){x.classList.remove('ring-2','ring-emerald-500')});t.classList.add('ring-2','ring-emerald-500');c.forEach(function(d){if(f==='all'){d.style.display=''}else{d.style.display=(d.getAttribute('data-instrument')===f||d.getAttribute('data-difficulty')===f)?'':'none'}})})})})();
+  </script>
+</Layout>

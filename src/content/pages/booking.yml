@@ -1,0 +1,84 @@
+seo:
+  title: "Book a Trial Guitar Lesson | Richard's Guitar Lessons"
+  description: "Book a trial guitar lesson with Richard — no pressure, no hard sell. Pick a time and learn online over Zoom, Teams, Google Meet or WhatsApp."
+  ogTitle: "Book a Trial Guitar Lesson"
+  ogDescription: "Book a trial guitar lesson with Richard — no pressure, no hard sell."
+
+hero:
+  eyebrow: "Book online"
+  title: "Book a Free 30-Minute Trial Lesson"
+  intro: "A free 30-minute session to test your technical setup, meet me, and make sure everything runs smoothly before we start. No pressure, no hard sell."
+  image: ""
+  imageAlt: ""
+  backgroundImage: ""
+  buttons: []
+
+form:
+  action: "https://formspree.io/f/xnpjgokn"
+  subject: "New trial lesson booking"
+  heading: "Book your free 30-minute trial"
+  intro: "Fill this in and I'll be in touch to arrange a time. The trial is free and mainly about checking your technical setup so everything runs smoothly."
+  submitLabel: "Send my booking request"
+  fields:
+    - label: "Name"
+      name: "name"
+      type: text
+      placeholder: "Your name"
+      required: true
+      width: half
+    - label: "Email"
+      name: "email"
+      type: email
+      placeholder: "you@example.com"
+      required: true
+      width: half
+    - label: "Age / experience level"
+      name: "experience"
+      type: text
+      placeholder: "e.g. adult beginner, or 14 with two years of playing"
+      width: half
+    - label: "Preferred platform"
+      name: "platform"
+      required: true
+      width: half
+      options:
+        - "Zoom (preferred)"
+        - "Teams"
+        - "Google Meet"
+        - "WhatsApp"
+    - label: "Goals / what you want to learn"
+      name: "goals"
+      type: textarea
+      placeholder: "Tell me what you'd love to be able to play…"
+      width: full
+
+sections:
+  - layout: cards
+    background: gray
+    heading: "What to expect in your trial"
+    items:
+      - icon: "👋"
+        title: "A friendly welcome"
+        text: "Get to know me, and me you."
+      - icon: "🎸"
+        title: "A quick check-in"
+        text: "Where you're at, and what you'd like to play."
+      - icon: "🎵"
+        title: "Play something"
+        text: "A first song or technique, right away."
+      - icon: "🗺️"
+        title: "A simple plan"
+        text: "Where we go from here."
+
+  - layout: articles
+    items:
+      - title: "What happens next?"
+        text: "Send the form above and I'll reply within 24 hours to arrange a time that suits. If you'd rather email, you can reach me at hello@richardguitarlessons.com."
+      - title: "Lesson details"
+        text: "💰 £30 per hour, pro-rata (e.g. £15 for 30 minutes)\n💻 Zoom (preferred), Teams, Google Meet or WhatsApp\n📄 Custom tabs and sheets sent every Monday\n📅 Flexible scheduling with a 24-hour cancellation period"
+
+cta:
+  heading: "Still not sure?"
+  body: "Drop me an email instead and I'll happily answer any questions before you book."
+  buttonLabel: "Book a Free 30-Minute Trial Lesson"
+  buttonHref: "/book-trial-lesson"

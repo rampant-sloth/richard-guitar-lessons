@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import SocialLinks from '../components/SocialLinks.astro';
 
 interface Props {
   title: string;
@@ -8,7 +9,7 @@ interface Props {
   ogType?: string;
   ogTitle?: string;
   ogDescription?: string;
-  active?: 'home' | 'kids' | 'adults' | 'about' | 'book';
+  active?: 'home' | 'kids' | 'adults' | 'about' | 'news' | 'book' | 'tabs' | 'reschedule';
 }
 
 const {
@@ -24,7 +25,135 @@ const {
 const [settingsEntry] = await getCollection('site');
 const settings = settingsEntry?.data;
 
-type NavPage = 'home' | 'kids' | 'adults' | 'about';
+// ---- Theme (colour scheme + fonts) --------------------------------------
+const PALETTES: Record<string, Record<string, string>> = {
+  emerald: { 50: '#ecfdf5', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46' },
+  teal: { 50: '#f0fdfa', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' },
+  blue: { 50: '#eff6ff', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' },
+  indigo: { 50: '#eef2ff', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' },
+  violet: { 50: '#f5f3ff', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' },
+  rose: { 50: '#fff1f2', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239' },
+  amber: { 50: '#fffbeb', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
+  slate: { 50: '#f8fafc', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b' },
+};
+
+// Built-in neutrals, used whenever a colour box is left empty in the CMS.
+const DEFAULT_LIGHT = { background: '#ffffff', surface: '#ffffff', band: '#f9fafb', text: '#0f172a', muted: '#475569', border: '#e2e8f0' };
+const DEFAULT_DARK = { background: '#020617', surface: '#1e293b', band: '#0f172a', text: '#ffffff', muted: '#cbd5e1', border: '#334155' };
+
+const RADIUS: Record<string, string> = {
+  sharp: '0.25rem',
+  subtle: '0.5rem',
+  rounded: '1rem',
+  pill: '1.75rem',
+};
+
+const FONTS: Record<string, { stack: string; google?: string }> = {
+  system: { stack: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" },
+  inter: { stack: "'Inter', ui-sans-serif, system-ui, sans-serif", google: 'Inter:wght@400;500;600;700;800' },
+  poppins: { stack: "'Poppins', ui-sans-serif, system-ui, sans-serif", google: 'Poppins:wght@400;500;600;700;800' },
+  nunito: { stack: "'Nunito', ui-sans-serif, system-ui, sans-serif", google: 'Nunito:wght@400;500;600;700;800' },
+  lora: { stack: "'Lora', ui-serif, Georgia, serif", google: 'Lora:wght@400;500;600;700' },
+  merriweather: { stack: "'Merriweather', ui-serif, Georgia, serif", google: 'Merriweather:wght@400;700;900' },
+};
+
+const [themeEntry] = await getCollection('theme');
+const theme = themeEntry?.data;
+const pick = (value: string | undefined, fallback: string) =>
+  typeof value === 'string' && value.trim().length > 0 ? value.trim() : fallback;
+
+const accentIn = theme?.accent ?? {};
+const lightIn = theme?.light ?? {};
+const darkIn = theme?.dark ?? {};
+const preset = PALETTES[theme?.colourScheme ?? 'emerald'] ?? PALETTES.emerald;
+
+// An explicit hex from the CMS always wins over the preset scheme.
+const palette: Record<string, string> = {
+  50: pick(accentIn.pale, preset[50]),
+  100: pick(accentIn.pale, preset[50]),
+  300: pick(accentIn.light, preset[300]),
+  400: pick(accentIn.light, preset[400]),
+  500: pick(accentIn.main, preset[500]),
+  600: pick(accentIn.main, preset[600]),
+  700: pick(accentIn.hover, preset[700]),
+  800: pick(accentIn.hover, preset[800]),
+};
+
+const bodyFont = FONTS[theme?.fontBody ?? 'system'] ?? FONTS.system;
+const headingFont = FONTS[theme?.fontHeading ?? 'system'] ?? FONTS.system;
+const googleFamilies = [...new Set([bodyFont.google, headingFont.google].filter(Boolean))] as string[];
+const googleHref =
+  googleFamilies.length > 0
+    ? `https://fonts.googleapis.com/css2?${googleFamilies.map((f) => `family=${f}`).join('&')}&display=swap`
+    : null;
+
+const radius = RADIUS[theme?.cornerRadius ?? 'rounded'] ?? RADIUS.rounded;
+
+// Appearance: the light/dark switch shown in the header on every page.
+const appearance = theme?.appearance ?? {};
+const showThemeToggle = appearance.showToggle !== false;
+const defaultMode = appearance.defaultMode ?? 'auto';
+const themeToggleLightLabel = appearance.toggleLightLabel?.trim() || 'Switch to light mode';
+const themeToggleDarkLabel = appearance.toggleDarkLabel?.trim() || 'Switch to dark mode';
+
+const themeTokens: Record<string, string> = {
+  '--theme-accent': palette[600],
+  '--theme-accent-pale': palette[50],
+  '--theme-bg': pick(lightIn.background, DEFAULT_LIGHT.background),
+  '--theme-surface': pick(lightIn.surface, DEFAULT_LIGHT.surface),
+  '--theme-band': pick(lightIn.band, DEFAULT_LIGHT.band),
+  '--theme-text': pick(lightIn.text, DEFAULT_LIGHT.text),
+  '--theme-muted': pick(lightIn.muted, DEFAULT_LIGHT.muted),
+  '--theme-border': pick(lightIn.border, DEFAULT_LIGHT.border),
+  '--theme-deep': pick(darkIn.background, DEFAULT_DARK.background),
+  '--theme-radius': radius,
+};
+
+const themeTokensDark: Record<string, string> = {
+  '--theme-bg': pick(darkIn.background, DEFAULT_DARK.background),
+  '--theme-surface': pick(darkIn.surface, DEFAULT_DARK.surface),
+  '--theme-band': pick(darkIn.band, DEFAULT_DARK.band),
+  '--theme-text': pick(darkIn.text, DEFAULT_DARK.text),
+  '--theme-muted': pick(darkIn.muted, DEFAULT_DARK.muted),
+  '--theme-border': pick(darkIn.border, DEFAULT_DARK.border),
+  '--theme-deep': pick(darkIn.band, DEFAULT_DARK.band),
+};
+
+const cssBlock = (tokens: Record<string, string>) =>
+  Object.entries(tokens)
+    .map(([key, value]) => `${key}:${value};`)
+    .join('');
+
+const themeCss = [
+  `:root{${cssBlock(themeTokens)}--theme-faint:#64748b;}`,
+  `.dark{${cssBlock(themeTokensDark)}--theme-faint:#94a3b8;}`,
+  'body{background-color:var(--theme-bg);color:var(--theme-text);}',
+  `h1,h2,h3,h4{font-family:${headingFont.stack};}`,
+  '.theme-header{background-color:var(--theme-bg);}',
+  'a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--theme-accent);outline-offset:2px;}',
+].join('\n');
+
+const tailwindConfig = JSON.stringify({
+  darkMode: 'class',
+  theme: {
+    fontFamily: {
+      sans: [bodyFont.stack],
+      heading: [headingFont.stack],
+      serif: ['ui-serif', 'Georgia', 'serif'],
+      mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+    },
+    extend: {
+      colors: { emerald: palette },
+      borderRadius: {
+        lg: 'calc(var(--theme-radius) * 0.5)',
+        xl: 'calc(var(--theme-radius) * 0.75)',
+        '2xl': 'var(--theme-radius)',
+      },
+    },
+  },
+});
+
+type NavPage = 'home' | 'kids' | 'adults' | 'about' | 'news' | 'tabs';
 
 function desktopNavClass(page: NavPage) {
   return active === page
@@ -34,13 +163,13 @@ function desktopNavClass(page: NavPage) {
 
 function mobileNavClass(page: NavPage) {
   return active === page
-    ? 'rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2.5 font-semibold text-emerald-700 dark:text-emerald-400'
-    : 'rounded-lg px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800';
+    ? 'rounded-lg bg-[var(--theme-band)] px-3 py-2.5 font-semibold text-emerald-700 dark:text-emerald-400'
+    : 'rounded-lg px-3 py-2.5 hover:bg-[var(--theme-band)]';
 }
 ---
 
 <!doctype html>
-<html lang="en-GB">
+<html lang="en-GB" data-default-mode={defaultMode} data-theme-toggle={showThemeToggle ? 'on' : 'off'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,54 +177,109 @@ function mobileNavClass(page: NavPage) {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#059669" />
+    <meta name="theme-color" content={palette[600]} />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={canonical} />
     <link rel="icon" href="/favicon.svg" />
+    {googleHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
+    {googleHref && <link rel="stylesheet" href={googleHref} />}
     <script is:inline>
-      // Default to dark mode, but honour an explicit light-mode preference.
+      /* Runs before first paint so there is never a flash of the wrong theme.
+         Values come from data-* attributes on <html>, set from the CMS.
+         The storage key must match the one used by the switch at the bottom of <body>. */
       (function () {
-        var mq = window.matchMedia('(prefers-color-scheme: light)');
-        function apply() {
-          var dark = !mq.matches;
-          document.documentElement.classList.toggle('dark', dark);
-          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        var root = document.documentElement;
+        var KEY = 'rgl-theme';
+        var ENABLED = root.getAttribute('data-theme-toggle') !== 'off';
+        var DEFAULT_MODE = root.getAttribute('data-default-mode') || 'auto';
+        var mqLight = window.matchMedia('(prefers-color-scheme: light)');
+        function saved() {
+          try { return window.localStorage.getItem(KEY); } catch (e) { return null; }
         }
-        apply();
-        if (mq.addEventListener) { mq.addEventListener('change', apply); }
+        function chosen() {
+          if (!ENABLED) return null;
+          var choice = saved();
+          return choice === 'light' || choice === 'dark' ? choice : null;
+        }
+        function systemMode() { return mqLight.matches ? 'light' : 'dark'; }
+        function resolve() {
+          return chosen() || (DEFAULT_MODE === 'light' || DEFAULT_MODE === 'dark' ? DEFAULT_MODE : systemMode());
+        }
+        function apply(mode) {
+          var dark = mode === 'dark';
+          root.classList.toggle('dark', dark);
+          root.style.colorScheme = dark ? 'dark' : 'light';
+        }
+        apply(resolve());
+        // Keep following the device until the visitor makes an explicit choice.
+        function onChange() {
+          if (chosen()) return;
+          if (DEFAULT_MODE === 'light' || DEFAULT_MODE === 'dark') return;
+          apply(systemMode());
+        }
+        if (mqLight.addEventListener) mqLight.addEventListener('change', onChange);
       })();
     </script>
     <script is:inline src="https://cdn.tailwindcss.com"></script>
-    <script is:inline>tailwind.config = { darkMode: 'class' };</script>
+    <script is:inline set:html={`tailwind.config = ${tailwindConfig};`}></script>
+    <style is:inline set:html={themeCss}></style>
     <!-- cal.com embed intentionally removed until the booking account is set up (see README) -->
   </head>
-  <body class="bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
-    <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-950/95 backdrop-blur">
+  <body class="antialiased">
+    <header class="theme-header sticky top-0 z-50 border-b border-[var(--theme-border)] backdrop-blur">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <a href="/" class="flex items-center gap-2.5" aria-label="Richard's Guitar Lessons — home">
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl" aria-hidden="true">🎸</span>
-          <span class="text-sm font-bold leading-tight text-slate-900 dark:text-white">Richard's<br />Guitar Lessons</span>
+          <span class="text-sm font-bold leading-tight text-[var(--theme-text)]">Richard's<br />Guitar Lessons</span>
         </a>
-        <nav class="hidden items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300 md:flex" aria-label="Primary">
-          <a href="/" class={desktopNavClass('home')} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
-          <a href="/online-guitar-lessons-kids" class={desktopNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
-          <a href="/adult-online-guitar-lessons" class={desktopNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
-          <a href="/about-richard" class={desktopNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
-          <a href="/book-trial-lesson" class={active === 'book' ? 'rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800' : 'rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700'} aria-current={active === 'book' ? 'page' : undefined}>Book a Trial</a>
-        </nav>
-        <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-          <svg id="icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          <svg id="icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <nav class="hidden items-center gap-7 text-sm font-medium text-[var(--theme-muted)] md:flex" aria-label="Primary">
+            <a href="/" class={desktopNavClass('home')} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
+            <a href="/online-guitar-lessons-kids" class={desktopNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
+            <a href="/adult-online-guitar-lessons" class={desktopNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
+            <a href="/about-richard" class={desktopNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+            <a href="/tabs" class={desktopNavClass('tabs')} aria-current={active === 'tabs' ? 'page' : undefined}>Tabs</a>
+            <a href="/news" class={desktopNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
+            {settings?.ebayUrl && (<a href={settings.ebayUrl} target="_blank" rel="noopener noreferrer" class="transition hover:text-emerald-600 dark:hover:text-emerald-400">eBay Store</a>)}
+            <a href="/book-trial-lesson" class={active === 'book' ? 'rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800' : 'rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700'} aria-current={active === 'book' ? 'page' : undefined}>Book a Trial</a>
+          </nav>
+          {showThemeToggle && (
+            <button
+              id="theme-toggle"
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg p-2 text-[var(--theme-text)] transition hover:bg-[var(--theme-band)]"
+              data-label-light={themeToggleLightLabel}
+              data-label-dark={themeToggleDarkLabel}
+              aria-label={themeToggleLightLabel}
+              title={themeToggleLightLabel}
+            >
+              <svg id="theme-icon-moon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+              </svg>
+              <svg id="theme-icon-sun" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            </button>
+          )}
+          <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-lg p-2 text-[var(--theme-text)] hover:bg-[var(--theme-band)] md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <svg id="icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg id="icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
       </div>
-      <div id="mobile-menu" class="hidden border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 pb-4 pt-2 md:hidden">
-        <nav class="flex flex-col gap-1 text-sm font-medium text-slate-700 dark:text-slate-200" aria-label="Mobile">
+      <div id="mobile-menu" class="hidden border-t border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 pb-4 pt-2 md:hidden">
+        <nav class="flex flex-col gap-1 text-sm font-medium text-[var(--theme-text)]" aria-label="Mobile">
           <a href="/" class={mobileNavClass('home')} aria-current={active === 'home' ? 'page' : undefined}>Home</a>
           <a href="/online-guitar-lessons-kids" class={mobileNavClass('kids')} aria-current={active === 'kids' ? 'page' : undefined}>Kids &amp; Exams</a>
           <a href="/adult-online-guitar-lessons" class={mobileNavClass('adults')} aria-current={active === 'adults' ? 'page' : undefined}>Adults &amp; Hobbyists</a>
           <a href="/about-richard" class={mobileNavClass('about')} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+          <a href="/tabs" class={mobileNavClass('tabs')} aria-current={active === 'tabs' ? 'page' : undefined}>Tabs</a>
+          <a href="/news" class={mobileNavClass('news')} aria-current={active === 'news' ? 'page' : undefined}>News</a>
+          {settings?.ebayUrl && (<a href={settings.ebayUrl} target="_blank" rel="noopener noreferrer" class="rounded-lg px-3 py-2.5 hover:bg-[var(--theme-band)]">eBay Store</a>)}
+          <a href="/reschedule" class="rounded-lg px-3 py-2.5 hover:bg-[var(--theme-band)]">Reschedule a Lesson</a>
           <a href="/book-trial-lesson" class="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 font-semibold text-white hover:bg-emerald-700">Book a Trial</a>
         </nav>
       </div>
@@ -103,7 +287,7 @@ function mobileNavClass(page: NavPage) {
 
     <slot />
 
-    <footer class="bg-slate-900 text-slate-400">
+    <footer class="bg-[var(--theme-deep)] text-slate-400">
       <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -112,6 +296,7 @@ function mobileNavClass(page: NavPage) {
               <span class="text-sm font-bold text-white">Richard's Guitar Lessons</span>
             </div>
             <p class="mt-4 text-sm leading-relaxed">{settings?.tagline ?? 'Friendly, structured online guitar lessons for all ages — from grade exams to playing your favourite songs.'}</p>
+            <SocialLinks social={settings?.social} heading="Follow" class="mt-6" />
           </div>
           <div>
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Lessons</h2>
@@ -125,6 +310,9 @@ function mobileNavClass(page: NavPage) {
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Company</h2>
             <ul class="mt-4 space-y-2.5 text-sm">
               <li><a href="/about-richard" class="hover:text-emerald-400">About Richard</a></li>
+              <li><a href="/tabs" class="hover:text-emerald-400">Tablature Library</a></li>
+              <li><a href="/reschedule" class="hover:text-emerald-400">Reschedule a Lesson</a></li>
+              <li><a href="/news" class="hover:text-emerald-400">News</a></li>
               <li><a href="/" class="hover:text-emerald-400">Home</a></li>
             </ul>
           </div>
@@ -132,30 +320,70 @@ function mobileNavClass(page: NavPage) {
             <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Contact</h2>
             <ul class="mt-4 space-y-2.5 text-sm">
               <li><a href={`mailto:${settings?.contactEmail ?? 'hello@richardguitarlessons.com'}`} class="hover:text-emerald-400">{settings?.contactEmail ?? 'hello@richardguitarlessons.com'}</a></li>
-              <li class="text-slate-500 dark:text-slate-400">Lessons via {settings?.platforms ?? 'Zoom (preferred), Teams, Google Meet or WhatsApp'}</li>
+              {settings?.ebayUrl && (<li><a href={settings.ebayUrl} target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400">eBay Store</a></li>)}
+              <li class="text-[var(--theme-faint)]">Lessons via {settings?.platforms ?? 'Zoom (preferred), Teams, Google Meet or WhatsApp'}</li>
             </ul>
           </div>
         </div>
-        <div class="mt-10 flex flex-col gap-2 border-t border-slate-800 pt-6 text-xs text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mt-10 flex flex-col gap-2 border-t border-slate-800 pt-6 text-xs text-[var(--theme-faint)] sm:flex-row sm:items-center sm:justify-between">
           <p>© <span id="year"></span> Richard's Guitar Lessons. All rights reserved.</p>
           <p>Online guitar lessons for all ages.</p>
         </div>
       </div>
     </footer>
 
+    {/* Floating mobile CTA — visible only on mobile viewports */}
+    <div class="fixed bottom-0 left-0 z-50 w-full border-t border-[var(--theme-border)] bg-[var(--theme-surface)]/95 px-4 py-3 shadow-lg backdrop-blur md:hidden">
+      <div class="flex items-center gap-3">
+        <a href="/book-trial-lesson" class="flex-1 rounded-lg bg-emerald-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-emerald-700">Book a Free Trial</a>
+        <a href="/reschedule" class="rounded-lg border border-[var(--theme-border)] px-4 py-2.5 text-center text-sm font-semibold text-[var(--theme-text)] transition hover:bg-[var(--theme-band)]">Reschedule</a>
+      </div>
+    </div>
+
     <script is:inline>
-      const toggle = document.getElementById('menu-toggle');
+      const menuToggle = document.getElementById('menu-toggle');
       const menu = document.getElementById('mobile-menu');
       const iconOpen = document.getElementById('icon-open');
       const iconClose = document.getElementById('icon-close');
-      toggle.addEventListener('click', function () {
+      menuToggle.addEventListener('click', function () {
         const isOpen = !menu.classList.contains('hidden');
         menu.classList.toggle('hidden');
         iconOpen.classList.toggle('hidden', !isOpen);
         iconClose.classList.toggle('hidden', isOpen);
-        toggle.setAttribute('aria-expanded', String(!isOpen));
+        menuToggle.setAttribute('aria-expanded', String(!isOpen));
       });
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* Light/dark switch. The storage key must match the pre-paint script in <head>. */
+      (function () {
+        const button = document.getElementById('theme-toggle');
+        if (!button) return;
+        const KEY = 'rgl-theme';
+        const root = document.documentElement;
+        const sun = document.getElementById('theme-icon-sun');
+        const moon = document.getElementById('theme-icon-moon');
+
+        function paint() {
+          const dark = root.classList.contains('dark');
+          if (sun) sun.classList.toggle('hidden', !dark);
+          if (moon) moon.classList.toggle('hidden', dark);
+          const label = dark ? button.dataset.labelLight : button.dataset.labelDark;
+          if (label) {
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+          }
+        }
+
+        button.addEventListener('click', function () {
+          const next = root.classList.contains('dark') ? 'light' : 'dark';
+          try { window.localStorage.setItem(KEY, next); } catch (e) {}
+          root.classList.toggle('dark', next === 'dark');
+          root.style.colorScheme = next;
+          paint();
+        });
+
+        paint();
+      })();
     </script>
   </body>
 </html>

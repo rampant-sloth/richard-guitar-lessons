@@ -1,0 +1,94 @@
+seo:
+  title: About Richard — Online Guitar Teacher | Richard's Guitar Lessons
+  description: Meet Richard - guitarist, former school teacher, and the bloke on
+    the other end of your Zoom call. Here's how he teaches and the kit behind
+    the lessons.
+  ogTitle: About Richard - Online Guitar Teacher
+  ogDescription: Meet Richard - how he teaches, and the studio setup behind the lessons.
+hero:
+  eyebrow: About Richard
+  title: About Richard
+  intro: >-
+    Guitarist, star wars nerd, Garfield fan, and the bloke on the other end of
+    the Zoom call. I’ve been playing guitar for over 25 years and teaching for
+    20 years. I studied music at ICMP in London and have experience gigging and
+    touring in various original bands, as well as covers/function bands,
+    alongside recording and session work.
+
+
+
+    Here's a bit about me and how I teach.
+  image: /images/richgtr1-1.jpg
+  imageAlt: Richard, guitar teacher
+  backgroundImage: ""
+  buttons: []
+sections:
+  - layout: cards
+    background: white
+    key: Background
+    body: >-
+      Currently, I teach numerous guitar, bass, and ukulele students, both
+      privately and through music services and schools. I’ve taught literally
+      thousands of students over the years, with many going on to session and
+      live work, studying music at college and university, and playing in bands.
+
+
+      I specialise in contemporary electric styles, but I’m also an experienced bassist and acoustic player, as well as a ukulele player.
+
+
+      I’ve helped hundreds of students through their grade exams, GCSEs, A Levels, and university and college auditions. However, if you’d just like to play casually and for fun, that won’t be a problem at all!
+
+
+      I’ve transcribed hundreds of pieces for students over the years and can help you nail that Gilmour solo, improve your picking technique, learn that Thundercat bassline, get comfortable with that Coldplay strumming pattern, or whatever else you’d like to cover.
+    heading: Background
+    intro: I’ve been playing guitar for over 25 years and teaching for 20 years. I
+      studied music at ICMP in London and have experience gigging and touring in
+      various original bands, as well as covers/function bands, alongside
+      recording and session work.
+    image: ""
+  - layout: list
+    heading: How I teach
+    body: >-
+      I think lessons should be the best part of your week - not a chore you
+      dread. You learn fastest when you're playing music you love, at a pace
+      that feels right, with a teacher who actually listens. So that's what I
+      do.
+
+
+      Learning an instrument and music theory is difficult - I'll never pretend otherwise. But a good teacher helps you find the shortcuts, and that's my whole job. Not prescriptive, not school-style; just personable, honest and focused on getting you playing.
+    items:
+      - icon: 🤝
+        title: Patient & encouraging
+        text: no judgement, ever.
+      - icon: 🎯
+        title: Goal-driven
+        text: clear direction in every lesson.
+      - icon: 📈
+        title: Progress you can feel
+        text: from the very first lesson.
+    background: dark
+  - layout: cards
+    background: gray
+    heading: My setup (so you can actually hear me)
+    intro: "Online lessons only work if you can actually hear and see what's going
+      on. So I've put proper kit into it:"
+    items:
+      - icon: 🎙️
+        title: Studio-quality audio
+        text: Professional microphone and interface, so every note rings clear.
+      - icon: 🎥
+        title: HD video
+        text: Clear camera angles on both hands.
+      - icon: 💡
+        title: Pro lighting
+        text: A bright, distraction-free view of the fretboard.
+      - icon: 🖥️
+        title: Tabs in Advance
+        text: I'll make sure you have tab and chord diagrams well in advance so you can
+          print or have them on a second screen during our lessons.
+cta:
+  heading: Come and meet me
+  body: Book a free 30-minute trial to test the technical setup and make sure
+    everything runs smoothly.
+  buttonLabel: Book a Free 30-Minute Trial Lesson
+  buttonHref: /book-trial-lesson

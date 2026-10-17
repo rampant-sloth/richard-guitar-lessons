@@ -1,0 +1,23 @@
+colourScheme: violet
+accent:
+  main: ""
+  hover: ""
+  light: ""
+  pale: ""
+light:
+  background: ""
+  surface: ""
+  band: ""
+  text: ""
+  muted: ""
+  border: ""
+dark:
+  background: ""
+  surface: ""
+  band: ""
+  text: ""
+  muted: ""
+  border: ""
+cornerRadius: rounded
+fontHeading: system
+fontBody: system

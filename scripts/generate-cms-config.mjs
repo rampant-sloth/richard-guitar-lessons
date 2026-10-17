@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 const branch = process.env.DECAP_BRANCH || process.env.CF_PAGES_BRANCH || 'main';
-const oauthBase = process.env.DECAP_OAUTH_BASE_URL || 'https://decap-oauth.<your-account>.workers.dev';
+const oauthBase = process.env.DECAP_OAUTH_BASE_URL || 'https://decap-oauth.rampantsloth-3b0.workers.dev';
 
 const out = readFileSync('cms/config.template.yml', 'utf8')
   .replaceAll('__BRANCH__', branch)
@@ -21,7 +21,7 @@ writeFileSync('public/admin/config.yml', out);
 
 console.log(`[cms] public/admin/config.yml → branch=${branch}, oauth=${oauthBase}`);
 if (oauthBase.includes('<your-account>')) {
-  const msg = 'DECAP_OAUTH_BASE_URL is not set (still the <your-account> placeholder).';
+  const msg = 'DECAP_OAUTH_BASE_URL is not set (still a <your-account> placeholder).';
   if (process.env.CF_PAGES_BRANCH) {
     console.error(`[cms] ✖ ${msg} Refusing to build a deploy with a broken Decap login.`);
     process.exit(1);

@@ -1,79 +1,42 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Sections from '../components/Sections.astro';
+import Cta from '../components/Cta.astro';
+import LatestNews from '../components/LatestNews.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing src/content/pages/about.yml');
+
+const { seo, hero, sections, cta } = page.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Richard',
+  jobTitle: 'Online Guitar Teacher',
+  description: seo.description,
+  email: 'hello@richardguitarlessons.com',
+  url: 'https://richardguitarlessons.com/about-richard',
+};
 ---
 
 <Layout
-  title="About Richard — Online Guitar Teacher | Richard's Guitar Lessons"
-  description="Meet Richard — guitarist, former school teacher, and the bloke on the other end of your Zoom call. Here's how he teaches and the kit behind the lessons."
+  title={seo.title}
+  description={seo.description}
   canonical="https://richardguitarlessons.com/about-richard"
   ogType="profile"
-  ogTitle="About Richard — Online Guitar Teacher"
-  ogDescription="Meet Richard — how he teaches, and the studio setup behind the lessons."
+  ogTitle={seo.ogTitle ?? seo.title}
+  ogDescription={seo.ogDescription ?? seo.description}
   active="about"
 >
   <main>
-    <!-- Hero -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">About Richard</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">About Richard</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">Guitarist, former school teacher, and the bloke on the other end of the Zoom call. Here's a bit about me and how I teach.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Teaching philosophy -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">How I teach</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">I think lessons should be the best part of your week — not a chore you dread. You learn fastest when you're playing music you love, at a pace that feels right, with a teacher who actually listens. So that's what I do.</p>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">Learning an instrument and music theory is difficult — I'll never pretend otherwise. But a good teacher helps you find the shortcuts, and that's my whole job. Not prescriptive, not school-style; just personable, honest and focused on getting you playing.</p>
-        </div>
-        <ul class="space-y-3">
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🤝</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Patient &amp; encouraging</strong> — no judgement, ever.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">🎯</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Goal-driven</strong> — clear direction in every lesson.</span></li>
-          <li class="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"><span class="text-xl" aria-hidden="true">📈</span><span class="text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Progress you can feel</strong> — from the very first lesson.</span></li>
-        </ul>
-      </div>
-    </section>
-    <!-- Technical setup -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div class="max-w-3xl">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">My setup (so you can actually hear me)</h2>
-          <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">Online lessons only work if you can actually hear and see what's going on. So I've put proper kit into it:</p>
-        </div>
-        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🎙️</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">Studio-quality audio</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Professional microphone and interface, so every note rings clear.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🎥</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">HD video</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Clear camera angles on both hands.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">💡</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">Pro lighting</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">A bright, distraction-free view of the fretboard.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🖥️</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">Screen sharing</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">On-screen tab and chord diagrams as we play.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6">
-        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Come and meet me</h2>
-        <p class="mt-3 text-slate-300">Book a free 30-minute trial to test the technical setup and make sure everything runs smoothly.</p>
-        <a href="/book-trial-lesson" class="mt-6 inline-block rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700">Book a Free 30-Minute Trial Lesson</a>
-      </div>
-    </section>
+    <Hero {...hero} />
+    <Sections sections={sections} />
+    <LatestNews />
+    {cta && <Cta {...cta} />}
   </main>
 
-  <script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Richard",
-    "jobTitle": "Online Guitar Teacher",
-    "description": "Experienced guitarist and former school teacher offering online guitar lessons for all ages via Zoom, Teams, Google Meet or WhatsApp.",
-    "email": "hello@richardguitarlessons.com",
-    "url": "https://richardguitarlessons.com/about-richard"
-  }
-  </script>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 </Layout>
-

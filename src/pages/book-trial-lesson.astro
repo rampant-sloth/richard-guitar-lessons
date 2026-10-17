@@ -1,114 +1,44 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Sections from '../components/Sections.astro';
+import Cta from '../components/Cta.astro';
+import BookingForm from '../components/BookingForm.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'booking');
+if (!page) throw new Error('Missing src/content/pages/booking.yml');
+
+const { seo, hero, sections, cta, form } = page.data;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Book a Trial Guitar Lesson',
+  url: 'https://richardguitarlessons.com/book-trial-lesson',
+  mainEntity: {
+    '@type': 'LocalBusiness',
+    name: "Richard's Guitar Lessons",
+    email: 'hello@richardguitarlessons.com',
+  },
+};
 ---
 
 <Layout
-  title="Book a Trial Guitar Lesson | Richard's Guitar Lessons"
-  description="Book a trial guitar lesson with Richard — no pressure, no hard sell. Pick a time and learn online over Zoom, Teams, Google Meet or WhatsApp."
+  title={seo.title}
+  description={seo.description}
   canonical="https://richardguitarlessons.com/book-trial-lesson"
   ogType="website"
-  ogTitle="Book a Trial Guitar Lesson"
-  ogDescription="Book a trial guitar lesson with Richard — no pressure, no hard sell."
+  ogTitle={seo.ogTitle ?? seo.title}
+  ogDescription={seo.ogDescription ?? seo.description}
   active="book"
 >
   <main>
-    <!-- Hero -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Book online</p>
-          <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">Book a Free 30-Minute Trial Lesson</h1>
-          <p class="mt-6 text-lg leading-relaxed text-slate-600 dark:text-slate-300">A free 30-minute session to test your technical setup, meet me, and make sure everything runs smoothly before we start. No pressure, no hard sell.</p>
-        </div>
-      </div>
-    </section>
-    <!-- Booking form -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm sm:p-10">
-        <div class="max-w-2xl">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Book your free 30-minute trial</h2>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">Fill this in and I'll be in touch to arrange a time. The trial is free and mainly about checking your technical setup so everything runs smoothly.</p>
-        </div>
-        <form action="https://formspree.io/f/xnpjgokn" method="POST" class="mt-8 grid gap-5 sm:grid-cols-2">
-          <input type="hidden" name="_subject" value="New trial lesson booking" />
-          <div>
-            <label for="name" class="block text-sm font-semibold text-slate-900 dark:text-white">Name</label>
-            <input type="text" id="name" name="name" required placeholder="Your name" class="mt-1.5 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-slate-900 dark:text-white shadow-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-semibold text-slate-900 dark:text-white">Email</label>
-            <input type="email" id="email" name="email" required placeholder="you@example.com" class="mt-1.5 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-slate-900 dark:text-white shadow-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-          </div>
-          <div>
-            <label for="experience" class="block text-sm font-semibold text-slate-900 dark:text-white">Age / experience level</label>
-            <input type="text" id="experience" name="experience" placeholder="e.g. adult beginner, or 14 with two years of playing" class="mt-1.5 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-slate-900 dark:text-white shadow-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-          </div>
-          <div>
-            <label for="platform" class="block text-sm font-semibold text-slate-900 dark:text-white">Preferred platform</label>
-            <select id="platform" name="platform" required class="mt-1.5 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
-              <option value="" disabled selected>Choose a platform…</option>
-              <option value="Zoom">Zoom (preferred)</option>
-              <option value="Teams">Teams</option>
-              <option value="Google Meet">Google Meet</option>
-              <option value="WhatsApp">WhatsApp</option>
-            </select>
-          </div>
-          <div class="sm:col-span-2">
-            <label for="goals" class="block text-sm font-semibold text-slate-900 dark:text-white">Goals / what you want to learn</label>
-            <textarea id="goals" name="goals" rows="4" placeholder="Tell me what you'd love to be able to play…" class="mt-1.5 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-slate-900 dark:text-white shadow-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"></textarea>
-          </div>
-          <div class="sm:col-span-2">
-            <button type="submit" class="w-full rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto">Send my booking request</button>
-          </div>
-        </form>
-      </div>
-    </section>
-    <!-- What to expect -->
-    <section class="bg-gray-50 dark:bg-slate-900">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">What to expect in your trial</h2>
-        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">👋</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">A friendly welcome</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Get to know me, and me you.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🎸</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">A quick check-in</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Where you're at, and what you'd like to play.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🎵</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">Play something</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">A first song or technique, right away.</p></div>
-          <div class="rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-sm"><span class="text-3xl" aria-hidden="true">🗺️</span><h3 class="mt-3 font-semibold text-slate-900 dark:text-white">A simple plan</h3><p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Where we go from here.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact / details -->
-    <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div class="grid gap-6 md:grid-cols-2">
-        <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8">
-          <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">What happens next?</h2>
-          <p class="mt-3 leading-relaxed text-slate-600 dark:text-slate-300">Send the form above and I'll reply within 24 hours to arrange a time that suits. If you'd rather email, you can reach me at <span class="font-semibold text-slate-900 dark:text-white">hello@richardguitarlessons.com</span>.</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8">
-          <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Lesson details</h2>
-          <ul class="mt-3 space-y-2.5 text-slate-600 dark:text-slate-300">
-            <li class="flex gap-3"><span aria-hidden="true">💰</span><span>£30 per hour, pro-rata (e.g. £15 for 30 minutes)</span></li>
-            <li class="flex gap-3"><span aria-hidden="true">💻</span><span>Zoom (preferred), Teams, Google Meet or WhatsApp</span></li>
-            <li class="flex gap-3"><span aria-hidden="true">📄</span><span>Custom tabs and sheets sent every Monday</span></li>
-            <li class="flex gap-3"><span aria-hidden="true">📅</span><span>Flexible scheduling with a 24-hour cancellation period</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <Hero {...hero} />
+    {form && <BookingForm {...form} />}
+    <Sections sections={sections} />
+    {cta && <Cta {...cta} />}
   </main>
 
-  <script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Book a Trial Guitar Lesson",
-    "url": "https://richardguitarlessons.com/book-trial-lesson",
-    "mainEntity": {
-      "@type": "LocalBusiness",
-      "name": "Richard's Guitar Lessons",
-      "email": "hello@richardguitarlessons.com"
-    }
-  }
-  </script>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 </Layout>
-
-

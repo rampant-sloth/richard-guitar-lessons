@@ -1,0 +1,67 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  image?: string;
+  imageAlt?: string;
+  imagePosition?: 'right' | 'left' | 'centre';
+  backgroundImage?: string;
+  buttons?: { label: string; href: string; variant?: string }[];
+}
+
+const {
+  eyebrow,
+  title,
+  intro,
+  image,
+  imageAlt = '',
+  imagePosition = 'right',
+  backgroundImage,
+  buttons = [],
+} = Astro.props;
+
+const hasImage = Boolean(image);
+// left/right = two columns from lg up, condensing to one column below that.
+// centre = text, then the image — never side by side.
+const split = hasImage && imagePosition !== 'centre';
+const imageFirst = imagePosition === 'left';
+const centred = hasImage && imagePosition === 'centre';
+
+const mediaClass = 'w-full rounded-2xl border border-[var(--theme-border)] shadow-md';
+const textClass = imageFirst && split ? 'max-w-3xl lg:order-2' : 'max-w-3xl';
+---
+
+<section class={`relative overflow-hidden ${backgroundImage ? '' : 'bg-[var(--theme-band)]'}`}>
+  {backgroundImage && (
+    <>
+      <img src={backgroundImage} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-[var(--theme-bg)] opacity-[0.85]"></div>
+    </>
+  )}
+  <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <div class={split ? 'grid items-center gap-10 lg:grid-cols-2' : ''}>
+      <div class={textClass}>
+        {eyebrow && <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{eyebrow}</p>}
+        <h1 class="mt-4 text-4xl font-extrabold tracking-tight text-[var(--theme-text)] sm:text-5xl">{title}</h1>
+        {intro && <p class="mt-6 text-lg leading-relaxed text-[var(--theme-muted)]">{intro}</p>}
+        {buttons.length > 0 && (
+          <div class="mt-8 flex flex-wrap gap-4">
+            {buttons.map((b) => (
+              <a
+                href={b.href}
+                class={b.variant === 'secondary'
+                  ? 'rounded-lg border border-slate-300 dark:border-slate-600 bg-[var(--theme-surface)] px-6 py-3 text-base font-semibold text-[var(--theme-text)] transition hover:bg-[var(--theme-band)]'
+                  : 'rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700'}
+              >
+                {b.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      {split && <img src={image} alt={imageAlt} width="800" height="600" class={`${mediaClass} ${imageFirst ? 'lg:order-1' : ''}`} />}
+    </div>
+    {centred && <img src={image} alt={imageAlt} width="1200" height="800" loading="lazy" class={`mt-10 mx-auto max-w-3xl ${mediaClass}`} />}
+  </div>
+</section>
